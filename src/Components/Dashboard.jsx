@@ -10,114 +10,106 @@ import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import Grid from '@mui/material/Grid2';
 import Register from '../routes/Register';
-import { Link, Outlet } from "react-router-dom";
-import { createBrowserRouter } from 'react-router-dom'; 
+import { Link, Outlet, createBrowserRouter } from 'react-router-dom';
 
 const NAVIGATION = [
-  {
-    kind: 'header',
-    title: 'Main items',
-  },
-  {
-    segment: 'dashboard',
-    title: 'Dashboard',
-    icon: <DashboardIcon />,
-  },
-  {
-    path: "/Registration",
-    segment: 'Registration',
-    title: 'Register',
-    icon: <ShoppingCartIcon />,
-  },
-  {
-    path: "/Login",
-    segment: 'Login',
-    title: 'Login',
-    icon: <ShoppingCartIcon />,
-  },
-  {
-    kind: 'divider',
-  },
-  {
-    kind: 'header',
-    title: 'Analytics',
-  },
-  {
-    segment: 'reports',
-    title: 'Reports',
-    icon: <BarChartIcon />,
-    children: [
-      {
-        segment: 'sales',
-        title: 'Sales',
-        icon: <DescriptionIcon />,
-      },
-      {
-        segment: 'traffic',
-        title: 'Traffic',
-        icon: <DescriptionIcon />,
-      },
-    ],
-  },
-  {
-    segment: 'integrations',
-    title: 'Integrations',
-    icon: <LayersIcon />,
-  },
+    {
+        kind: 'header',
+        title: 'Main items',
+    },
+    {
+        path: '/Incident',
+        segment: 'Incident',
+        title: 'Incident',
+        icon: <DashboardIcon />,
+    },
+    // {
+    //     path: '/Registration',
+    //     segment: 'Registration',
+    //     title: 'Register',
+    //     icon: <ShoppingCartIcon />,
+    // },
+    {
+        segment: 'Personnel Info',
+        title: 'Personnel Info',
+        icon: <ShoppingCartIcon />,
+    },
+    {
+        kind: 'divider',
+    },
+    {
+        kind: 'header',
+        title: 'Analytics',
+    },
+    {
+        segment: 'reports',
+        title: 'Reports',
+        icon: <BarChartIcon />,
+        children: [
+            {
+                segment: 'sales',
+                title: 'Sales',
+                icon: <DescriptionIcon />,
+            },
+            {
+                segment: 'traffic',
+                title: 'Traffic',
+                icon: <DescriptionIcon />,
+            },
+        ],
+    },
+    {
+        segment: 'integrations',
+        title: 'Integrations',
+        icon: <LayersIcon />,
+    },
 ];
 
-const demoTheme = extendTheme({
-  colorSchemes: { light: true, dark: true },
-  colorSchemeSelector: 'class',
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 600,
-      lg: 1200,
-      xl: 1536,
+const lightDarkTheme = extendTheme({
+    colorSchemes: { light: true, dark: true },
+    colorSchemeSelector: 'class',
+    breakpoints: {
+        values: {
+            xs: 0,
+            sm: 600,
+            md: 600,
+            lg: 1200,
+            xl: 1536,
+        },
     },
-  },
 });
 
-function useDemoRouter(initialPath) {
-  const [pathname, setPathname] = React.useState(initialPath);
+function dashboardRouter(initialPath) {
+    const [pathname, setPathname] = React.useState(initialPath);
 
-  const router = React.useMemo(() => {
-    return {
-      pathname,
-      searchParams: new URLSearchParams(),
-      navigate: (path) => setPathname(String(path)),
-    };
-  }, [pathname]);
+    const router = React.useMemo(() => {
+        return {
+            pathname,
+            searchParams: new URLSearchParams(),
+            navigate: (path) => setPathname(String(path)),
+        };
+    }, [pathname]);
 
-  return router;
+    return router;
 }
 
 const Skeleton = styled('div')(({ theme, height }) => ({
-  backgroundColor: theme.palette.action.hover,
-  borderRadius: theme.shape.borderRadius,
-  height,
-  content: '" "',
+    backgroundColor: theme.palette.action.hover,
+    borderRadius: theme.shape.borderRadius,
+    height,
+    content: '" "',
 }));
 
 export default function Dashboard(props) {
-  const { window } = props;
+    const { window } = props;
 
-  const router = useDemoRouter('/dashboard');
+    const router = dashboardRouter('/dashboard');
 
-  // Remove this const when copying and pasting into your project.
-  const demoWindow = window ? window() : undefined;
-
-  return (
-    <AppProvider
-      navigation={NAVIGATION}
-      theme={demoTheme}
-      window={demoWindow}
-    >
-      <DashboardLayout>
-        <PageContainer>
-          {/* <Grid container spacing={1}>
+    return (
+        <AppProvider navigation={NAVIGATION} theme={lightDarkTheme}>
+            <DashboardLayout>
+                <PageContainer>
+                    {/* <Grid container spacing={1}>
             <Grid size={5} />
             <Grid size={12}>
               <Skeleton height={14} />
@@ -152,9 +144,8 @@ export default function Dashboard(props) {
               <Skeleton height={100} />
             </Grid>
           </Grid> */}
-          <Outlet />
-        </PageContainer>
-      </DashboardLayout>
-    </AppProvider>
-  );
+                </PageContainer>
+            </DashboardLayout>
+        </AppProvider>
+    );
 }
