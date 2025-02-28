@@ -1,11 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
-import Login from './routes/Login';
-import Register from './routes/Register';
+import Login from './app/Login/page';
+import Register from './app/Regsiter/page';
 import PrivateTest from './routes/PrivateTest';
 import PrivateRoutes from './routes/PrivateRoutes';
 import Layout from './routes/Layout';
-import Dashboard from './Components/Dashboard';
-import Incident from './app/Incident/page';
 
 export const router = createBrowserRouter([
     {
@@ -24,8 +22,8 @@ export const router = createBrowserRouter([
                 element: <PrivateRoutes role="admin" />,
                 children: [
                     { path: '/test', element: <PrivateTest /> },
-                    { path: '/Incident', element: <Incident /> },
-                    { path: '/Dashboard', element: <Dashboard /> },
+                    { path: '/incident' },
+                    { path: '/Dashboard' },
                 ],
             },
             {

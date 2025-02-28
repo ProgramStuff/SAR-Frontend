@@ -1,5 +1,7 @@
 export default function Incident() {
-    <div>
-        <h1>Inceident Page</h1>
-    </div>;
+    return (
+        <div>
+            <h1>Incident Page</h1>
+        </div>
+    );
 }

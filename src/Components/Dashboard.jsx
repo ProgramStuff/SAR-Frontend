@@ -8,9 +8,8 @@ import LayersIcon from '@mui/icons-material/Layers';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
-import Grid from '@mui/material/Grid2';
-import Register from '../routes/Register';
-import { Link, Outlet, createBrowserRouter } from 'react-router-dom';
+import Incident from '../app/Incident/page';
+import PersonnelInfo from '../app/PersonnelInfo/page';
 
 const NAVIGATION = [
     {
@@ -18,8 +17,7 @@ const NAVIGATION = [
         title: 'Main items',
     },
     {
-        path: '/Incident',
-        segment: 'Incident',
+        segment: 'incident',
         title: 'Incident',
         icon: <DashboardIcon />,
     },
@@ -30,8 +28,8 @@ const NAVIGATION = [
     //     icon: <ShoppingCartIcon />,
     // },
     {
-        segment: 'Personnel Info',
-        title: 'Personnel Info',
+        segment: 'personnel',
+        title: 'Personnel',
         icon: <ShoppingCartIcon />,
     },
     {
@@ -104,11 +102,18 @@ export default function Dashboard(props) {
     const { window } = props;
 
     const router = dashboardRouter('/dashboard');
+    console.log(router.pathname);
 
     return (
-        <AppProvider navigation={NAVIGATION} theme={lightDarkTheme}>
+        <AppProvider
+            navigation={NAVIGATION}
+            router={router}
+            theme={lightDarkTheme}
+        >
             <DashboardLayout>
                 <PageContainer>
+                    {router.pathname == '/incident' && <Incident />}
+                    {router.pathname == '/personnel' && <PersonnelInfo />}
                     {/* <Grid container spacing={1}>
             <Grid size={5} />
             <Grid size={12}>
