@@ -8,8 +8,20 @@ import LayersIcon from '@mui/icons-material/Layers';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
-import Incident from '../app/Incident/page';
+import CreateIncident from '../app/CreateIncident/page';
 import PersonnelInfo from '../app/PersonnelInfo/page';
+
+import HomeIcon from '@mui/icons-material/Home';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DonutLargeIcon from '@mui/icons-material/DonutLarge';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import SettingsIcon from '@mui/icons-material/Settings';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useOutletContext } from 'react-router-dom';
+import ActiveIncident from '../app/ActiveIncident/page';
 
 const NAVIGATION = [
     {
@@ -19,18 +31,29 @@ const NAVIGATION = [
     {
         segment: 'incident',
         title: 'Incident',
-        icon: <DashboardIcon />,
+        icon: <HomeIcon />,
+        children: [
+            {
+                segment: 'activeIncident',
+                title: 'Active Incidents',
+                icon: <NotificationsActiveIcon />,
+            },
+            {
+                segment: 'newIncident',
+                title: 'News Incident',
+                icon: <AddBoxIcon />,
+            },
+            {
+                segment: 'pastIncident',
+                title: 'Past Incidents',
+                icon: <VisibilityIcon />,
+            },
+        ],
     },
-    // {
-    //     path: '/Registration',
-    //     segment: 'Registration',
-    //     title: 'Register',
-    //     icon: <ShoppingCartIcon />,
-    // },
     {
-        segment: 'personnel',
-        title: 'Personnel',
-        icon: <ShoppingCartIcon />,
+        segment: 'personnelInfo',
+        title: 'Personnel Info',
+        icon: <DonutLargeIcon />,
     },
     {
         kind: 'divider',
@@ -40,26 +63,60 @@ const NAVIGATION = [
         title: 'Analytics',
     },
     {
-        segment: 'reports',
-        title: 'Reports',
-        icon: <BarChartIcon />,
+        segment: 'register',
+        title: 'Register Personnel',
+        icon: <PersonAddIcon />,
+    },
+    {
+        segment: 'myCertifications',
+        title: 'My Certifications',
+        icon: <WorkspacePremiumIcon />,
+    },
+    {
+        segment: 'settings',
+        title: 'Settings',
+        icon: <SettingsIcon />,
         children: [
             {
-                segment: 'sales',
-                title: 'Sales',
-                icon: <DescriptionIcon />,
-            },
-            {
-                segment: 'traffic',
-                title: 'Traffic',
+                segment: 'profile',
+                title: 'Profile',
                 icon: <DescriptionIcon />,
             },
         ],
     },
+    //* Clean this up **
     {
-        segment: 'integrations',
-        title: 'Integrations',
-        icon: <LayersIcon />,
+        icon: <></>,
+    },
+    {
+        icon: <></>,
+    },
+    {
+        icon: <></>,
+    },
+    {
+        icon: <></>,
+    },
+    {
+        icon: <></>,
+    },
+    {
+        icon: <></>,
+    },
+    {
+        icon: <></>,
+    },
+    {
+        icon: <></>,
+    },
+    {
+        icon: <></>,
+    },
+
+    {
+        segment: 'myCertifications',
+        title: 'Alfreds Certifications',
+        icon: <AccountCircleIcon />,
     },
 ];
 
@@ -79,6 +136,7 @@ const lightDarkTheme = extendTheme({
 
 function dashboardRouter(initialPath) {
     const [pathname, setPathname] = React.useState(initialPath);
+    const context = useOutletContext();
 
     const router = React.useMemo(() => {
         return {
@@ -87,7 +145,7 @@ function dashboardRouter(initialPath) {
             navigate: (path) => setPathname(String(path)),
         };
     }, [pathname]);
-
+    console.log(pathname);
     return router;
 }
 
@@ -99,10 +157,7 @@ const Skeleton = styled('div')(({ theme, height }) => ({
 }));
 
 export default function Dashboard(props) {
-    const { window } = props;
-
     const router = dashboardRouter('/dashboard');
-    console.log(router.pathname);
 
     return (
         <AppProvider
@@ -112,8 +167,12 @@ export default function Dashboard(props) {
         >
             <DashboardLayout>
                 <PageContainer>
-                    {router.pathname == '/incident' && <Incident />}
-                    {router.pathname == '/personnel' && <PersonnelInfo />}
+                    {window.location.pathname == '/incident/activeIncident' && (
+                        <ActiveIncident />
+                    )}
+                    {window.location.pathname == '/personnel' && (
+                        <PersonnelInfo />
+                    )}
                     {/* <Grid container spacing={1}>
             <Grid size={5} />
             <Grid size={12}>

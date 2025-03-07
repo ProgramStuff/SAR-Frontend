@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { redirect, useNavigate, useOutletContext } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -71,8 +71,20 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const context = useOutletContext();
-
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (context.user) {
+            setCookie('user', JSON.stringify(context.user), 10);
+        }
+    }, [context.user]);
+
+    function setCookie(cname, cvalue, exdays) {
+        const d = new Date();
+        d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+        let expires = 'expires=' + d.toUTCString();
+        document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/';
+    }
 
     const validateInputs = () => {
         let isValid = true;
@@ -140,8 +152,13 @@ export default function Login() {
     async function handleSubmit(e) {
         e.preventDefault();
         //! Test for private routes -- remove later
-        context.loginUser();
+        context.setUser({
+            name: 'Alfred',
+            role: 'admin',
+        });
+        setCookie('user', context.user, 10);
         navigate('/Dashboard');
+
         if (emailError || passwordError) {
             return;
         }
