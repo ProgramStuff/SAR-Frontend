@@ -17,19 +17,20 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { extendTheme, ThemeProvider } from '@mui/material';
 import 'tailwindcss';
 import Dashboard from './Dashboard';
+import Register from '../app/Regsiter/page';
+import Login from '../app/Login/page';
+import LandingPage from '../app/LandingPage/page';
 
 const pages = ['About', 'Register', 'Login'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export default function ResponsiveAppBar() {
+    console.log(window.location.pathname);
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [pageChoice, setPageChoice] = React.useState('');
 
     const [user, setUser] = useState(null);
-
-    const loginUser = () => {
-        setUser({ role: 'admin' });
-    };
 
     const logoutUser = () => {
         setUser(null);
@@ -42,7 +43,7 @@ export default function ResponsiveAppBar() {
         setAnchorElUser(event.currentTarget);
     };
 
-    const handleCloseNavMenu = () => {
+    const handleCloseNavMenu = (event) => {
         setAnchorElNav(null);
     };
 
@@ -179,6 +180,7 @@ export default function ResponsiveAppBar() {
                                 {pages.map((page) => (
                                     <Button
                                         key={page}
+                                        href={`/${page}`}
                                         onClick={handleCloseNavMenu}
                                         sx={{
                                             textDecoration: 'none',
@@ -187,15 +189,11 @@ export default function ResponsiveAppBar() {
                                             display: 'block',
                                         }}
                                     >
-                                        <Link
-                                            style={{
-                                                textDecoration: 'none',
-                                                color: 'inherit',
-                                            }}
-                                            to={`/${page}`}
+                                        {/* <Button 
+                                        onClick={(e) => window.location.pathname = `/${e.target.value}`}
                                         >
-                                            {page}
-                                        </Link>
+                                        </Button> */}
+                                        {page}
                                     </Button>
                                 ))}
                             </Box>
@@ -245,7 +243,8 @@ export default function ResponsiveAppBar() {
                     </Container>
                 </AppBar>
             )}
-            <Outlet context={{ user, setUser, loginUser, logoutUser }} />
+
+            <Outlet context={{ user, setUser, logoutUser }} />
         </ThemeProvider>
     );
 }

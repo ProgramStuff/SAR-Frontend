@@ -1,30 +1,25 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Login from './app/Login/page';
 import Register from './app/Regsiter/page';
-import PrivateTest from './routes/PrivateTest';
 import PrivateRoutes from './routes/PrivateRoutes';
 import Layout from './routes/Layout';
+import LandingPage from './app/LandingPage/page';
 
 export const router = createBrowserRouter([
     {
         path: '/',
         element: <Layout />,
         children: [
-            { path: '/', element: <Login /> },
+            { path: '/', element: <LandingPage /> },
             { path: '/Login', element: <Login /> },
             { path: '/Register', element: <Register /> },
 
             {
                 element: <PrivateRoutes role="user" />,
-                children: [{ path: '/test', element: <PrivateTest /> }],
             },
             {
                 element: <PrivateRoutes role="admin" />,
-                children: [
-                    { path: '/test', element: <PrivateTest /> },
-                    { path: '/incident' },
-                    { path: '/Dashboard' },
-                ],
+                children: [{ path: '/incident' }, { path: '/Dashboard' }],
             },
             {
                 path: '*',
