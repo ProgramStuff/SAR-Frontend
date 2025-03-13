@@ -78,7 +78,7 @@ export default function ResponsiveAppBar() {
                                 sx={{
                                     display: { xs: 'none', md: 'flex' },
                                     mr: 1,
-                                    color: '#037AFF',                                    
+                                    color: '#037AFF',
                                 }}
                             />
                             <Typography
@@ -90,7 +90,7 @@ export default function ResponsiveAppBar() {
                                     mr: 2,
                                     display: { xs: 'none', md: 'flex' },
                                     fontWeight: 700,
-                                    color: '#037AFF',                                    
+                                    color: '#037AFF',
                                     textDecoration: 'none',
                                 }}
                             >

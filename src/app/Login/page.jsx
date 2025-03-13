@@ -89,14 +89,14 @@ export default function Login() {
     const validateInputs = () => {
         let isValid = true;
 
-        // if (!email || !/\S+@\S+\.\S+/.test(email)) {
-        //   setEmailError(true);
-        //   setEmailErrorMessage('Please enter a valid email address.');
-        //   isValid = false;
-        // } else {
-        //   setEmailError(false);
-        //   setEmailErrorMessage('');
-        // }
+        if (!email || !/\S+@\S+\.\S+/.test(email)) {
+            setEmailError(true);
+            setEmailErrorMessage('Please enter a valid email address.');
+            isValid = false;
+        } else {
+            setEmailError(false);
+            setEmailErrorMessage('');
+        }
 
         if (!password || password.length < 6) {
             setPasswordError(true);
@@ -137,32 +137,18 @@ export default function Login() {
             setPasswordErrorMessage('');
         }
 
-        // if (!name.value || name.value.length < 1) {
-        //   setNameError(true);
-        //   setNameErrorMessage('Name is required.');
-        //   isValid = false;
-        // } else {
-        //   setNameError(false);
-        //   setNameErrorMessage('');
-        // }
-
         return isValid;
     };
 
     async function handleSubmit(e) {
         e.preventDefault();
         //! Test for private routes -- remove later
-        context.setUser({
-            name: 'Alfred',
-            role: 'admin',
-        });
-        setCookie('user', context.user, 10);
-        navigate('/Dashboard');
 
         if (emailError || passwordError) {
             return;
         }
         const data = new FormData(e.currentTarget);
+
         console.log({
             name: data.get('name'),
             lastName: data.get('lastName'),
@@ -196,7 +182,13 @@ export default function Login() {
 
             if (response.ok) {
                 // If registration is successful
+                context.setUser({
+                    name: 'Alfred',
+                    role: 'admin',
+                });
+                setCookie('user', context.user, 10);
                 console.log('Login Successful');
+                navigate('/Dashboard');
             } else {
                 // If registration fails
                 setMessage('Email or password is incorrect.');
@@ -230,20 +222,6 @@ export default function Login() {
                             gap: 2,
                         }}
                     >
-                        {/* <FormControl>
-          <FormLabel htmlFor="name">Full name</FormLabel>
-          <TextField
-            autoComplete="name"
-            name="name"
-            required
-            fullWidth
-            id="name"
-            placeholder="Jon Snow"
-            error={nameError}
-            helperText={nameErrorMessage}
-            color={nameError ? 'error' : 'primary'}
-          />
-        </FormControl> */}
                         <FormControl>
                             <FormLabel htmlFor="email">Email</FormLabel>
                             <TextField

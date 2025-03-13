@@ -14,7 +14,6 @@ import PastIncident from '../app/PastIncident/page';
 import MyCerts from '../app/MyCerts/page';
 import Profile from '../app/Profile/page';
 
-
 import HomeIcon from '@mui/icons-material/Home';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -29,7 +28,7 @@ import ActiveIncident from '../app/ActiveIncident/page';
 import { Typography } from '@mui/material';
 import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import Register from '../app/Regsiter/page';
-
+import { Widgets } from '@mui/icons-material';
 
 const NAVIGATION = [
     {
@@ -115,11 +114,10 @@ const NAVIGATION = [
         icon: <></>,
     },
 
-
     {
         segment: 'myCertifications',
         title: 'Alfreds Parks',
-        icon: <AccountCircleIcon color='#037AFF'/>,
+        icon: <AccountCircleIcon color="#037AFF" />,
     },
 ];
 
@@ -151,14 +149,12 @@ function dashboardRouter(initialPath) {
     return router;
 }
 
-
 // const Skeleton = styled('div')(({ theme, height }) => ({
 //     backgroundColor: theme.palette.action.hover,
 //     borderRadius: theme.shape.borderRadius,
 //     height,
 //     content: '" "',
 // }));
-
 
 export default function Dashboard(props) {
     const router = dashboardRouter('/dashboard');
@@ -171,31 +167,44 @@ export default function Dashboard(props) {
             branding={{
                 title: (
                     <Typography
-                    variant="h6"
-                    noWrap
-                    sx={{
-                        fontWeight: 700,
-                        color: '#037AFF',
-                        textDecoration: 'none',
-                    }}
-                >
-                    SAR FORGE
-                  </Typography>
+                        variant="h6"
+                        noWrap
+                        sx={{
+                            fontWeight: 700,
+                            color: '#037AFF',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        SAR FORGE
+                    </Typography>
                 ),
-                logo: <TroubleshootIcon sx={{margin: '0.8vh', color: '#037AFF'}}/>,
-              }}
+                logo: (
+                    <TroubleshootIcon
+                        sx={{ margin: '0.8vh', color: '#037AFF' }}
+                    />
+                ),
+            }}
         >
             <DashboardLayout>
-                <PageContainer  title='' breadcrumbs={[]}>
-                    {router.pathname == '/incident/activeIncident' && <ActiveIncident /> }
-                    {router.pathname == '/incident/newIncident' && <CreateIncident /> }
-                    {router.pathname == '/incident/pastIncident' && <PastIncident /> }
-                    {router.pathname == '/personnelInfo' && <PersonnelInfo /> }
+                <PageContainer
+                    style={{ padding: '0' }}
+                    title=""
+                    breadcrumbs={[]}
+                >
+                    {router.pathname == '/incident/activeIncident' && (
+                        <ActiveIncident />
+                    )}
+                    {router.pathname == '/incident/newIncident' && (
+                        <CreateIncident />
+                    )}
+                    {router.pathname == '/incident/pastIncident' && (
+                        <PastIncident />
+                    )}
+                    {router.pathname == '/personnelInfo' && <PersonnelInfo />}
 
-                    {router.pathname == '/register' && <Register /> }
-                    {router.pathname == '/myCertifications' && <MyCerts /> }
-                    {router.pathname == '/settings/profile' && <Profile /> }
-
+                    {router.pathname == '/register' && <Register />}
+                    {router.pathname == '/myCertifications' && <MyCerts />}
+                    {router.pathname == '/settings/profile' && <Profile />}
                 </PageContainer>
             </DashboardLayout>
         </AppProvider>
