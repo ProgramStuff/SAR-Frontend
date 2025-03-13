@@ -19,7 +19,7 @@ export const router = createBrowserRouter([
             },
             {
                 element: <PrivateRoutes role="admin" />,
-                children: [{ path: '/incident' }, { path: '/Dashboard' }],
+                children: [{ path: '/Dashboard' }],
             },
             {
                 path: '*',

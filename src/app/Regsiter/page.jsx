@@ -131,13 +131,6 @@ export default function Register() {
         }
 
         const fromData = new FormData(e.currentTarget);
-        console.log({
-            name: fromData.get('name'),
-            lastName: fromData.get('lastName'),
-            email: fromData.get('email'),
-            password: fromData.get('password'),
-        });
-
         const email = fromData.get('email');
         const password = fromData.get('password');
         try {

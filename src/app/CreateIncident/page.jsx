@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CssBaseline } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
-import Input from '@mui/joy/Input';
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -112,35 +116,106 @@ const province = [
     },
 ];
 
-// TODO: Add a time picker with default value set to the current users local time
+
 
 export default function CreateIncident() {
+
+    const [currentUser, setCurrentUser] = useState({});
+
+    useEffect(() => {
+        getCookie();
+    }, []);
+
     const [startDate, setStartDate] = useState(dayjs());
     const [startTime, setStartTime] = useState(dayjs());
+
+    function getCookie() {
+        let name = "user=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i <ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == ' ') {
+          }
+          if (c.indexOf(name) == 0) {
+            const userInfo = JSON.parse((c.substring(name.length, c.length)))
+            setCurrentUser(userInfo);
+            // return c.substring(name.length, c.length);
+          }
+        }
+        return;
+      }
+
+      async function handleSubmit(e) {
+        e.preventDefault();
+
+        const fromData = new FormData(e.currentTarget);
+        console.log({
+                "incidentName" : fromData.get('incidentName'),
+                // "incidentCommander": Guid or string,
+                // "agency": Guid or string,
+                // "incidentType": Guid or string,
+                // ""operationPeriod: integer,
+                // "address": string,
+                // "city": string,
+                // "postal": string,
+                // "province": string,
+                // "date": datetime,
+                // summary: string,
+                // objectives: string
+        });
+
+        // try {
+        //     const response = await axios.post('http://localhost:5185/newIncident',{ email, password });
+
+        //     if (response.status == 200) {
+        //         setMessage(`Registration successful: ${response.data.message}`);
+        //     } else {
+        //         if (response.errors.DuplicateUserName) {
+        //             setMessage('Username already exists');
+        //         }
+        //     }
+        // } catch (error) {
+        //     setMessage(`Error: ${error.message}`);
+        //     console.log(`Error: ${error.message}`);
+        // }
+    }
+
 
     return (
         <>
             <CssBaseline enableColorScheme />
-            <Container maxWidth>
+            <Box maxWidth component="form" onSubmit={handleSubmit}>
+                <FormControl>
+                    <TextField
+                    name="incidentName"
+                        label="Incident Name"
+                        sx={{
+                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                            margin: '1vh',
+                        }}
+                    />
+                </FormControl>
+
+                <FormControl>
                 <TextField
-                    label="Incident Name"
-                    sx={{
-                        width: { md: '13vw', lg: '13vw', xl: '10vw' },
-                        margin: '1vh',
-                    }}
-                />
-                <TextField
+                name='commander'
                     label="Incident Commander"
                     sx={{
-                        width: { md: '13vw', lg: '13vw', xl: '10vw' },
+                        width: { md: '13vw', lg: '13vw', xl: '13vw' },
                         margin: '1vh',
                     }}
                 />
+                </FormControl>
+
+            
+            <FormControl>
                 <TextField
                     select
+                    name='agency'
                     label="Agency"
                     sx={{
-                        width: { md: '13vw', lg: '13vw', xl: '10vw' },
+                        width: { md: '13vw', lg: '13vw', xl: '13vw' },
                         margin: '1vh',
                     }}
                 >
@@ -150,12 +225,18 @@ export default function CreateIncident() {
                         </MenuItem>
                     ))}
                 </TextField>
+                </FormControl>
 
+
+
+                <FormControl>
                 <TextField
+                name='type'
                     select
                     label="incidentType"
                     sx={{
-                        width: { md: '13vw', lg: '13vw', xl: '10vw' },
+                        width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                        minWidth: '10vh',
                         margin: '1vh',
                     }}
                 >
@@ -165,8 +246,12 @@ export default function CreateIncident() {
                         </MenuItem>
                     ))}
                 </TextField>
+                </FormControl>
 
+
+                <FormControl>
                 <TextField
+                name='op'
                     label="Operational Period"
                     type="number"
                     slotProps={{
@@ -175,33 +260,64 @@ export default function CreateIncident() {
                         },
                     }}
                     sx={{
-                        width: { md: '13vw', lg: '13vw', xl: '10vw' },
+                        width: { md: '13vw', lg: '13vw', xl: '13vw' },
                         margin: '1vh',
                     }}
                 />
-            </Container>
+                </FormControl>
 
-            <Container>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+
+
+                <FormControl>
+                    <DatePicker
+                    name='startDate'
+                        sx={{
+                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                            margin: '1vh',
+                        }}
+                        label="Start Date"
+                        value={startDate}
+                        onChange={(newValue) => setStartDate(newValue)}
+                    />
+                </FormControl>
+
+                <FormControl>
+                    <TimePicker
+                    name='startTime'
+                        sx={{
+                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                            margin: '1vh',
+                        }}
+                        label="Start Time"
+                        value={startTime}
+                        onChange={(newValue) => setStartTime(newValue)}
+                    />
+                    </FormControl>
+                </LocalizationProvider>
+
+
+
+                <FormControl>        
                 <TextField
+                name='address'
                     label="Address"
                     sx={{
-                        width: { md: '28.5vw', lg: '28.5vw', xl: '21vw' },
+                        width: { md: '27vw', lg: '27vw', xl: '27vw' },
                         margin: '1vh',
                     }}
                 />
-                <TextField
-                    label="City"
-                    sx={{
-                        width: { md: '27vw', lg: '27vw', xl: '21vw' },
-                        margin: '1vh',
-                    }}
-                />
+                </FormControl>
 
+                
+            <FormControl>
                 <TextField
+                name='province'
                     select
                     label="Province"
                     sx={{
-                        width: { md: '13vw', lg: '13vw', xl: '10vw' },
+                        width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                        minWidth: '10vh',
                         margin: '1vh',
                     }}
                 >
@@ -211,37 +327,64 @@ export default function CreateIncident() {
                         </MenuItem>
                     ))}
                 </TextField>
-            </Container>
-            <Container>
+                </FormControl>
+
+            <FormControl>
                 <TextField
-                    label="Postal Code"
+                name='city'
+                    label="City"
                     sx={{
-                        width: { md: '13vw', lg: '13vw', xl: '10vw' },
+                        width: { md: '27vw', lg: '27vw', xl: '27vw' },
                         margin: '1vh',
                     }}
                 />
+                </FormControl>
 
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                        sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '10vw' },
-                            margin: '1vh',
-                        }}
-                        label="Start Date"
-                        value={startDate}
-                        onChange={(newValue) => setStartDate(newValue)}
-                    />
-                    <TimePicker
-                        sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '10vw' },
-                            margin: '1vh',
-                        }}
-                        label="Start Time"
-                        value={startTime}
-                        onChange={(newValue) => setStartTime(newValue)}
-                    />
-                </LocalizationProvider>
-            </Container>
+                <FormControl>
+                <TextField
+                name='postalCode'
+                    label="Postal Code"
+                    sx={{
+                        width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                        minWidth: '10vh',
+                        margin: '1vh',
+                    }}
+                />
+                </FormControl>
+
+
+                <FormControl sx={{width: '100%'}}>
+                <TextField
+                name='summary'
+                sx={{
+                    width: { md: '100%', lg: '100%', xl: '100%' },
+                    margin: '1vh',
+                }}
+                label="Summary"
+                multiline
+                maxRows={1000}
+            />
+                </FormControl>
+
+
+
+                <FormControl sx={{width: '100%'}}>
+                <TextField
+                name='objectives'
+                sx={{
+                    width: { md: '100%', lg: '100%', xl: '100%' },
+                    margin: '1vh',
+                }}
+                label="Objectives"
+                multiline
+                maxRows={1000}
+            />
+            </FormControl>
+            <Stack spacing={3} direction="row" sx={{marginTop: '3vh'}}>
+                <Button sx={{width: '10vw'}} size='large' variant="contained" type='submit'>Submit</Button>
+                <Button sx={{width: '10vw'}} size='large' color='error' variant="contained">Cancel</Button>
+            </Stack>
+            </Box>
         </>
     );
 }

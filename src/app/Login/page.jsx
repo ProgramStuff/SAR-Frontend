@@ -142,7 +142,6 @@ export default function Login() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        //! Test for private routes -- remove later
 
         if (emailError || passwordError) {
             return;
@@ -155,15 +154,7 @@ export default function Login() {
             email: data.get('email'),
             password: data.get('password'),
         });
-
-        // Validate email
-        // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        // if (!emailRegex.test(email)) {
-        //   setMessage("Please enter a valid email address.");
-        //   return;
-        // }
-
-        // Data to send in the POST request
+        
         const payload = {
             email: email,
             password: password,
@@ -183,7 +174,8 @@ export default function Login() {
             if (response.ok) {
                 // If registration is successful
                 context.setUser({
-                    name: 'Alfred',
+                    fName: 'Alfred',
+                    lName: 'Parks',
                     role: 'admin',
                 });
                 setCookie('user', context.user, 10);

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useEffect, useState, useMemo} from 'react';
 import { extendTheme, styled } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -30,97 +30,6 @@ import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import Register from '../app/Regsiter/page';
 import { Widgets } from '@mui/icons-material';
 
-const NAVIGATION = [
-    {
-        kind: 'header',
-        title: 'Main items',
-    },
-    {
-        segment: 'incident',
-        title: 'Incident',
-        icon: <HomeIcon />,
-        children: [
-            {
-                segment: 'activeIncident',
-                title: 'Active Incidents',
-                icon: <NotificationsActiveIcon />,
-            },
-            {
-                segment: 'newIncident',
-                title: 'New Incident',
-                icon: <AddBoxIcon />,
-            },
-            {
-                segment: 'pastIncident',
-                title: 'Past Incidents',
-                icon: <VisibilityIcon />,
-            },
-        ],
-    },
-    {
-        segment: 'personnelInfo',
-        title: 'Personnel Info',
-        icon: <DonutLargeIcon />,
-    },
-    {
-        kind: 'divider',
-    },
-    {
-        kind: 'header',
-        title: 'User Items',
-    },
-    {
-        segment: 'register',
-        title: 'Register Personnel',
-        icon: <PersonAddIcon />,
-    },
-    {
-        segment: 'myCertifications',
-        title: 'My Certifications',
-        icon: <WorkspacePremiumIcon />,
-    },
-    {
-        segment: 'settings',
-        title: 'Settings',
-        icon: <SettingsIcon />,
-        children: [
-            {
-                segment: 'profile',
-                title: 'Profile',
-                icon: <DescriptionIcon />,
-            },
-        ],
-    },
-    //* Clean this up **
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-
-    {
-        segment: 'myCertifications',
-        title: 'Alfreds Parks',
-        icon: <AccountCircleIcon color="#037AFF" />,
-    },
-];
-
 const lightDarkTheme = extendTheme({
     colorSchemes: { light: true, dark: true },
     colorSchemeSelector: 'class',
@@ -136,10 +45,10 @@ const lightDarkTheme = extendTheme({
 });
 
 function dashboardRouter(initialPath) {
-    const [pathname, setPathname] = React.useState(initialPath);
+    const [pathname, setPathname] = useState(initialPath);
     const context = useOutletContext();
 
-    const router = React.useMemo(() => {
+    const router = useMemo(() => {
         return {
             pathname,
             searchParams: new URLSearchParams(),
@@ -157,7 +66,122 @@ function dashboardRouter(initialPath) {
 // }));
 
 export default function Dashboard(props) {
+
     const router = dashboardRouter('/dashboard');
+
+    const [currentUser, setCurrentUser] = useState({});
+
+    useEffect(() => {
+        getCookie();
+    }, []);
+
+        function getCookie() {
+        let name = "user=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i <ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == ' ') {
+          }
+          if (c.indexOf(name) == 0) {
+            const userInfo = JSON.parse((c.substring(name.length, c.length)))
+            setCurrentUser(userInfo);
+            // return c.substring(name.length, c.length);
+          }
+        }
+        return;
+      }
+
+    const NAVIGATION = [
+        {
+            kind: 'header',
+            title: 'Main items',
+        },
+        {
+            segment: 'incident',
+            title: 'Incident',
+            icon: <HomeIcon />,
+            children: [
+                {
+                    segment: 'activeIncident',
+                    title: 'Active Incidents',
+                    icon: <NotificationsActiveIcon />,
+                },
+                {
+                    segment: 'newIncident',
+                    title: 'New Incident',
+                    icon: <AddBoxIcon />,
+                },
+                {
+                    segment: 'pastIncident',
+                    title: 'Past Incidents',
+                    icon: <VisibilityIcon />,
+                },
+            ],
+        },
+        {
+            segment: 'personnelInfo',
+            title: 'Personnel Info',
+            icon: <DonutLargeIcon />,
+        },
+        {
+            kind: 'divider',
+        },
+        {
+            kind: 'header',
+            title: 'User Items',
+        },
+        {
+            segment: 'register',
+            title: 'Register Personnel',
+            icon: <PersonAddIcon />,
+        },
+        {
+            segment: 'myCertifications',
+            title: 'My Certifications',
+            icon: <WorkspacePremiumIcon />,
+        },
+        {
+            segment: 'settings',
+            title: 'Settings',
+            icon: <SettingsIcon />,
+            children: [
+                {
+                    segment: 'profile',
+                    title: 'Profile',
+                    icon: <DescriptionIcon />,
+                },
+            ],
+        },
+        //* Clean this up **
+        {
+            icon: <></>,
+        },
+        {
+            icon: <></>,
+        },
+        {
+            icon: <></>,
+        },
+        {
+            icon: <></>,
+        },
+        {
+            icon: <></>,
+        },
+        {
+            icon: <></>,
+        },
+        {
+            icon: <></>,
+        },
+    
+        {
+            segment: 'userProfile',
+            title: currentUser.fName + " " + currentUser.lName,
+            icon: <AccountCircleIcon color="#037AFF" />,
+        },
+    ];
 
     return (
         <AppProvider
@@ -187,8 +211,9 @@ export default function Dashboard(props) {
         >
             <DashboardLayout>
                 <PageContainer
-                    style={{ padding: '0' }}
+                    sx={{marginLeft: 0, marginRight: 0}}
                     title=""
+                    maxWidth
                     breadcrumbs={[]}
                 >
                     {router.pathname == '/incident/activeIncident' && (
@@ -205,6 +230,7 @@ export default function Dashboard(props) {
                     {router.pathname == '/register' && <Register />}
                     {router.pathname == '/myCertifications' && <MyCerts />}
                     {router.pathname == '/settings/profile' && <Profile />}
+                    {router.pathname == '/userProfile' && <Profile />}
                 </PageContainer>
             </DashboardLayout>
         </AppProvider>
