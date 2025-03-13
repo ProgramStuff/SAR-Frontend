@@ -14,6 +14,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import { extendTheme, ThemeProvider } from '@mui/material';
 import 'tailwindcss';
 import Dashboard from './Dashboard';
@@ -73,24 +74,23 @@ export default function ResponsiveAppBar() {
                 <AppBar color="white" sx={{ width: '100%' }} position="static">
                     <Container maxWidth="xl">
                         <Toolbar disableGutters>
-                            <AdbIcon
+                            <TroubleshootIcon
                                 sx={{
                                     display: { xs: 'none', md: 'flex' },
                                     mr: 1,
+                                    color: '#037AFF',
                                 }}
                             />
                             <Typography
                                 variant="h6"
                                 noWrap
                                 component="a"
-                                href="#app-bar-with-responsive-menu"
+                                href="/"
                                 sx={{
                                     mr: 2,
                                     display: { xs: 'none', md: 'flex' },
-                                    fontFamily: 'monospace',
                                     fontWeight: 700,
-                                    letterSpacing: '.3rem',
-                                    color: 'inherit',
+                                    color: '#037AFF',
                                     textDecoration: 'none',
                                 }}
                             >
@@ -133,7 +133,7 @@ export default function ResponsiveAppBar() {
                                 >
                                     {pages.map((page) => (
                                         <MenuItem
-                                            sx={{ color: 'black' }}
+                                            sx={{ color: '#037AFF' }}
                                             key={page}
                                             onClick={handleCloseNavMenu}
                                         >
@@ -146,25 +146,24 @@ export default function ResponsiveAppBar() {
                                     ))}
                                 </Menu>
                             </Box>
-                            <AdbIcon
+                            <TroubleshootIcon
                                 sx={{
                                     display: { xs: 'flex', md: 'none' },
                                     mr: 1,
+                                    color: '#037AFF',
                                 }}
                             />
                             <Typography
                                 variant="h5"
                                 noWrap
                                 component="a"
-                                href="#app-bar-with-responsive-menu"
+                                href="/"
                                 sx={{
                                     mr: 2,
                                     display: { xs: 'flex', md: 'none' },
                                     flexGrow: 1,
-                                    fontFamily: 'monospace',
                                     fontWeight: 700,
-                                    letterSpacing: '.3rem',
-                                    color: 'inherit',
+                                    color: '#037AFF',
                                     textDecoration: 'none',
                                 }}
                             >
@@ -185,19 +184,15 @@ export default function ResponsiveAppBar() {
                                         sx={{
                                             textDecoration: 'none',
                                             my: 2,
-                                            color: 'black',
+                                            color: '#037AFF     ',
                                             display: 'block',
                                         }}
                                     >
-                                        {/* <Button 
-                                        onClick={(e) => window.location.pathname = `/${e.target.value}`}
-                                        >
-                                        </Button> */}
                                         {page}
                                     </Button>
                                 ))}
                             </Box>
-                            <Box sx={{ flexGrow: 0 }}>
+                            {/* <Box sx={{ flexGrow: 0 }}>
                                 <Tooltip title="Open settings">
                                     <IconButton
                                         onClick={handleOpenUserMenu}
@@ -238,7 +233,7 @@ export default function ResponsiveAppBar() {
                                         </MenuItem>
                                     ))}
                                 </Menu>
-                            </Box>
+                            </Box> */}
                         </Toolbar>
                     </Container>
                 </AppBar>

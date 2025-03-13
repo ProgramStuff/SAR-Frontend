@@ -10,6 +10,9 @@ import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import CreateIncident from '../app/CreateIncident/page';
 import PersonnelInfo from '../app/PersonnelInfo/page';
+import PastIncident from '../app/PastIncident/page';
+import MyCerts from '../app/MyCerts/page';
+import Profile from '../app/Profile/page';
 
 import HomeIcon from '@mui/icons-material/Home';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
@@ -22,6 +25,10 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useOutletContext } from 'react-router-dom';
 import ActiveIncident from '../app/ActiveIncident/page';
+import { Typography } from '@mui/material';
+import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
+import Register from '../app/Regsiter/page';
+import { Widgets } from '@mui/icons-material';
 
 const NAVIGATION = [
     {
@@ -40,7 +47,7 @@ const NAVIGATION = [
             },
             {
                 segment: 'newIncident',
-                title: 'News Incident',
+                title: 'New Incident',
                 icon: <AddBoxIcon />,
             },
             {
@@ -60,7 +67,7 @@ const NAVIGATION = [
     },
     {
         kind: 'header',
-        title: 'Analytics',
+        title: 'User Items',
     },
     {
         segment: 'register',
@@ -106,17 +113,11 @@ const NAVIGATION = [
     {
         icon: <></>,
     },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
 
     {
         segment: 'myCertifications',
-        title: 'Alfreds Certifications',
-        icon: <AccountCircleIcon />,
+        title: 'Alfreds Parks',
+        icon: <AccountCircleIcon color="#037AFF" />,
     },
 ];
 
@@ -145,16 +146,15 @@ function dashboardRouter(initialPath) {
             navigate: (path) => setPathname(String(path)),
         };
     }, [pathname]);
-    console.log(pathname);
     return router;
 }
 
-const Skeleton = styled('div')(({ theme, height }) => ({
-    backgroundColor: theme.palette.action.hover,
-    borderRadius: theme.shape.borderRadius,
-    height,
-    content: '" "',
-}));
+// const Skeleton = styled('div')(({ theme, height }) => ({
+//     backgroundColor: theme.palette.action.hover,
+//     borderRadius: theme.shape.borderRadius,
+//     height,
+//     content: '" "',
+// }));
 
 export default function Dashboard(props) {
     const router = dashboardRouter('/dashboard');
@@ -164,50 +164,47 @@ export default function Dashboard(props) {
             navigation={NAVIGATION}
             router={router}
             theme={lightDarkTheme}
+            branding={{
+                title: (
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        sx={{
+                            fontWeight: 700,
+                            color: '#037AFF',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        SAR FORGE
+                    </Typography>
+                ),
+                logo: (
+                    <TroubleshootIcon
+                        sx={{ margin: '0.8vh', color: '#037AFF' }}
+                    />
+                ),
+            }}
         >
             <DashboardLayout>
-                <PageContainer>
-                    {window.location.pathname == '/incident/activeIncident' && (
+                <PageContainer
+                    style={{ padding: '0' }}
+                    title=""
+                    breadcrumbs={[]}
+                >
+                    {router.pathname == '/incident/activeIncident' && (
                         <ActiveIncident />
                     )}
-                    {window.location.pathname == '/personnel' && (
-                        <PersonnelInfo />
+                    {router.pathname == '/incident/newIncident' && (
+                        <CreateIncident />
                     )}
-                    {/* <Grid container spacing={1}>
-            <Grid size={5} />
-            <Grid size={12}>
-              <Skeleton height={14} />
-            </Grid>
-            <Grid size={12}>
-              <Skeleton height={14} />
-            </Grid>
-            <Grid size={4}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={8}>
-              <Skeleton height={100} />
-            </Grid>
+                    {router.pathname == '/incident/pastIncident' && (
+                        <PastIncident />
+                    )}
+                    {router.pathname == '/personnelInfo' && <PersonnelInfo />}
 
-            <Grid size={12}>
-              <Skeleton height={150} />
-            </Grid>
-            <Grid size={12}>
-              <Skeleton height={14} />
-            </Grid>
-
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-          </Grid> */}
+                    {router.pathname == '/register' && <Register />}
+                    {router.pathname == '/myCertifications' && <MyCerts />}
+                    {router.pathname == '/settings/profile' && <Profile />}
                 </PageContainer>
             </DashboardLayout>
         </AppProvider>
