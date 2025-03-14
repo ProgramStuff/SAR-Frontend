@@ -13,8 +13,7 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-// import AppTheme from './theme/AppTheme';
-// import ColorModeSelect from './theme/ColorModeSelect';
+import axios from 'axios';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -23,7 +22,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
     width: '100%',
     padding: theme.spacing(4),
     gap: theme.spacing(2),
-    margin: 'auto',
+    margin: '2vh',
     boxShadow:
         'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
     [theme.breakpoints.up('sm')]: {
@@ -71,9 +70,13 @@ export default function Register() {
     const [message, setMessage] = useState('');
 
     const validateInputs = () => {
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const name = document.getElementById('name');
+
         let isValid = true;
 
-        if (!email || !/\S+@\S+\.\S+/.test(email)) {
+        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
             setEmailError(true);
             setEmailErrorMessage('Please enter a valid email address.');
             isValid = false;
@@ -82,38 +85,24 @@ export default function Register() {
             setEmailErrorMessage('');
         }
 
-        if (!password || password.length < 6) {
+        if (!password.value || password.value.length < 6) {
             setPasswordError(true);
             setPasswordErrorMessage(
                 'Password must be at least 6 characters long.'
             );
             isValid = false;
         }
-        if (!/[^\w]/.test(password)) {
-            setPasswordError(true);
-            setPasswordErrorMessage(
-                'Passwords must have at least one non-alphanumeric character.'
-            );
-            isValid = false;
-        }
-        if (!/\d/.test(password)) {
+        if (!/\d/.test(password.value)) {
             setPasswordError(true);
             setPasswordErrorMessage(
                 "Passwords must have at least one digit ('0'-'9')."
             );
             isValid = false;
         }
-        if (!/[a-z]/.test(password)) {
+        if (!/[^\w]/.test(password.value)) {
             setPasswordError(true);
             setPasswordErrorMessage(
-                "Passwords must have at least one lowercase ('a'-'z')."
-            );
-            isValid = false;
-        }
-        if (!/[A-Z]/.test(password)) {
-            setPasswordError(true);
-            setPasswordErrorMessage(
-                "Passwords must have at least one uppercase ('A'-'Z')."
+                'Passwords must have at least one non-alphanumeric character.'
             );
             isValid = false;
         } else {
@@ -139,72 +128,21 @@ export default function Register() {
         if (emailError || passwordError) {
             return;
         }
-        const data = new FormData(e.currentTarget);
-        console.log({
-            name: data.get('name'),
-            lastName: data.get('lastName'),
-            email: data.get('email'),
-            password: data.get('password'),
-        });
 
-        // Validate email
-        // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        // if (!emailRegex.test(email)) {
-        //   setMessage("Please enter a valid email address.");
-        //   return;
-        // }
-
-        // Validate password
-        // const passwordValidations = [];
-
-        // if (password.length < 6) {
-        //   passwordValidations.push("Passwords must be at least 6 characters.");
-        // }
-        // if (!/[^\w]/.test(password)) {
-        //   passwordValidations.push("Passwords must have at least one non-alphanumeric character.");
-        // }
-        // if (!/\d/.test(password)) {
-        //   passwordValidations.push("Passwords must have at least one digit ('0'-'9').");
-        // }
-        // if (!/[a-z]/.test(password)) {
-        //   passwordValidations.push("Passwords must have at least one lowercase ('a'-'z').");
-        // }
-        // if (!/[A-Z]/.test(password)) {
-        //   passwordValidations.push("Passwords must have at least one uppercase ('A'-'Z').");
-        // }
-        // if (!/(.)\1/.test(password)) {
-        //   passwordValidations.push("Passwords must use at least 1 different character.");
-        // }
-
-        // if (passwordValidations.length > 0) {
-        //   setMessage(passwordValidations.join('\n'));
-        //   return;
-        // }
-
-        // Data to send in the POST request
-        const payload = {
-            email: email,
-            password: password,
-        };
-
+        const fromData = new FormData(e.currentTarget);
+        const email = fromData.get('email');
+        const password = fromData.get('password');
         try {
-            const response = await fetch('http://localhost:5185/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                // If registration is successful
-                setMessage(`Registration successful: ${data.message}`);
+            const response = await axios.post(
+                'http://localhost:5185/register',
+                { email, password }
+            );
+            if (response.status == 200) {
+                setMessage(`Registration successful: ${response.data.message}`);
             } else {
-                // If registration fails
-                if (data.errors.DuplicateUserName)
+                if (response.errors.DuplicateUserName) {
                     setMessage('Username already exists');
+                }
             }
         } catch (error) {
             setMessage(`Error: ${error.message}`);
@@ -262,7 +200,7 @@ export default function Register() {
                                 variant="outlined"
                                 error={emailError}
                                 helperText={emailErrorMessage}
-                                color={passwordError ? 'error' : 'primary'}
+                                color={emailError ? 'error' : 'primary'}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </FormControl>
@@ -304,22 +242,6 @@ export default function Register() {
                             gap: 2,
                         }}
                     >
-                        {/* <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => alert('Sign up with Google')}
-          startIcon={<GoogleIcon />}
-        >
-          Sign up with Google
-        </Button>
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => alert('Sign up with Facebook')}
-          startIcon={<FacebookIcon />}
-        >
-          Sign up with Facebook
-        </Button> */}
                         <Typography sx={{ textAlign: 'center' }}>
                             Already have an account?{' '}
                             <Link

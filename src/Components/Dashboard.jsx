@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { extendTheme, styled } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -10,6 +10,9 @@ import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import CreateIncident from '../app/CreateIncident/page';
 import PersonnelInfo from '../app/PersonnelInfo/page';
+import PastIncident from '../app/PastIncident/page';
+import MyCerts from '../app/MyCerts/page';
+import Profile from '../app/Profile/page';
 
 import HomeIcon from '@mui/icons-material/Home';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
@@ -22,103 +25,10 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useOutletContext } from 'react-router-dom';
 import ActiveIncident from '../app/ActiveIncident/page';
-
-const NAVIGATION = [
-    {
-        kind: 'header',
-        title: 'Main items',
-    },
-    {
-        segment: 'incident',
-        title: 'Incident',
-        icon: <HomeIcon />,
-        children: [
-            {
-                segment: 'activeIncident',
-                title: 'Active Incidents',
-                icon: <NotificationsActiveIcon />,
-            },
-            {
-                segment: 'newIncident',
-                title: 'News Incident',
-                icon: <AddBoxIcon />,
-            },
-            {
-                segment: 'pastIncident',
-                title: 'Past Incidents',
-                icon: <VisibilityIcon />,
-            },
-        ],
-    },
-    {
-        segment: 'personnelInfo',
-        title: 'Personnel Info',
-        icon: <DonutLargeIcon />,
-    },
-    {
-        kind: 'divider',
-    },
-    {
-        kind: 'header',
-        title: 'Analytics',
-    },
-    {
-        segment: 'register',
-        title: 'Register Personnel',
-        icon: <PersonAddIcon />,
-    },
-    {
-        segment: 'myCertifications',
-        title: 'My Certifications',
-        icon: <WorkspacePremiumIcon />,
-    },
-    {
-        segment: 'settings',
-        title: 'Settings',
-        icon: <SettingsIcon />,
-        children: [
-            {
-                segment: 'profile',
-                title: 'Profile',
-                icon: <DescriptionIcon />,
-            },
-        ],
-    },
-    //* Clean this up **
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-    {
-        icon: <></>,
-    },
-
-    {
-        segment: 'myCertifications',
-        title: 'Alfreds Certifications',
-        icon: <AccountCircleIcon />,
-    },
-];
+import { Typography } from '@mui/material';
+import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
+import Register from '../app/Regsiter/page';
+import { Widgets } from '@mui/icons-material';
 
 const lightDarkTheme = extendTheme({
     colorSchemes: { light: true, dark: true },
@@ -135,79 +45,190 @@ const lightDarkTheme = extendTheme({
 });
 
 function dashboardRouter(initialPath) {
-    const [pathname, setPathname] = React.useState(initialPath);
+    const [pathname, setPathname] = useState(initialPath);
     const context = useOutletContext();
 
-    const router = React.useMemo(() => {
+    const router = useMemo(() => {
         return {
             pathname,
             searchParams: new URLSearchParams(),
             navigate: (path) => setPathname(String(path)),
         };
     }, [pathname]);
-    console.log(pathname);
     return router;
 }
 
-const Skeleton = styled('div')(({ theme, height }) => ({
-    backgroundColor: theme.palette.action.hover,
-    borderRadius: theme.shape.borderRadius,
-    height,
-    content: '" "',
-}));
+// const Skeleton = styled('div')(({ theme, height }) => ({
+//     backgroundColor: theme.palette.action.hover,
+//     borderRadius: theme.shape.borderRadius,
+//     height,
+//     content: '" "',
+// }));
 
 export default function Dashboard(props) {
     const router = dashboardRouter('/dashboard');
+
+    const [currentUser, setCurrentUser] = useState({});
+
+    useEffect(() => {
+        getCookie();
+    }, []);
+
+    function getCookie() {
+        let name = 'user=';
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {}
+            if (c.indexOf(name) == 0) {
+                const userInfo = JSON.parse(c.substring(name.length, c.length));
+                setCurrentUser(userInfo);
+                // return c.substring(name.length, c.length);
+            }
+        }
+        return;
+    }
+
+    const NAVIGATION = [
+        {
+            kind: 'header',
+            title: 'Main items',
+        },
+        {
+            segment: 'incident',
+            title: 'Incident',
+            icon: <HomeIcon />,
+            children: [
+                {
+                    segment: 'activeIncident',
+                    title: 'Active Incidents',
+                    icon: <NotificationsActiveIcon />,
+                },
+                {
+                    segment: 'newIncident',
+                    title: 'New Incident',
+                    icon: <AddBoxIcon />,
+                },
+                {
+                    segment: 'pastIncident',
+                    title: 'Past Incidents',
+                    icon: <VisibilityIcon />,
+                },
+            ],
+        },
+        {
+            segment: 'personnelInfo',
+            title: 'Personnel Info',
+            icon: <DonutLargeIcon />,
+        },
+        {
+            kind: 'divider',
+        },
+        {
+            kind: 'header',
+            title: 'User Items',
+        },
+        {
+            segment: 'register',
+            title: 'Register Personnel',
+            icon: <PersonAddIcon />,
+        },
+        {
+            segment: 'myCertifications',
+            title: 'My Certifications',
+            icon: <WorkspacePremiumIcon />,
+        },
+        {
+            segment: 'settings',
+            title: 'Settings',
+            icon: <SettingsIcon />,
+            children: [
+                {
+                    segment: 'profile',
+                    title: 'Profile',
+                    icon: <DescriptionIcon />,
+                },
+            ],
+        },
+        //* Clean this up **
+        {
+            icon: <></>,
+        },
+        {
+            icon: <></>,
+        },
+        {
+            icon: <></>,
+        },
+        {
+            icon: <></>,
+        },
+        {
+            icon: <></>,
+        },
+        {
+            icon: <></>,
+        },
+        {
+            icon: <></>,
+        },
+
+        {
+            segment: 'userProfile',
+            title: currentUser.fName + ' ' + currentUser.lName,
+            icon: <AccountCircleIcon color="#037AFF" />,
+        },
+    ];
 
     return (
         <AppProvider
             navigation={NAVIGATION}
             router={router}
             theme={lightDarkTheme}
+            branding={{
+                title: (
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        sx={{
+                            fontWeight: 700,
+                            color: '#037AFF',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        SAR FORGE
+                    </Typography>
+                ),
+                logo: (
+                    <TroubleshootIcon
+                        sx={{ margin: '0.8vh', color: '#037AFF' }}
+                    />
+                ),
+            }}
         >
             <DashboardLayout>
-                <PageContainer>
-                    {window.location.pathname == '/incident/activeIncident' && (
+                <PageContainer
+                    sx={{ marginLeft: 0, marginRight: 0 }}
+                    title=""
+                    maxWidth
+                    breadcrumbs={[]}
+                >
+                    {router.pathname == '/incident/activeIncident' && (
                         <ActiveIncident />
                     )}
-                    {window.location.pathname == '/personnel' && (
-                        <PersonnelInfo />
+                    {router.pathname == '/incident/newIncident' && (
+                        <CreateIncident />
                     )}
-                    {/* <Grid container spacing={1}>
-            <Grid size={5} />
-            <Grid size={12}>
-              <Skeleton height={14} />
-            </Grid>
-            <Grid size={12}>
-              <Skeleton height={14} />
-            </Grid>
-            <Grid size={4}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={8}>
-              <Skeleton height={100} />
-            </Grid>
+                    {router.pathname == '/incident/pastIncident' && (
+                        <PastIncident />
+                    )}
+                    {router.pathname == '/personnelInfo' && <PersonnelInfo />}
 
-            <Grid size={12}>
-              <Skeleton height={150} />
-            </Grid>
-            <Grid size={12}>
-              <Skeleton height={14} />
-            </Grid>
-
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-          </Grid> */}
+                    {router.pathname == '/register' && <Register />}
+                    {router.pathname == '/myCertifications' && <MyCerts />}
+                    {router.pathname == '/settings/profile' && <Profile />}
+                    {router.pathname == '/userProfile' && <Profile />}
                 </PageContainer>
             </DashboardLayout>
         </AppProvider>
