@@ -122,7 +122,6 @@ export default function Register() {
         return isValid;
     };
 
-
     async function handleSubmit(e) {
         e.preventDefault();
 
@@ -131,13 +130,6 @@ export default function Register() {
         }
 
         const fromData = new FormData(e.currentTarget);
-        console.log({
-            name: fromData.get('name'),
-            lastName: fromData.get('lastName'),
-            email: fromData.get('email'),
-            password: fromData.get('password'),
-        });
-
         const email = fromData.get('email');
         const password = fromData.get('password');
         try {
@@ -145,7 +137,6 @@ export default function Register() {
                 'http://localhost:5185/register',
                 { email, password }
             );
-
             if (response.status == 200) {
                 setMessage(`Registration successful: ${response.data.message}`);
             } else {
