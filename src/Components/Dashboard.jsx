@@ -1,4 +1,4 @@
-import {useEffect, useState, useMemo} from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { extendTheme, styled } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -66,7 +66,6 @@ function dashboardRouter(initialPath) {
 // }));
 
 export default function Dashboard(props) {
-
     const router = dashboardRouter('/dashboard');
 
     const [currentUser, setCurrentUser] = useState({});
@@ -75,22 +74,21 @@ export default function Dashboard(props) {
         getCookie();
     }, []);
 
-        function getCookie() {
-        let name = "user=";
+    function getCookie() {
+        let name = 'user=';
         let decodedCookie = decodeURIComponent(document.cookie);
         let ca = decodedCookie.split(';');
-        for(let i = 0; i <ca.length; i++) {
-          let c = ca[i];
-          while (c.charAt(0) == ' ') {
-          }
-          if (c.indexOf(name) == 0) {
-            const userInfo = JSON.parse((c.substring(name.length, c.length)))
-            setCurrentUser(userInfo);
-            // return c.substring(name.length, c.length);
-          }
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {}
+            if (c.indexOf(name) == 0) {
+                const userInfo = JSON.parse(c.substring(name.length, c.length));
+                setCurrentUser(userInfo);
+                // return c.substring(name.length, c.length);
+            }
         }
         return;
-      }
+    }
 
     const NAVIGATION = [
         {
@@ -175,10 +173,10 @@ export default function Dashboard(props) {
         {
             icon: <></>,
         },
-    
+
         {
             segment: 'userProfile',
-            title: currentUser.fName + " " + currentUser.lName,
+            title: currentUser.fName + ' ' + currentUser.lName,
             icon: <AccountCircleIcon color="#037AFF" />,
         },
     ];
@@ -211,7 +209,7 @@ export default function Dashboard(props) {
         >
             <DashboardLayout>
                 <PageContainer
-                    sx={{marginLeft: 0, marginRight: 0}}
+                    sx={{ marginLeft: 0, marginRight: 0 }}
                     title=""
                     maxWidth
                     breadcrumbs={[]}

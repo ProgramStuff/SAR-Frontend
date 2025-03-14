@@ -122,7 +122,6 @@ export default function Register() {
         return isValid;
     };
 
-
     async function handleSubmit(e) {
         e.preventDefault();
 
@@ -134,7 +133,10 @@ export default function Register() {
         const email = fromData.get('email');
         const password = fromData.get('password');
         try {
-            const response = await axios.post('http://localhost:5185/register',{ email, password });
+            const response = await axios.post(
+                'http://localhost:5185/register',
+                { email, password }
+            );
             if (response.status == 200) {
                 setMessage(`Registration successful: ${response.data.message}`);
             } else {

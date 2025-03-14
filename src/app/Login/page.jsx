@@ -154,7 +154,7 @@ export default function Login() {
             email: data.get('email'),
             password: data.get('password'),
         });
-        
+
         const payload = {
             email: email,
             password: password,
