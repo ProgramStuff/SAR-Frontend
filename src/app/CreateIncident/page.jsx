@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
+import axios from 'axios';
 
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -40,20 +41,20 @@ const agencies = [
 
 const incidentType = [
     {
-        value: 'MIP',
+        value: 'Missing Person',
         label: 'Missing Person',
     },
     {
-        value: 'ENT',
+        value: 'Entrapment',
         label: 'Entrapment',
     },
     {
-        value: 'STF',
+        value: 'Structure Fire',
         label: 'Structure Fire',
     },
     {
-        value: 'LAS',
-        label: 'Last at Sea',
+        value: 'Lost at Sea',
+        label: 'Lost at Sea',
     },
     {
         value: 'Other',
@@ -140,7 +141,6 @@ export default function CreateIncident() {
           if (c.indexOf(name) == 0) {
             const userInfo = JSON.parse((c.substring(name.length, c.length)))
             setCurrentUser(userInfo);
-            // return c.substring(name.length, c.length);
           }
         }
         return;
@@ -152,28 +152,39 @@ export default function CreateIncident() {
         const fromData = new FormData(e.currentTarget);
         console.log({
                 "incidentName" : fromData.get('incidentName'),
-                // "incidentCommander": Guid or string,
-                // "agency": Guid or string,
-                // "incidentType": Guid or string,
-                // ""operationPeriod: integer,
-                // "address": string,
-                // "city": string,
-                // "postal": string,
-                // "province": string,
-                // "date": datetime,
-                // summary: string,
-                // objectives: string
+                "incidentCommander": fromData.get('commander'),
+                "agency": fromData.get('agency'),
+                "incidentType": fromData.get('incidentType'),
+                "operationPeriod": fromData.get('op'),
+                "address": fromData.get('address'),
+                "city": fromData.get('city'),
+                "postal": fromData.get('postal'),
+                "province": fromData.get('province'),
+                "date": fromData.get('date'),
+                "summary": fromData.get('summary'),
+                "objectives": fromData.get('objectives')
         });
 
+        const payload = {
+            "incidentName" : fromData.get('incidentName'),
+            "incidentCommander": fromData.get('commander'),
+            "agency": fromData.get('agency'),
+            "incidentType": fromData.get('incidentType'),
+            "operationPeriod": fromData.get('op'),
+            "address": fromData.get('address'),
+            "city": fromData.get('city'),
+            "postal": fromData.get('postal'),
+            "province": fromData.get('province'),
+            "date": fromData.get('date'),
+            "summary": fromData.get('summary'),
+            "objectives": fromData.get('objectives')
+        }
+
         // try {
-        //     const response = await axios.post('http://localhost:5185/newIncident',{ email, password });
+        //     const response = await axios.post('http://localhost:5185/newIncident', payload);
 
         //     if (response.status == 200) {
         //         setMessage(`Registration successful: ${response.data.message}`);
-        //     } else {
-        //         if (response.errors.DuplicateUserName) {
-        //             setMessage('Username already exists');
-        //         }
         //     }
         // } catch (error) {
         //     setMessage(`Error: ${error.message}`);
@@ -231,9 +242,9 @@ export default function CreateIncident() {
 
                 <FormControl>
                 <TextField
-                name='type'
+                name='incidentType'
                     select
-                    label="incidentType"
+                    label="Incident Type"
                     sx={{
                         width: { md: '13vw', lg: '13vw', xl: '13vw' },
                         minWidth: '10vh',
@@ -271,7 +282,7 @@ export default function CreateIncident() {
 
                 <FormControl>
                     <DatePicker
-                    name='startDate'
+                    name='date'
                         sx={{
                             width: { md: '13vw', lg: '13vw', xl: '13vw' },
                             margin: '1vh',
@@ -342,7 +353,7 @@ export default function CreateIncident() {
 
                 <FormControl>
                 <TextField
-                name='postalCode'
+                name='postal'
                     label="Postal Code"
                     sx={{
                         width: { md: '13vw', lg: '13vw', xl: '13vw' },
