@@ -17,6 +17,10 @@ import dayjs from 'dayjs';
 
 const agencies = [
     {
+        value: '',
+        label: '',
+    },
+    {
         value: 'SAR',
         label: 'Search and Rescue',
     },
@@ -40,6 +44,10 @@ const agencies = [
 
 const incidentType = [
     {
+        value: '',
+        label: '',
+    },
+    {
         value: 'Missing Person',
         label: 'Missing Person',
     },
@@ -62,6 +70,10 @@ const incidentType = [
 ];
 
 const province = [
+    {
+        value: '',
+        label: '',
+    },
     {
         value: 'AB',
         label: 'Alberta',
@@ -118,6 +130,18 @@ const province = [
 
 export default function CreateIncident() {
     const [currentUser, setCurrentUser] = useState({});
+    const [incidentName, setIncidentName] = useState('');
+    const [incidentCommander, setIncidentCommander] = useState('');
+    const [agency, setAgency] = useState('');
+    const [incidentTypeChoice, setIncidentTypeChoice] = useState('');
+    const [op, setOp] = useState('');
+    const [address, setAddress] = useState('');
+    const [city, setCity] = useState('');
+    const [postal, setPostal] = useState('');
+    const [provinceChoice, setProvinceChoice] = useState('');
+    const [date, setDate] = useState('');
+    const [summary, setSummary] = useState('');
+    const [objectives, setObjectives] = useState('');
 
     useEffect(() => {
         getCookie();
@@ -141,38 +165,51 @@ export default function CreateIncident() {
         return;
     }
 
+    async function handleCancel() {
+        setIncidentName('');
+        setIncidentCommander('');
+        setAddress('');
+        setAgency('');
+        setIncidentTypeChoice('');
+        setOp('');
+        setCity('');
+        setPostal('');
+        setProvinceChoice('');
+        setSummary('');
+        setObjectives('');
+    }
+
     async function handleSubmit(e) {
         e.preventDefault();
 
-        const fromData = new FormData(e.currentTarget);
         console.log({
-            incidentName: fromData.get('incidentName'),
-            incidentCommander: fromData.get('commander'),
-            agency: fromData.get('agency'),
-            incidentType: fromData.get('incidentType'),
-            operationPeriod: fromData.get('op'),
-            address: fromData.get('address'),
-            city: fromData.get('city'),
-            postal: fromData.get('postal'),
-            province: fromData.get('province'),
-            date: fromData.get('date'),
-            summary: fromData.get('summary'),
-            objectives: fromData.get('objectives'),
+            incidentName: incidentName,
+            incidentCommander: incidentCommander,
+            agency: agency,
+            incidentType: incidentTypeChoice,
+            operationPeriod: op,
+            address: address,
+            city: city,
+            postal: postal,
+            province: provinceChoice,
+            date: startDate.toISOString(),
+            summary: summary,
+            objectives: objectives,
         });
 
         const payload = {
-            incidentName: fromData.get('incidentName'),
-            incidentCommander: fromData.get('commander'),
-            agency: fromData.get('agency'),
-            incidentType: fromData.get('incidentType'),
-            operationPeriod: fromData.get('op'),
-            address: fromData.get('address'),
-            city: fromData.get('city'),
-            postal: fromData.get('postal'),
-            province: fromData.get('province'),
-            date: fromData.get('date'),
-            summary: fromData.get('summary'),
-            objectives: fromData.get('objectives'),
+            incidentName: incidentName,
+            incidentCommander: incidentCommander,
+            agency: agency,
+            incidentType: incidentTypeChoice,
+            operationPeriod: op,
+            address: address,
+            city: city,
+            postal: postal,
+            province: provinceChoice,
+            date: startDate.toISOString(),
+            summary: summary,
+            objectives: objectives,
         };
 
         // try {
@@ -194,7 +231,11 @@ export default function CreateIncident() {
                 <FormControl>
                     <TextField
                         name="incidentName"
+                        value={incidentName}
                         label="Incident Name"
+                        onChange={(event) =>
+                            setIncidentName(event.target.value)
+                        }
                         sx={{
                             width: { md: '13vw', lg: '13vw', xl: '13vw' },
                             margin: '1vh',
@@ -206,6 +247,10 @@ export default function CreateIncident() {
                     <TextField
                         name="commander"
                         label="Incident Commander"
+                        value={incidentCommander}
+                        onChange={(event) =>
+                            setIncidentCommander(event.target.value)
+                        }
                         sx={{
                             width: { md: '13vw', lg: '13vw', xl: '13vw' },
                             margin: '1vh',
@@ -216,8 +261,11 @@ export default function CreateIncident() {
                 <FormControl>
                     <TextField
                         select
+                        key={agency}
                         name="agency"
                         label="Agency"
+                        value={agency}
+                        onChange={(event) => setAgency(event.target.value)}
                         sx={{
                             width: { md: '13vw', lg: '13vw', xl: '13vw' },
                             margin: '1vh',
@@ -233,9 +281,14 @@ export default function CreateIncident() {
 
                 <FormControl>
                     <TextField
+                        key={incidentTypeChoice}
                         name="incidentType"
                         select
+                        value={incidentTypeChoice}
                         label="Incident Type"
+                        onChange={(event) =>
+                            setIncidentTypeChoice(event.target.value)
+                        }
                         sx={{
                             width: { md: '13vw', lg: '13vw', xl: '13vw' },
                             minWidth: '10vh',
@@ -255,6 +308,7 @@ export default function CreateIncident() {
                         name="op"
                         label="Operational Period"
                         type="number"
+                        value={op}
                         slotProps={{
                             inputLabel: {
                                 shrink: true,
@@ -264,6 +318,7 @@ export default function CreateIncident() {
                             width: { md: '13vw', lg: '13vw', xl: '13vw' },
                             margin: '1vh',
                         }}
+                        onChange={(event) => setOp(event.target.value)}
                     />
                 </FormControl>
 
@@ -299,18 +354,25 @@ export default function CreateIncident() {
                     <TextField
                         name="address"
                         label="Address"
+                        value={address}
                         sx={{
                             width: { md: '27vw', lg: '27vw', xl: '27vw' },
                             margin: '1vh',
                         }}
+                        onChange={(event) => setAddress(event.target.value)}
                     />
                 </FormControl>
 
                 <FormControl>
                     <TextField
+                        key={provinceChoice}
                         name="province"
+                        value={provinceChoice}
                         select
                         label="Province"
+                        onChange={(event) =>
+                            setProvinceChoice(event.target.value)
+                        }
                         sx={{
                             width: { md: '13vw', lg: '13vw', xl: '13vw' },
                             minWidth: '10vh',
@@ -329,10 +391,12 @@ export default function CreateIncident() {
                     <TextField
                         name="city"
                         label="City"
+                        value={city}
                         sx={{
                             width: { md: '27vw', lg: '27vw', xl: '27vw' },
                             margin: '1vh',
                         }}
+                        onChange={(event) => setCity(event.target.value)}
                     />
                 </FormControl>
 
@@ -340,29 +404,34 @@ export default function CreateIncident() {
                     <TextField
                         name="postal"
                         label="Postal Code"
+                        value={postal}
                         sx={{
                             width: { md: '13vw', lg: '13vw', xl: '13vw' },
                             minWidth: '10vh',
                             margin: '1vh',
                         }}
+                        onChange={(event) => setPostal(event.target.value)}
                     />
                 </FormControl>
 
                 <FormControl sx={{ width: '100%' }}>
                     <TextField
                         name="summary"
+                        value={summary}
                         sx={{
                             width: { md: '100%', lg: '100%', xl: '100%' },
                             margin: '1vh',
                         }}
                         label="Summary"
                         multiline
+                        onChange={(event) => setSummary(event.target.value)}
                         maxRows={1000}
                     />
                 </FormControl>
 
                 <FormControl sx={{ width: '100%' }}>
                     <TextField
+                        value={objectives}
                         name="objectives"
                         sx={{
                             width: { md: '100%', lg: '100%', xl: '100%' },
@@ -371,6 +440,7 @@ export default function CreateIncident() {
                         label="Objectives"
                         multiline
                         maxRows={1000}
+                        onChange={(event) => setObjectives(event.target.value)}
                     />
                 </FormControl>
                 <Stack spacing={3} direction="row" sx={{ marginTop: '3vh' }}>
@@ -387,6 +457,7 @@ export default function CreateIncident() {
                         size="large"
                         color="error"
                         variant="contained"
+                        onClick={handleCancel}
                     >
                         Cancel
                     </Button>

@@ -187,19 +187,7 @@ export default function Dashboard(props) {
             router={router}
             theme={lightDarkTheme}
             branding={{
-                title: (
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        sx={{
-                            fontWeight: 700,
-                            color: '#037AFF',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        SAR FORGE
-                    </Typography>
-                ),
+                title: 'SAR FORGE',
                 logo: (
                     <TroubleshootIcon
                         sx={{ margin: '0.8vh', color: '#037AFF' }}
