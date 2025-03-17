@@ -241,7 +241,7 @@ export default function Register() {
             province: provinceChoice,
             email: email,
             password: password,
-            role: userRole
+            role: userRole,
         };
         console.log(payload);
         try {
@@ -336,18 +336,18 @@ export default function Register() {
                             </TextField>
                         </FormControl>
                         <FormControl>
-                        <FormLabel htmlFor="phone">Phone Number</FormLabel>
-                        <TextField
-                            autoComplete="phone"
-                            name="phone"
-                            required
-                            fullWidth
-                            id="phone"
-                            placeholder="Phone Number"
-                            error={phoneError}
-                            helperText={phoneErrorMessage}
-                            color={phoneError ? 'error' : 'primary'}
-                        />
+                            <FormLabel htmlFor="phone">Phone Number</FormLabel>
+                            <TextField
+                                autoComplete="phone"
+                                name="phone"
+                                required
+                                fullWidth
+                                id="phone"
+                                placeholder="Phone Number"
+                                error={phoneError}
+                                helperText={phoneErrorMessage}
+                                color={phoneError ? 'error' : 'primary'}
+                            />
                         </FormControl>
 
                         <FormControl>
@@ -382,16 +382,8 @@ export default function Register() {
                                     setUserRole(event.target.value)
                                 }
                             >
-                                    <MenuItem
-                                        value={'ADMIN'}
-                                    >
-                                        Admin
-                                    </MenuItem>
-                                    <MenuItem
-                                        value={'USER'}
-                                    >
-                                        User
-                                    </MenuItem>
+                                <MenuItem value={'ADMIN'}>Admin</MenuItem>
+                                <MenuItem value={'USER'}>User</MenuItem>
                             </TextField>
                         </FormControl>
 
