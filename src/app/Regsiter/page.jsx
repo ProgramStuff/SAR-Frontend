@@ -15,6 +15,72 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
 
+import MenuItem from '@mui/material/MenuItem';
+
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+
+const province = [
+    {
+        value: '',
+        label: '',
+    },
+    {
+        value: 'AB',
+        label: 'Alberta',
+    },
+    {
+        value: 'BC',
+        label: 'British Columbia',
+    },
+    {
+        value: 'MB',
+        label: 'Manitoba',
+    },
+    {
+        value: 'NB',
+        label: 'New Brunswick',
+    },
+    {
+        value: 'NL',
+        label: 'Newfoundland and Labrador',
+    },
+    {
+        value: 'NT',
+        label: 'NorthWest Territories',
+    },
+    {
+        value: 'NS',
+        label: 'Nova Scotia',
+    },
+    {
+        value: 'NU',
+        label: 'Nunavut',
+    },
+    {
+        value: 'ON',
+        label: 'Ontario',
+    },
+    {
+        value: 'PEI',
+        label: 'Prince Edward Island',
+    },
+    {
+        value: 'QC',
+        label: 'Quebec',
+    },
+    {
+        value: 'SK',
+        label: 'Saskatchewan',
+    },
+    {
+        value: 'YT',
+        label: 'Yukon',
+    },
+];
+
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
@@ -35,7 +101,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 const SignUpContainer = styled(Stack)(({ theme }) => ({
-    height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
+    height: '100%',
     minHeight: '100%',
     padding: theme.spacing(2),
     [theme.breakpoints.up('sm')]: {
@@ -57,6 +123,24 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
     },
 }));
 
+/*
+ * name
+ * province
+ */
+
+const tempAgency = [
+    {
+        id: 1,
+        name: 'King Search and Rescue',
+        province: 'Nova Scotia',
+    },
+    {
+        id: '2',
+        name: 'Greenwhich Fire',
+        province: 'Nova Scotia',
+    },
+];
+
 export default function Register() {
     const [emailError, setEmailError] = React.useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
@@ -64,6 +148,14 @@ export default function Register() {
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
     const [nameError, setNameError] = React.useState(false);
     const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+    const [birthDate, setBirthDate] = useState(dayjs());
+    const [provinceChoice, setProvinceChoice] = useState('');
+    const [agency, setAgency] = useState('');
+    const [agencyError, setAgencyError] = useState('');
+    const [agencyErrorMessage, setAgencyErrorMessage] = useState('');
+
+    const [phoneError, setPhoneError] = useState('');
+    const [phoneErrorMessage, setphoneErrorMessage] = useState('');
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -110,14 +202,23 @@ export default function Register() {
             setPasswordErrorMessage('');
         }
 
-        // if (!name.value || name.value.length < 1) {
-        //   setNameError(true);
-        //   setNameErrorMessage('Name is required.');
-        //   isValid = false;
-        // } else {
-        //   setNameError(false);
-        //   setNameErrorMessage('');
-        // }
+        if (!name.value || name.value.length < 1) {
+            setNameError(true);
+            setNameErrorMessage('First and Last name required.');
+            isValid = false;
+        } else {
+            setNameError(false);
+            setNameErrorMessage('');
+        }
+
+        if (!agency) {
+            setAgencyError(true);
+            setAgencyErrorMessage('Agency required.');
+            isValid = false;
+        } else {
+            setAgencyError(false);
+            setAgencyErrorMessage('');
+        }
 
         return isValid;
     };
@@ -125,13 +226,21 @@ export default function Register() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        if (emailError || passwordError) {
-            return;
-        }
-
         const fromData = new FormData(e.currentTarget);
         const email = fromData.get('email');
         const password = fromData.get('password');
+        const name = fromData.get('name');
+        const phone = fromData.get('phone');
+
+        const payload = {
+            name: name,
+            brithdate: birthDate,
+            phone: phone,
+            agency: agency,
+            province: province,
+            email: email,
+            password: password,
+        };
         try {
             const response = await axios.post(
                 'http://localhost:5185/register',
@@ -174,20 +283,90 @@ export default function Register() {
                             gap: 2,
                         }}
                     >
-                        {/* <FormControl>
-          <FormLabel htmlFor="name">Full name</FormLabel>
-          <TextField
-            autoComplete="name"
-            name="name"
-            required
-            fullWidth
-            id="name"
-            placeholder="Jon Snow"
-            error={nameError}
-            helperText={nameErrorMessage}
-            color={nameError ? 'error' : 'primary'}
-          />
-        </FormControl> */}
+                        <FormControl>
+                            <FormLabel htmlFor="name">Full name</FormLabel>
+                            <TextField
+                                autoComplete="name"
+                                name="name"
+                                required
+                                fullWidth
+                                id="name"
+                                placeholder="Full Name"
+                                error={nameError}
+                                helperText={nameErrorMessage}
+                                color={nameError ? 'error' : 'primary'}
+                            />
+                        </FormControl>
+
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <FormControl>
+                                <DatePicker
+                                    name="date"
+                                    label="Birthdate"
+                                    value={birthDate}
+                                    onChange={(newValue) =>
+                                        setBirthDate(newValue)
+                                    }
+                                />
+                            </FormControl>
+                        </LocalizationProvider>
+
+                        <FormControl>
+                            <TextField
+                                key={provinceChoice}
+                                name="province"
+                                value={provinceChoice}
+                                select
+                                label="Province"
+                                onChange={(event) =>
+                                    setProvinceChoice(event.target.value)
+                                }
+                            >
+                                {province.map((option) => (
+                                    <MenuItem
+                                        key={option.value}
+                                        value={option.value}
+                                    >
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </FormControl>
+
+                        <TextField
+                            autoComplete="phone"
+                            name="phone"
+                            required
+                            fullWidth
+                            id="phone"
+                            placeholder="Phone Number"
+                            error={phoneError}
+                            helperText={phoneErrorMessage}
+                            color={phoneError ? 'error' : 'primary'}
+                        />
+
+                        <FormControl>
+                            <TextField
+                                select
+                                key={tempAgency}
+                                name="agency"
+                                label="Agency"
+                                value={tempAgency}
+                                error={agencyError}
+                                helperText={agencyErrorMessage}
+                                color={agencyError ? 'error' : 'primary'}
+                                onChange={(event) =>
+                                    setAgency(event.target.value)
+                                }
+                            >
+                                {tempAgency.map((option) => (
+                                    <MenuItem key={option.id} value={option.id}>
+                                        {option.name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </FormControl>
+
                         <FormControl>
                             <FormLabel htmlFor="email">Email</FormLabel>
                             <TextField
