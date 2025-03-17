@@ -124,23 +124,22 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 /*
-* name
-* province
-*/
+ * name
+ * province
+ */
 
-const tempAgency= [
+const tempAgency = [
     {
         id: 1,
         name: 'King Search and Rescue',
-        province: 'Nova Scotia'
+        province: 'Nova Scotia',
     },
     {
         id: '2',
         name: 'Greenwhich Fire',
-        province: 'Nova Scotia'
-    }
-]
-
+        province: 'Nova Scotia',
+    },
+];
 
 export default function Register() {
     const [emailError, setEmailError] = React.useState(false);
@@ -152,13 +151,11 @@ export default function Register() {
     const [birthDate, setBirthDate] = useState(dayjs());
     const [provinceChoice, setProvinceChoice] = useState('');
     const [agency, setAgency] = useState('');
-    const [ agencyError, setAgencyError] = useState('');
-    const [ agencyErrorMessage, setAgencyErrorMessage] = useState('');
+    const [agencyError, setAgencyError] = useState('');
+    const [agencyErrorMessage, setAgencyErrorMessage] = useState('');
 
-    const [ phoneError, setPhoneError] = useState('');
-    const [ phoneErrorMessage, setphoneErrorMessage] = useState('');
-
-
+    const [phoneError, setPhoneError] = useState('');
+    const [phoneErrorMessage, setphoneErrorMessage] = useState('');
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -168,8 +165,6 @@ export default function Register() {
         const email = document.getElementById('email');
         const password = document.getElementById('password');
         const name = document.getElementById('name');
-
-
 
         let isValid = true;
 
@@ -208,29 +203,28 @@ export default function Register() {
         }
 
         if (!name.value || name.value.length < 1) {
-          setNameError(true);
-          setNameErrorMessage('First and Last name required.');
-          isValid = false;
+            setNameError(true);
+            setNameErrorMessage('First and Last name required.');
+            isValid = false;
         } else {
-          setNameError(false);
-          setNameErrorMessage('');
+            setNameError(false);
+            setNameErrorMessage('');
         }
 
-        if (!agency){
+        if (!agency) {
             setAgencyError(true);
             setAgencyErrorMessage('Agency required.');
             isValid = false;
-        }else {
+        } else {
             setAgencyError(false);
             setAgencyErrorMessage('');
-          }
+        }
 
         return isValid;
     };
 
     async function handleSubmit(e) {
         e.preventDefault();
-
 
         const fromData = new FormData(e.currentTarget);
         const email = fromData.get('email');
@@ -245,8 +239,8 @@ export default function Register() {
             agency: agency,
             province: province,
             email: email,
-            password: password
-        }
+            password: password,
+        };
         try {
             const response = await axios.post(
                 'http://localhost:5185/register',
@@ -290,19 +284,18 @@ export default function Register() {
                         }}
                     >
                         <FormControl>
-                        <FormLabel htmlFor="name">Full name</FormLabel>
-                        <TextField
-                            autoComplete="name"
-                            name="name"
-                            required
-                            fullWidth
-                            id="name"
-                            placeholder="Full Name"
-                            error={nameError}
-                            helperText={nameErrorMessage}
-                            color={nameError ? 'error' : 'primary'}
-                        />
-                        
+                            <FormLabel htmlFor="name">Full name</FormLabel>
+                            <TextField
+                                autoComplete="name"
+                                name="name"
+                                required
+                                fullWidth
+                                id="name"
+                                placeholder="Full Name"
+                                error={nameError}
+                                helperText={nameErrorMessage}
+                                color={nameError ? 'error' : 'primary'}
+                            />
                         </FormControl>
 
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -311,32 +304,36 @@ export default function Register() {
                                     name="date"
                                     label="Birthdate"
                                     value={birthDate}
-                                    onChange={(newValue) => setBirthDate(newValue)}
+                                    onChange={(newValue) =>
+                                        setBirthDate(newValue)
+                                    }
                                 />
                             </FormControl>
-                            </LocalizationProvider >
+                        </LocalizationProvider>
 
-                            <FormControl>
-                    <TextField
-                        key={provinceChoice}
-                        name="province"
-                        value={provinceChoice}
-                        select
-                        label="Province"
-                        onChange={(event) =>
-                            setProvinceChoice(event.target.value)
-                        }
+                        <FormControl>
+                            <TextField
+                                key={provinceChoice}
+                                name="province"
+                                value={provinceChoice}
+                                select
+                                label="Province"
+                                onChange={(event) =>
+                                    setProvinceChoice(event.target.value)
+                                }
+                            >
+                                {province.map((option) => (
+                                    <MenuItem
+                                        key={option.value}
+                                        value={option.value}
+                                    >
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </FormControl>
 
-                    >
-                        {province.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                </FormControl>
-
-                <TextField
+                        <TextField
                             autoComplete="phone"
                             name="phone"
                             required
@@ -348,25 +345,27 @@ export default function Register() {
                             color={phoneError ? 'error' : 'primary'}
                         />
 
-                            <FormControl>
-                <TextField
-                    select
-                    key={tempAgency}
-                    name="agency"
-                    label="Agency"
-                    value={tempAgency}
-                    error={agencyError}
-                    helperText={agencyErrorMessage}
-                    color={agencyError ? 'error' : 'primary'}
-                    onChange={(event) => setAgency(event.target.value)}
-                >
-                    {tempAgency.map((option) => (
-                        <MenuItem key={option.id} value={option.id}>
-                            {option.name}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            </FormControl>
+                        <FormControl>
+                            <TextField
+                                select
+                                key={tempAgency}
+                                name="agency"
+                                label="Agency"
+                                value={tempAgency}
+                                error={agencyError}
+                                helperText={agencyErrorMessage}
+                                color={agencyError ? 'error' : 'primary'}
+                                onChange={(event) =>
+                                    setAgency(event.target.value)
+                                }
+                            >
+                                {tempAgency.map((option) => (
+                                    <MenuItem key={option.id} value={option.id}>
+                                        {option.name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </FormControl>
 
                         <FormControl>
                             <FormLabel htmlFor="email">Email</FormLabel>
