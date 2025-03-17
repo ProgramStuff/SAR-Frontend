@@ -153,6 +153,7 @@ export default function Register() {
     const [agency, setAgency] = useState('');
     const [agencyError, setAgencyError] = useState('');
     const [agencyErrorMessage, setAgencyErrorMessage] = useState('');
+    const [userRole, setUserRole] = useState('');
 
     const [phoneError, setPhoneError] = useState('');
     const [phoneErrorMessage, setphoneErrorMessage] = useState('');
@@ -234,13 +235,15 @@ export default function Register() {
 
         const payload = {
             name: name,
-            brithdate: birthDate,
+            brithdate: birthDate.toISOString(),
             phone: phone,
             agency: agency,
-            province: province,
+            province: provinceChoice,
             email: email,
             password: password,
+            role: userRole,
         };
+        console.log(payload);
         try {
             const response = await axios.post(
                 'http://localhost:5185/register',
@@ -332,18 +335,20 @@ export default function Register() {
                                 ))}
                             </TextField>
                         </FormControl>
-
-                        <TextField
-                            autoComplete="phone"
-                            name="phone"
-                            required
-                            fullWidth
-                            id="phone"
-                            placeholder="Phone Number"
-                            error={phoneError}
-                            helperText={phoneErrorMessage}
-                            color={phoneError ? 'error' : 'primary'}
-                        />
+                        <FormControl>
+                            <FormLabel htmlFor="phone">Phone Number</FormLabel>
+                            <TextField
+                                autoComplete="phone"
+                                name="phone"
+                                required
+                                fullWidth
+                                id="phone"
+                                placeholder="Phone Number"
+                                error={phoneError}
+                                helperText={phoneErrorMessage}
+                                color={phoneError ? 'error' : 'primary'}
+                            />
+                        </FormControl>
 
                         <FormControl>
                             <TextField
@@ -351,7 +356,7 @@ export default function Register() {
                                 key={tempAgency}
                                 name="agency"
                                 label="Agency"
-                                value={tempAgency}
+                                value={agency}
                                 error={agencyError}
                                 helperText={agencyErrorMessage}
                                 color={agencyError ? 'error' : 'primary'}
@@ -364,6 +369,21 @@ export default function Register() {
                                         {option.name}
                                     </MenuItem>
                                 ))}
+                            </TextField>
+                        </FormControl>
+
+                        <FormControl>
+                            <TextField
+                                name="userRole"
+                                value={userRole}
+                                select
+                                label="User Role"
+                                onChange={(event) =>
+                                    setUserRole(event.target.value)
+                                }
+                            >
+                                <MenuItem value={'ADMIN'}>Admin</MenuItem>
+                                <MenuItem value={'USER'}>User</MenuItem>
                             </TextField>
                         </FormControl>
 
@@ -408,29 +428,6 @@ export default function Register() {
                         >
                             Sign up
                         </Button>
-                    </Box>
-                    <Divider>
-                        <Typography sx={{ color: 'text.secondary' }}>
-                            or
-                        </Typography>
-                    </Divider>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 2,
-                        }}
-                    >
-                        <Typography sx={{ textAlign: 'center' }}>
-                            Already have an account?{' '}
-                            <Link
-                                href="/material-ui/getting-started/templates/sign-in/"
-                                variant="body2"
-                                sx={{ alignSelf: 'center' }}
-                            >
-                                Sign in
-                            </Link>
-                        </Typography>
                     </Box>
                 </Card>
             </SignUpContainer>
