@@ -14,29 +14,36 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
+import AdditionalFields from '../../Components/AdditionalFields';
 
 const agencies = [
     {
+        id: '',
         value: '',
         label: '',
     },
     {
+        id: '1',
         value: 'SAR',
         label: 'Search and Rescue',
     },
     {
+        id: '2',
         value: 'Fire',
         label: 'Fire',
     },
     {
+        id: '3',
         value: 'Police',
         label: 'Police',
     },
     {
+        id: '4',
         value: 'EMO',
         label: 'EMO',
     },
     {
+        id: '5',
         value: 'Other',
         label: 'Other',
     },
@@ -128,7 +135,7 @@ const province = [
     },
 ];
 
-export default function CreateIncident() {
+export default function CreateIncident({ appRouter, changePathFunction }) {
     const [currentUser, setCurrentUser] = useState({});
     const [incidentName, setIncidentName] = useState('');
     const [incidentCommander, setIncidentCommander] = useState('');
@@ -142,9 +149,13 @@ export default function CreateIncident() {
     const [date, setDate] = useState('');
     const [summary, setSummary] = useState('');
     const [objectives, setObjectives] = useState('');
+    const [activeIncidentId, setActiveIncidentId] = useState('');
 
     useEffect(() => {
         getCookie();
+        if (/incident\/activeIncident\/./.test(appRouter.pathname)) {
+            loadIncident();
+        }
     }, []);
 
     const [startDate, setStartDate] = useState(dayjs());
@@ -182,21 +193,6 @@ export default function CreateIncident() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        console.log({
-            incidentName: incidentName,
-            incidentCommander: incidentCommander,
-            agency: agency,
-            incidentType: incidentTypeChoice,
-            operationPeriod: op,
-            address: address,
-            city: city,
-            postal: postal,
-            province: provinceChoice,
-            date: startDate.toISOString(),
-            summary: summary,
-            objectives: objectives,
-        });
-
         const payload = {
             incidentName: incidentName,
             incidentCommander: incidentCommander,
@@ -214,6 +210,86 @@ export default function CreateIncident() {
 
         // try {
         //     const response = await axios.post('http://localhost:5185/newIncident', payload);
+
+        //     if (response.status == 200) {
+        //         setMessage(`Registration successful: ${response.data.message}`);
+        //     }
+        // } catch (error) {
+        //     setMessage(`Error: ${error.message}`);
+        //     console.log(`Error: ${error.message}`);
+        // }
+    }
+
+    const tempIncident1 = {
+        incidentName: 'Incident 101-03-15-2025',
+        incidentCommander: 'Alfred Parks',
+        agency: 'SAR',
+        incidentType: 'Missing Person',
+        operationPeriod: 1,
+        address: '123 Main Street',
+        city: 'Kentville',
+        postal: 'B4P1P2',
+        province: 'NS',
+        date: '2025-03-15T23:54:26.305Z',
+        summary: 'Elderly person escaped nursing home',
+        objectives: 'Determine search locations',
+    };
+    const tempIncident2 = {
+        incidentName: 'Incident 102-03-16-2025',
+        incidentCommander: 'Const. Marshal',
+        agency: 'Police',
+        incidentType: 'Other',
+        operationPeriod: 1,
+        address: '123 Main Street',
+        city: 'Kentville',
+        postal: 'B4P1P2',
+        province: 'NS',
+        date: '2025-03-15T23:54:26.305Z',
+        summary: 'Elderly person escaped nursing home',
+        objectives: 'Determine search locations',
+    };
+    const tempIncident3 = {
+        incidentName: 'Incident 103-03-17-2025',
+        incidentCommander: 'Bob Straford',
+        agency: 'EMO',
+        incidentType: 'Lost at Sea',
+        operationPeriod: 1,
+        address: '123 Pleasant St',
+        city: 'Wolfville',
+        postal: 'B4P2B9',
+        province: 'NS',
+        date: '2025-03-15T23:54:26.305Z',
+        summary: 'Two car head on colission',
+        objectives: 'Prepapre to begin CPR immidiately upon arrival',
+    };
+
+    const tempIncidents = {
+        1: tempIncident1,
+        2: tempIncident2,
+        3: tempIncident3,
+    };
+
+    function loadIncident() {
+        console.log(`From: ${appRouter.pathname.split('/')[3]}`);
+        const incidentId = appRouter.pathname.split('/')[3];
+        setActiveIncidentId(incidentId);
+        if (tempIncidents[incidentId]) {
+            const data = tempIncidents[incidentId];
+            setIncidentName(data.incidentName);
+            setIncidentCommander(data.incidentCommander);
+            setAddress(data.address);
+            setAgency(data.agency);
+            setIncidentTypeChoice(data.incidentType);
+            setOp(data.operationPeriod);
+            setCity(data.city);
+            setPostal(data.postal);
+            setProvinceChoice(data.province);
+            setSummary(data.summary);
+            setObjectives(data.objectives);
+        }
+
+        // try {
+        //     const response = await axios.get(`http://localhost:5185/activeIncident/${variable}`, payload);
 
         //     if (response.status == 200) {
         //         setMessage(`Registration successful: ${response.data.message}`);
@@ -365,7 +441,6 @@ export default function CreateIncident() {
 
                 <FormControl>
                     <TextField
-                        key={provinceChoice}
                         name="province"
                         value={provinceChoice}
                         select
@@ -443,6 +518,13 @@ export default function CreateIncident() {
                         onChange={(event) => setObjectives(event.target.value)}
                     />
                 </FormControl>
+
+                {activeIncidentId && (
+                    <AdditionalFields
+                        changePath={changePathFunction}
+                        incidentId={appRouter.pathname.split('/')[3]}
+                    />
+                )}
                 <Stack spacing={3} direction="row" sx={{ marginTop: '3vh' }}>
                     <Button
                         sx={{ width: '10vw' }}
@@ -468,21 +550,3 @@ export default function CreateIncident() {
 }
 
 // * Strcuture of endpoint request
-
-/**
- *  {
-"incidentName" : string,
-"incidentCommander": Guid or string,
-"agency": Guid or string,
-"incidentType": Guid or string,
-""operationPeriod: integer,
-"address": string,
-"city": string,
-"postal": string,
-"province": string,
-"date": datetime,
-summary: string,
-objectives: string
-} 
- * 
- */
