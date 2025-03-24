@@ -13,6 +13,7 @@ import PersonnelInfo from '../app/PersonnelInfo/page';
 import PastIncident from '../app/PastIncident/page';
 import MyCerts from '../app/MyCerts/page';
 import Profile from '../app/Profile/page';
+import { useNavigate } from 'react-router-dom';
 
 import HomeIcon from '@mui/icons-material/Home';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
@@ -29,6 +30,7 @@ import { Typography } from '@mui/material';
 import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import Register from '../app/Regsiter/page';
 import { Widgets } from '@mui/icons-material';
+import CreateTask from '../app/CreateTask/page';
 
 const lightDarkTheme = extendTheme({
     colorSchemes: { light: true, dark: true },
@@ -58,17 +60,20 @@ function dashboardRouter(initialPath) {
     return router;
 }
 
-// const Skeleton = styled('div')(({ theme, height }) => ({
-//     backgroundColor: theme.palette.action.hover,
-//     borderRadius: theme.shape.borderRadius,
-//     height,
-//     content: '" "',
-// }));
-
 export default function Dashboard(props) {
-    const router = dashboardRouter('/dashboard');
+    const [pathname, setPathname] = useState('/dashboard');
+
+    const router = useMemo(() => {
+        return {
+            pathname,
+            searchParams: new URLSearchParams(),
+            navigate: (path) => setPathname(String(path)),
+        };
+    }, [pathname]);
 
     const [currentUser, setCurrentUser] = useState({});
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         getCookie();
@@ -180,7 +185,6 @@ export default function Dashboard(props) {
             icon: <AccountCircleIcon color="#037AFF" />,
         },
     ];
-
     return (
         <AppProvider
             navigation={NAVIGATION}
@@ -201,12 +205,16 @@ export default function Dashboard(props) {
                     title=""
                     maxWidth
                     breadcrumbs={[]}
+                    pathname={router.pathname}
                 >
                     {router.pathname == '/incident/activeIncident' && (
-                        <ActiveIncident />
+                        <ActiveIncident changePath={setPathname} />
                     )}
                     {router.pathname == '/incident/newIncident' && (
-                        <CreateIncident />
+                        <CreateIncident
+                            appRouter={router}
+                            changePathFunction={setPathname}
+                        />
                     )}
                     {router.pathname == '/incident/pastIncident' && (
                         <PastIncident />
@@ -217,6 +225,15 @@ export default function Dashboard(props) {
                     {router.pathname == '/myCertifications' && <MyCerts />}
                     {router.pathname == '/settings/profile' && <Profile />}
                     {router.pathname == '/userProfile' && <Profile />}
+                    {/incident\/activeIncident\/./.test(router.pathname) && (
+                        <CreateIncident
+                            appRouter={router}
+                            changePathFunction={setPathname}
+                        />
+                    )}
+                    {/incident\/.\/newTask/.test(router.pathname) && (
+                        <CreateTask taskID={router.pathname.split('/')[2]} />
+                    )}
                 </PageContainer>
             </DashboardLayout>
         </AppProvider>

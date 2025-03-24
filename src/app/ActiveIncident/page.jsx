@@ -1,66 +1,88 @@
+import { useState } from 'react';
 import { Link } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { styled } from '@mui/material/styles';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import CardActionArea from '@mui/material/CardActionArea';
+import CreateIncident from '../CreateIncident/page';
+import { useActivePage } from '@toolpad/core/useActivePage';
 
 const tempIncidents = [
     {
+        id: 1,
         incidentName: 'Incident 101-03-15-2025',
-        agency: 'Fire',
+        agency: 'Search and Rerscue',
         incidentType: 'Missing person',
     },
     {
+        id: 2,
         incidentName: 'Incident 102-03-16-2025',
         agency: 'Police',
-        incidentType: 'Robbery',
+        incidentType: 'Assist SAR with Missing Person Incident',
     },
     {
+        id: 3,
         incidentName: 'Incident 103-03-17-2025',
-        agency: 'EMS',
-        incidentType: 'Abdominal Aortic Aneurysm',
+        agency: 'EMO',
+        incidentType: 'Lost at Sea',
     },
 ];
 
-const Skeleton = styled('div')(({ theme, height }) => ({
-    backgroundColor: theme.palette.action.hover,
-    borderRadius: theme.shape.borderRadius,
-    height,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: theme.palette.text.primary,
-    cursor: 'pointer',
-    '&:hover': {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.text.secondary,
-    },
-}));
-
-export default function ActiveIncident() {
+export default function ActiveIncident({ changePath }) {
+    console.log(useActivePage());
+    const [selectedCard, setSelectedCard] = useState(0);
     return (
-        <Grid container spacing={1}>
-            {tempIncidents.map((incident, index) => (
-                <Grid size={4} key={index}>
-                    <Link
-                        sx={{
-                            textDecoration: 'none',
-                            '&:hover': {
-                                color: 'red',
-                                backgroundColor: 'white',
-                            },
-                        }}
-                    >
-                        <Skeleton height={200}>
-                            <div>
-                                <p>Name: {incident.incidentName}</p>
-                                <p>Type: {incident.incidentType}</p>
-                                <p>Agency: {incident.agency}</p>
-                            </div>
-                        </Skeleton>
-                    </Link>
-                </Grid>
-            ))}
-        </Grid>
+        <>
+            <Grid container justifyContent={'center'} spacing={1}>
+                {tempIncidents.map((incident) => (
+                    <Grid size={{ sm: 12, md: 12, lg: 4, xl: 4 }}>
+                        <Card key={incident.id}>
+                            <CardActionArea
+                                onClick={() =>
+                                    changePath(
+                                        `/incident/activeIncident/${incident.id}`
+                                    )
+                                }
+                                data-active={
+                                    selectedCard === incident.id
+                                        ? ''
+                                        : undefined
+                                }
+                                sx={{
+                                    height: 200,
+                                    '&[data-active]': {
+                                        backgroundColor: 'action.selected',
+                                        '&:hover': {
+                                            backgroundColor:
+                                                'action.selectedHover',
+                                        },
+                                    },
+                                }}
+                            >
+                                <CardContent sx={{ height: '100%' }}>
+                                    <Typography variant="h5" component="div">
+                                        {incident.incidentName}
+                                    </Typography>
+                                    <Typography
+                                        variant="h6"
+                                        color="text.secondary"
+                                    >
+                                        {incident.incidentType}
+                                    </Typography>
+                                    <Typography
+                                        variant="h6"
+                                        color="text.secondary"
+                                    >
+                                        Agency: {incident.agency}
+                                    </Typography>
+                                </CardContent>
+                            </CardActionArea>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
+        </>
     );
 }
