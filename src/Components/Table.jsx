@@ -16,8 +16,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { alpha } from '@mui/material/styles';
 import { Button } from '@mui/material';
 
-function createData(name, phoneNumber, checkedStatus, certInfo) {
+function createData(id, name, phoneNumber, checkedStatus, certInfo) {
     return {
+        id,
         name,
         phoneNumber,
         checkedStatus,
@@ -46,14 +47,26 @@ const tempCert3 = {
     certificate: 'Cert',
 };
 
-const rows = [
-    createData('Jordan Kelsey', '123-456-7890', 'No', tempCert1),
-    createData('Blake Velimirovich', '098-765-4321', 'No', tempCert2),
-    createData('Alfred Parks', '555-123-5-4567', 'Yes', tempCert3),
-];
-
 function EnhancedTableToolbar(props) {
-    const { numSelected } = props;
+    const { numSelected, selected, changeResponderInfo } = props;
+
+    const changeStatus = (selected) => {
+        changeResponderInfo((prevState) =>
+            prevState.map((responder) => ({
+                ...responder,
+                checkedStatus: selected.some((item) => item.id == responder.id)
+                    ? !responder.checkedStatus
+                    : responder.checkedStatus,
+            }))
+        );
+        console.log('Selected after schange: ', selected);
+    };
+
+    const handleCheckIn = () => {
+        console.log(selected);
+        changeStatus(selected);
+    };
+
     return (
         <Toolbar
             sx={[
@@ -89,17 +102,56 @@ function EnhancedTableToolbar(props) {
                     Responder Information
                 </Typography>
             )}
-            {numSelected > 0 && <Button>Check In</Button>}
+            {numSelected > 0 && (
+                <Button onClick={handleCheckIn}>Check In</Button>
+            )}
         </Toolbar>
     );
 }
 
 export default function ResponderTable() {
     const [selected, setSelected] = useState([]);
+    const [responderInfo, setResponderInfo] = useState([
+        {
+            id: 1,
+            name: 'Jordan Kelsey',
+            phone: '123-456-7890',
+            checkedStatus: false,
+            cert: tempCert1,
+        },
+        {
+            id: 2,
+            name: 'Blake Velimirovich',
+            phone: '098-765-4321',
+            checkedStatus: false,
+            cert: tempCert2,
+        },
+        {
+            id: 3,
+            name: 'Alfred Parks',
+            phone: '555-123-4567',
+            checkedStatus: false,
+            cert: tempCert3,
+        },
+    ]);
+
+    const rows = responderInfo.map((info) =>
+        createData(
+            info.id,
+            info.name,
+            info.phone,
+            info.checkedStatus,
+            info.cert
+        )
+    );
 
     return (
         <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar numSelected={selected.length} />
+            <EnhancedTableToolbar
+                numSelected={selected.length}
+                selected={selected}
+                changeResponderInfo={setResponderInfo}
+            />
             <TableContainer component={Paper}>
                 <Table aria-label="collapsible table">
                     <TableHead>
@@ -113,7 +165,12 @@ export default function ResponderTable() {
                     </TableHead>
                     <TableBody>
                         {rows.map((row) => (
-                            <Row key={row.id} row={row} />
+                            <Row
+                                key={row.id}
+                                row={row}
+                                setSelectedRow={setSelected}
+                                selectedRows={selected}
+                            />
                         ))}
                     </TableBody>
                 </Table>
