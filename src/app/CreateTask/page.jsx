@@ -12,7 +12,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
-import Table from '../../Components/Table';
+import ResponderTable from '../../Components/Table';
 
 /**
  * Temp responders list with:
@@ -111,7 +111,7 @@ export default function CreateTask({ taskID }) {
                     }}
                 />
             </FormControl>
-            <Table />
+            <ResponderTable />
         </Box>
     );
 }
