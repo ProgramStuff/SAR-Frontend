@@ -12,7 +12,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
-import Table from '../../Components/Table';
+import ResponderTable from '../../Components/Table';
 
 /**
  * Temp responders list with:
@@ -33,6 +33,8 @@ export default function CreateTask({ taskID }) {
     const [startTime, setStartTime] = useState(dayjs());
     const [endDate, setEndDate] = useState(null);
     const [endTime, setEndTime] = useState(null);
+    const [description, setDescription] = useState('');
+
     return (
         <Box>
             <FormControl>
@@ -111,7 +113,21 @@ export default function CreateTask({ taskID }) {
                     }}
                 />
             </FormControl>
-            <Table />
+            <FormControl sx={{ width: '100%' }}>
+                <TextField
+                    name="description"
+                    value={description}
+                    sx={{
+                        width: { md: '100%', lg: '100%', xl: '100%' },
+                        margin: '1vh',
+                    }}
+                    label="Description"
+                    multiline
+                    onChange={(event) => setDescription(event.target.value)}
+                    maxRows={1000}
+                />
+            </FormControl>
+            <ResponderTable />
         </Box>
     );
 }

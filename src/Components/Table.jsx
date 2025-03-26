@@ -1,56 +1,180 @@
-import { DataGrid } from '@mui/x-data-grid';
+import { useState } from 'react';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Row from './Row';
+import dayjs from 'dayjs';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { alpha } from '@mui/material/styles';
+import { Button } from '@mui/material';
 
-const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    {
-        field: 'fullName',
-        headerName: 'Full name',
-        description: 'This column has a value getter and is not sortable.',
-        sortable: false,
-        width: 160,
-        valueGetter: (value, row) =>
-            `${row.firstName || ''} ${row.lastName || ''}`,
-    },
-    {
-        field: 'age',
-        headerName: 'Age',
-        type: 'number',
-        width: 90,
-    },
-    {
-        field: 'age',
-        headerName: 'Certifications',
-        type: 'number',
-        width: 90,
-    },
-];
+function createData(id, name, phoneNumber, checkedStatus, certInfo) {
+    return {
+        id,
+        name,
+        phoneNumber,
+        checkedStatus,
+        certificateInfo: [certInfo],
+    };
+}
 
-const rows = [
-    { id: 1, lastName: 'Kelsey', firstName: 'Jordan', age: 29 },
-    { id: 2, lastName: 'Velemirovich', firstName: 'Blake', age: 30 },
-    { id: 3, lastName: 'Parks', firstName: 'Alfred', age: 45 },
-    //   { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    //   { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    //   { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    //   { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    //   { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    //   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
+const tempCert1 = {
+    id: 1,
+    name: 'Chainsaw Operation',
+    expiryDate: dayjs().toString('2026-07-20T23:54:26.305Z'),
+    certificate: 'Cert',
+};
 
-const paginationModel = { page: 0, pageSize: 5 };
+const tempCert2 = {
+    id: 2,
+    name: 'Chainsaw Operation',
+    expiryDate: dayjs().toString('2026-05-5T23:54:26.305Z'),
+    certificate: 'Cert',
+};
 
-export default function Table() {
+const tempCert3 = {
+    id: 3,
+    name: 'Drone Operation',
+    expiryDate: dayjs().toString('2026-03-15T23:54:26.305Z'),
+    certificate: 'Cert',
+};
+
+function EnhancedTableToolbar(props) {
+    const { numSelected, selected, changeResponderInfo, setSelected } = props;
+
+    const changeStatus = (selected) => {
+        changeResponderInfo((prevState) =>
+            prevState.map((responder) => ({
+                ...responder,
+                checkedStatus: selected.some((item) => item == responder.id)
+                    ? !responder.checkedStatus
+                    : responder.checkedStatus,
+            }))
+        );
+        setSelected([]);
+    };
+
+    const handleCheckIn = () => {
+        changeStatus(selected);
+    };
+
     return (
-        <Paper sx={{ height: 400, width: '100%' }}>
-            <DataGrid
-                rows={rows}
-                columns={columns}
-                initialState={{ pagination: { paginationModel } }}
-                pageSizeOptions={[5, 10]}
-                checkboxSelection
-                sx={{ border: 0 }}
-            ></DataGrid>
+        <Toolbar
+            sx={[
+                {
+                    pl: { sm: 2 },
+                    pr: { xs: 1, sm: 1 },
+                },
+                numSelected > 0 && {
+                    bgcolor: (theme) =>
+                        alpha(
+                            theme.palette.primary.main,
+                            theme.palette.action.activatedOpacity
+                        ),
+                },
+            ]}
+        >
+            {numSelected > 0 ? (
+                <Typography
+                    sx={{ flex: '1 1 100%' }}
+                    color="inherit"
+                    variant="subtitle1"
+                    component="div"
+                >
+                    {numSelected} selected
+                </Typography>
+            ) : (
+                <Typography
+                    sx={{ flex: '1 1 100%' }}
+                    variant="h6"
+                    id="tableTitle"
+                    component="div"
+                >
+                    Responder Information
+                </Typography>
+            )}
+            {numSelected > 0 && (
+                <Button onClick={handleCheckIn}>Check In</Button>
+            )}
+        </Toolbar>
+    );
+}
+
+export default function ResponderTable() {
+    const [selected, setSelected] = useState([]);
+    const [responderInfo, setResponderInfo] = useState([
+        {
+            id: 1,
+            name: 'Jordan Kelsey',
+            phone: '123-456-7890',
+            checkedStatus: false,
+            cert: tempCert1,
+        },
+        {
+            id: 2,
+            name: 'Blake Velimirovich',
+            phone: '098-765-4321',
+            checkedStatus: false,
+            cert: tempCert2,
+        },
+        {
+            id: 3,
+            name: 'Alfred Parks',
+            phone: '555-123-4567',
+            checkedStatus: false,
+            cert: tempCert3,
+        },
+    ]);
+
+    const rows = responderInfo.map((info) =>
+        createData(
+            info.id,
+            info.name,
+            info.phone,
+            info.checkedStatus,
+            info.cert
+        )
+    );
+
+    return (
+        <Paper sx={{ width: '100%', mb: 2, ml: '1vh' }}>
+            <EnhancedTableToolbar
+                numSelected={selected.length}
+                selected={selected}
+                changeResponderInfo={setResponderInfo}
+                setSelected={setSelected}
+            />
+            <TableContainer component={Paper}>
+                <Table aria-label="collapsible table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Checkin/out</TableCell>
+                            <TableCell align="center">Checked In</TableCell>
+                            <TableCell>Responder Name</TableCell>
+                            <TableCell align="center">Phone Number</TableCell>
+                            <TableCell>Certificates</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map((row) => (
+                            <Row
+                                key={row.id}
+                                row={row}
+                                setSelectedRow={setSelected}
+                                selectedRows={selected}
+                            />
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Paper>
     );
 }
