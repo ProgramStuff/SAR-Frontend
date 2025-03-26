@@ -33,6 +33,8 @@ export default function CreateTask({ taskID }) {
     const [startTime, setStartTime] = useState(dayjs());
     const [endDate, setEndDate] = useState(null);
     const [endTime, setEndTime] = useState(null);
+    const [description, setDescription] = useState('');
+
     return (
         <Box>
             <FormControl>
@@ -109,6 +111,20 @@ export default function CreateTask({ taskID }) {
                         width: { md: '13vw', lg: '13vw', xl: '13vw' },
                         margin: '1vh',
                     }}
+                />
+            </FormControl>
+            <FormControl sx={{ width: '100%' }}>
+                <TextField
+                    name="description"
+                    value={description}
+                    sx={{
+                        width: { md: '100%', lg: '100%', xl: '100%' },
+                        margin: '1vh',
+                    }}
+                    label="Description"
+                    multiline
+                    onChange={(event) => setDescription(event.target.value)}
+                    maxRows={1000}
                 />
             </FormControl>
             <ResponderTable />

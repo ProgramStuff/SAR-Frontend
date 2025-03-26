@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -14,30 +14,36 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Checkbox from '@mui/material/Checkbox';
 
 export default function Row(props) {
-    const { row } = props;
+    const { row, setSelectedRow, selectedRows } = props;
     const [open, setOpen] = useState(false);
+    let isSelected = selectedRows.includes(row.id);
 
-    //   const handleSelect = () => {
-    //     if (isSelected) {
-    //         setSelectedRow(selected.(item => item != row.id));
-    //     } else {
-    //         setSelectedRow([...selected, row.id]);
-    //     }
-    //     console.log(selected);
-    // };
+    const handleSelect = () => {
+        if (isSelected) {
+            setSelectedRow(selectedRows.filter((item) => item != row.id));
+        } else {
+            setSelectedRow([...selectedRows, row.id]);
+        }
+    };
+
+    useEffect(() => {}, [selectedRows]);
 
     return (
         <Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
                 <TableCell align="center" padding="checkbox">
                     <Checkbox
+                        checked={isSelected}
+                        onClick={handleSelect}
                         color="primary"
                         inputProps={{
                             'aria-labelledby': 'row',
                         }}
                     />
                 </TableCell>
-                <TableCell align="center">{row.checkedStatus}</TableCell>
+                <TableCell align="center">
+                    {row.checkedStatus == false ? 'No' : 'Yes'}
+                </TableCell>
                 <TableCell component="th" scope="row">
                     {row.name}
                 </TableCell>
@@ -108,4 +114,3 @@ export default function Row(props) {
         </Fragment>
     );
 }
-
