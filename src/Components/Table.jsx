@@ -48,22 +48,21 @@ const tempCert3 = {
 };
 
 function EnhancedTableToolbar(props) {
-    const { numSelected, selected, changeResponderInfo } = props;
+    const { numSelected, selected, changeResponderInfo, setSelected } = props;
 
     const changeStatus = (selected) => {
         changeResponderInfo((prevState) =>
             prevState.map((responder) => ({
                 ...responder,
-                checkedStatus: selected.some((item) => item.id == responder.id)
+                checkedStatus: selected.some((item) => item == responder.id)
                     ? !responder.checkedStatus
                     : responder.checkedStatus,
             }))
         );
-        console.log('Selected after schange: ', selected);
+        setSelected([]);
     };
 
     const handleCheckIn = () => {
-        console.log(selected);
         changeStatus(selected);
     };
 
@@ -151,6 +150,7 @@ export default function ResponderTable() {
                 numSelected={selected.length}
                 selected={selected}
                 changeResponderInfo={setResponderInfo}
+                setSelected={setSelected}
             />
             <TableContainer component={Paper}>
                 <Table aria-label="collapsible table">

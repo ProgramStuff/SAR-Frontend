@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -26,11 +26,14 @@ export default function Row(props) {
         }
     };
 
+    useEffect(() => {}, [selectedRows]);
+
     return (
         <Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
                 <TableCell align="center" padding="checkbox">
                     <Checkbox
+                        checked={isSelected}
                         onClick={handleSelect}
                         color="primary"
                         inputProps={{
