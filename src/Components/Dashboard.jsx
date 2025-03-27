@@ -13,6 +13,7 @@ import PersonnelInfo from '../app/PersonnelInfo/page';
 import PastIncident from '../app/PastIncident/page';
 import MyCerts from '../app/MyCerts/page';
 import Profile from '../app/Profile/page';
+import CompleteIncident from '../app/CompleteIncident/page';
 import { useNavigate } from 'react-router-dom';
 import MuiCard from '@mui/material/Card';
 
@@ -197,7 +198,7 @@ export default function Dashboard(props) {
             icon: <AccountCircleIcon color="#037AFF" />,
         },
     ];
-
+    console.log(router.pathname);
     return (
         <AppProvider
             navigation={NAVIGATION}
@@ -237,7 +238,7 @@ export default function Dashboard(props) {
                             />
                         )}
                         {router.pathname == '/incident/pastIncident' && (
-                            <PastIncident />
+                            <PastIncident changePath={setPathname} />
                         )}
                         {router.pathname == '/personnelInfo' && (
                             <PersonnelInfo />
@@ -258,6 +259,12 @@ export default function Dashboard(props) {
                         {/incident\/.\/newTask/.test(router.pathname) && (
                             <CreateTask
                                 taskID={router.pathname.split('/')[2]}
+                            />
+                        )}
+                        {/incident\/pastIncident\/./.test(router.pathname) && (
+                            <CompleteIncident
+                                appRouter={router}
+                                changePathFunction={setPathname}
                             />
                         )}
                     </ContentContainer>
