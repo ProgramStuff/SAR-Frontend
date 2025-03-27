@@ -14,7 +14,9 @@ import PastIncident from '../app/PastIncident/page';
 import MyCerts from '../app/MyCerts/page';
 import Profile from '../app/Profile/page';
 import { useNavigate } from 'react-router-dom';
+import MuiCard from '@mui/material/Card';
 
+import Stack from '@mui/material/Stack';
 import HomeIcon from '@mui/icons-material/Home';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -45,6 +47,29 @@ const lightDarkTheme = extendTheme({
         },
     },
 });
+
+const ContentContainer = styled(Stack)(({ theme }) => ({
+    height: '100%',
+    minHeight: '100%',
+    padding: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+        padding: theme.spacing(4),
+    },
+    '&::before': {
+        content: '""',
+        display: 'block',
+        position: 'absolute',
+        zIndex: -1,
+        inset: 0,
+        backgroundImage:
+            'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
+        backgroundRepeat: 'no-repeat',
+        ...theme.applyStyles('dark', {
+            backgroundImage:
+                'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
+        }),
+    },
+}));
 
 export default function Dashboard(props) {
     const [pathname, setPathname] = useState('/incident');
@@ -194,37 +219,48 @@ export default function Dashboard(props) {
                     maxWidth
                     pathname={router.pathname}
                 >
-                    {router.pathname == '/incident/activeIncident' && (
-                        <ActiveIncident changePath={setPathname} />
-                    )}
-                    {router.pathname == '/incident' && (
-                        <ActiveIncident changePath={setPathname} />
-                    )}
+                    <ContentContainer
+                        direction="column"
+                        justifyContent="space-between"
+                    >
+                        {router.pathname == '/incident/activeIncident' && (
+                            <ActiveIncident changePath={setPathname} />
+                        )}
+                        {router.pathname == '/incident' && (
+                            <ActiveIncident changePath={setPathname} />
+                        )}
 
-                    {router.pathname == '/incident/newIncident' && (
-                        <CreateIncident
-                            appRouter={router}
-                            changePathFunction={setPathname}
-                        />
-                    )}
-                    {router.pathname == '/incident/pastIncident' && (
-                        <PastIncident />
-                    )}
-                    {router.pathname == '/personnelInfo' && <PersonnelInfo />}
+                        {router.pathname == '/incident/newIncident' && (
+                            <CreateIncident
+                                appRouter={router}
+                                changePathFunction={setPathname}
+                            />
+                        )}
+                        {router.pathname == '/incident/pastIncident' && (
+                            <PastIncident />
+                        )}
+                        {router.pathname == '/personnelInfo' && (
+                            <PersonnelInfo />
+                        )}
 
-                    {router.pathname == '/register' && <Register />}
-                    {router.pathname == '/myCertifications' && <MyCerts />}
-                    {router.pathname == '/settings/profile' && <Profile />}
-                    {router.pathname == '/userProfile' && <Profile />}
-                    {/incident\/activeIncident\/./.test(router.pathname) && (
-                        <CreateIncident
-                            appRouter={router}
-                            changePathFunction={setPathname}
-                        />
-                    )}
-                    {/incident\/.\/newTask/.test(router.pathname) && (
-                        <CreateTask taskID={router.pathname.split('/')[2]} />
-                    )}
+                        {router.pathname == '/register' && <Register />}
+                        {router.pathname == '/myCertifications' && <MyCerts />}
+                        {router.pathname == '/settings/profile' && <Profile />}
+                        {router.pathname == '/userProfile' && <Profile />}
+                        {/incident\/activeIncident\/./.test(
+                            router.pathname
+                        ) && (
+                            <CreateIncident
+                                appRouter={router}
+                                changePathFunction={setPathname}
+                            />
+                        )}
+                        {/incident\/.\/newTask/.test(router.pathname) && (
+                            <CreateTask
+                                taskID={router.pathname.split('/')[2]}
+                            />
+                        )}
+                    </ContentContainer>
                 </PageContainer>
             </DashboardLayout>
         </AppProvider>
