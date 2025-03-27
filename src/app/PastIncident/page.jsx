@@ -26,7 +26,7 @@ const tempIncidents = [
         id: 3,
         incidentName: 'Incident 108-01-17-2025',
         agency: 'Search and Rescue',
-        incidentType: 'MIssing Hiker',
+        incidentType: 'Missing Hiker',
     },
 ];
 
@@ -41,7 +41,7 @@ export default function PastIncident({ changePath }) {
                             <CardActionArea
                                 onClick={() =>
                                     changePath(
-                                        `/incident/activeIncident/${incident.id}`
+                                        `/incident/pastIncident/${incident.id}`
                                     )
                                 }
                                 data-active={
