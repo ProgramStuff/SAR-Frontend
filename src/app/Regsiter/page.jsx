@@ -246,7 +246,7 @@ export default function Register() {
         console.log(payload);
         try {
             const response = await axios.post(
-                'http://localhost:5185/register',
+                `${import.meta.env.API_ENDPOINT}/register`,
                 { email, password }
             );
             if (response.status == 200) {
