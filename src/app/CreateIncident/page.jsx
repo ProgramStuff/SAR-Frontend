@@ -8,6 +8,7 @@ import FormControl from '@mui/material/FormControl';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import axios from 'axios';
+import FileUpload from '../../Components/FileUpload';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -525,6 +526,9 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
                         incidentId={appRouter.pathname.split('/')[3]}
                     />
                 )}
+
+                {activeIncidentId && <FileUpload />}
+
                 <Stack spacing={3} direction="row" sx={{ marginTop: '3vh' }}>
                     <Button
                         sx={{ width: '10vw' }}
@@ -548,5 +552,3 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
         </>
     );
 }
-
-// * Strcuture of endpoint request
