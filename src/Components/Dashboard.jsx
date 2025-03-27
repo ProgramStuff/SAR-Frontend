@@ -46,22 +46,8 @@ const lightDarkTheme = extendTheme({
     },
 });
 
-function dashboardRouter(initialPath) {
-    const [pathname, setPathname] = useState(initialPath);
-    const context = useOutletContext();
-
-    const router = useMemo(() => {
-        return {
-            pathname,
-            searchParams: new URLSearchParams(),
-            navigate: (path) => setPathname(String(path)),
-        };
-    }, [pathname]);
-    return router;
-}
-
 export default function Dashboard(props) {
-    const [pathname, setPathname] = useState('/dashboard');
+    const [pathname, setPathname] = useState('/incident');
 
     const router = useMemo(() => {
         return {
@@ -185,6 +171,7 @@ export default function Dashboard(props) {
             icon: <AccountCircleIcon color="#037AFF" />,
         },
     ];
+
     return (
         <AppProvider
             navigation={NAVIGATION}
@@ -204,12 +191,15 @@ export default function Dashboard(props) {
                     sx={{ marginLeft: 0, marginRight: 0 }}
                     title=""
                     maxWidth
-                    breadcrumbs={[]}
                     pathname={router.pathname}
                 >
                     {router.pathname == '/incident/activeIncident' && (
                         <ActiveIncident changePath={setPathname} />
                     )}
+                    {router.pathname == '/incident' && (
+                        <ActiveIncident changePath={setPathname} />
+                    )}
+
                     {router.pathname == '/incident/newIncident' && (
                         <CreateIncident
                             appRouter={router}
