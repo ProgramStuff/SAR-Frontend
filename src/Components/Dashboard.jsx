@@ -32,7 +32,6 @@ import Register from '../app/Regsiter/page';
 import { Widgets } from '@mui/icons-material';
 import CreateTask from '../app/CreateTask/page';
 
-
 const lightDarkTheme = extendTheme({
     colorSchemes: { light: true, dark: true },
     colorSchemeSelector: 'class',
