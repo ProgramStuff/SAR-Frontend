@@ -4,8 +4,8 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
-import StickyNote2Icon from '@mui/icons-material/StickyNote2';
-import { Crud, DataSourceCache, CrudForm } from '@toolpad/core/Crud';
+import Stack from '@mui/material/Stack';
+
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -25,6 +25,7 @@ import ResponderTable from '../../Components/Table';
  *
  *
  */
+
 
 export default function CreateTask({ taskID }) {
     const [taskName, setTaskName] = useState('');
@@ -128,6 +129,18 @@ export default function CreateTask({ taskID }) {
                 />
             </FormControl>
             <ResponderTable />
+
+            <Stack spacing={3} direction="row" sx={{ marginTop: '3vh' }}>
+                    <Button
+                        sx={{ width: '10vw' }}
+                        size="large"
+                        variant="contained"
+                        type="submit"
+                    >
+                        Submit
+                    </Button>
+
+                </Stack>
         </Box>
     );
 }
