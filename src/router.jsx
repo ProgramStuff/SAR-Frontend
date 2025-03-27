@@ -5,7 +5,6 @@ import PrivateRoutes from './routes/PrivateRoutes';
 import Layout from './routes/Layout';
 import LandingPage from './app/LandingPage/page';
 
-
 export const router = createBrowserRouter([
     {
         path: '/',
@@ -28,5 +27,4 @@ export const router = createBrowserRouter([
             },
         ],
     },
-],
-);
+]);
