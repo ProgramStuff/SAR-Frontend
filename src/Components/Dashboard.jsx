@@ -167,7 +167,8 @@ export default function Dashboard(props) {
 
         {
             segment: 'userProfile',
-            title: currentUser.fName + ' ' + currentUser.lName,
+            title: 'User Name',
+            //            title: currentUser.fName + ' ' + currentUser.lName,
             icon: <AccountCircleIcon color="#037AFF" />,
         },
     ];
