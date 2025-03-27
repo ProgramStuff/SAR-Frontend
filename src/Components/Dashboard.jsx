@@ -48,7 +48,6 @@ const lightDarkTheme = extendTheme({
     },
 });
 
-
 const ContentContainer = styled(Stack)(({ theme }) => ({
     height: '100%',
     minHeight: '100%',
@@ -220,38 +219,47 @@ export default function Dashboard(props) {
                     maxWidth
                     pathname={router.pathname}
                 >
-                <ContentContainer direction="column" justifyContent="space-between">
-                    {router.pathname == '/incident/activeIncident' && (
-                        <ActiveIncident changePath={setPathname} />
-                    )}
-                    {router.pathname == '/incident' && (
-                        <ActiveIncident changePath={setPathname} />
-                    )}
+                    <ContentContainer
+                        direction="column"
+                        justifyContent="space-between"
+                    >
+                        {router.pathname == '/incident/activeIncident' && (
+                            <ActiveIncident changePath={setPathname} />
+                        )}
+                        {router.pathname == '/incident' && (
+                            <ActiveIncident changePath={setPathname} />
+                        )}
 
-                    {router.pathname == '/incident/newIncident' && (
-                        <CreateIncident
-                            appRouter={router}
-                            changePathFunction={setPathname}
-                        />
-                    )}
-                    {router.pathname == '/incident/pastIncident' && (
-                        <PastIncident />
-                    )}
-                    {router.pathname == '/personnelInfo' && <PersonnelInfo />}
+                        {router.pathname == '/incident/newIncident' && (
+                            <CreateIncident
+                                appRouter={router}
+                                changePathFunction={setPathname}
+                            />
+                        )}
+                        {router.pathname == '/incident/pastIncident' && (
+                            <PastIncident />
+                        )}
+                        {router.pathname == '/personnelInfo' && (
+                            <PersonnelInfo />
+                        )}
 
-                    {router.pathname == '/register' && <Register />}
-                    {router.pathname == '/myCertifications' && <MyCerts />}
-                    {router.pathname == '/settings/profile' && <Profile />}
-                    {router.pathname == '/userProfile' && <Profile />}
-                    {/incident\/activeIncident\/./.test(router.pathname) && (
-                        <CreateIncident
-                            appRouter={router}
-                            changePathFunction={setPathname}
-                        />
-                    )}
-                    {/incident\/.\/newTask/.test(router.pathname) && (
-                        <CreateTask taskID={router.pathname.split('/')[2]} />
-                    )}
+                        {router.pathname == '/register' && <Register />}
+                        {router.pathname == '/myCertifications' && <MyCerts />}
+                        {router.pathname == '/settings/profile' && <Profile />}
+                        {router.pathname == '/userProfile' && <Profile />}
+                        {/incident\/activeIncident\/./.test(
+                            router.pathname
+                        ) && (
+                            <CreateIncident
+                                appRouter={router}
+                                changePathFunction={setPathname}
+                            />
+                        )}
+                        {/incident\/.\/newTask/.test(router.pathname) && (
+                            <CreateTask
+                                taskID={router.pathname.split('/')[2]}
+                            />
+                        )}
                     </ContentContainer>
                 </PageContainer>
             </DashboardLayout>

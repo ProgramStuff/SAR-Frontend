@@ -6,7 +6,6 @@ import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import Stack from '@mui/material/Stack';
 
-
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -25,7 +24,6 @@ import ResponderTable from '../../Components/Table';
  *
  *
  */
-
 
 export default function CreateTask({ taskID }) {
     const [taskName, setTaskName] = useState('');
@@ -131,16 +129,15 @@ export default function CreateTask({ taskID }) {
             <ResponderTable />
 
             <Stack spacing={3} direction="row" sx={{ marginTop: '3vh' }}>
-                    <Button
-                        sx={{ width: '10vw' }}
-                        size="large"
-                        variant="contained"
-                        type="submit"
-                    >
-                        Submit
-                    </Button>
-
-                </Stack>
+                <Button
+                    sx={{ width: '10vw' }}
+                    size="large"
+                    variant="contained"
+                    type="submit"
+                >
+                    Submit
+                </Button>
+            </Stack>
         </Box>
     );
 }
