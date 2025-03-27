@@ -143,9 +143,14 @@ export default function Login() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        if (emailError || passwordError) {
-            return;
-        }
+        context.setUser({
+            fName: 'Jordan',
+            lName: 'Kelsey',
+            role: 'admin',
+        });
+        setCookie('user', context.user, 10);
+        navigate('/Dashboard');
+
         const data = new FormData(e.currentTarget);
 
         console.log({
@@ -168,14 +173,13 @@ export default function Login() {
                 },
                 body: JSON.stringify(payload),
             });
-            console.log('Login');
             const data = await response.json();
 
             if (response.ok) {
                 // If registration is successful
                 context.setUser({
-                    fName: 'Alfred',
-                    lName: 'Parks',
+                    fName: 'Jordan',
+                    lName: 'Kelsey',
                     role: 'admin',
                 });
                 setCookie('user', context.user, 10);
