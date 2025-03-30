@@ -19,6 +19,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import AdditionalFields from '../../Components/AdditionalFields';
+import FileUpload from '../../Components/FileUpload';
 
 const agencies = [
     {
@@ -310,7 +311,7 @@ export default function CompleteIncident({ appRouter, changePathFunction }) {
             <CssBaseline enableColorScheme />
 
             <Box maxWidth component="form" onSubmit={handleSubmit}>
-                <Card sx={{ width: '72vw' }}>
+                <Card sx={{ width: '72vw', mb: '2vh' }}>
                     <CardContent>
                         <Typography variant="h6" sx={{ mb: '1vh' }}>
                             Incident Information
@@ -595,6 +596,7 @@ export default function CompleteIncident({ appRouter, changePathFunction }) {
                                     setSummary(event.target.value)
                                 }
                                 maxRows={1000}
+                                minRows={8}
                             />
                         </FormControl>
 
@@ -611,6 +613,7 @@ export default function CompleteIncident({ appRouter, changePathFunction }) {
                                 label="Objectives"
                                 multiline
                                 maxRows={1000}
+                                minRows={8}
                                 onChange={(event) =>
                                     setObjectives(event.target.value)
                                 }
@@ -623,9 +626,9 @@ export default function CompleteIncident({ appRouter, changePathFunction }) {
                     changePath={changePathFunction}
                     incidentId={appRouter.pathname.split('/')[3]}
                 />
+
+                <FileUpload/>
             </Box>
         </>
     );
 }
-
-// * Strcuture of endpoint request
