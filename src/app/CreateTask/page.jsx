@@ -5,6 +5,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import Stack from '@mui/material/Stack';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -36,6 +38,8 @@ export default function CreateTask({ taskID }) {
 
     return (
         <Box>
+            <Card sx={{ m: 'auto', mb: '2vh', width: '73vw'}}>
+                <CardContent>
             <FormControl>
                 <TextField
                     name="name"
@@ -117,15 +121,19 @@ export default function CreateTask({ taskID }) {
                     name="description"
                     value={description}
                     sx={{
-                        width: { md: '100%', lg: '100%', xl: '100%' },
+                        width: { md: '98%', lg: '98%', xl: '98%' },
                         margin: '1vh',
                     }}
                     label="Description"
                     multiline
                     onChange={(event) => setDescription(event.target.value)}
                     maxRows={1000}
+                    minRows={8}
                 />
             </FormControl>
+            </CardContent>
+            </Card>
+
             <ResponderTable />
 
             <Stack spacing={3} direction="row" sx={{ marginTop: '3vh' }}>

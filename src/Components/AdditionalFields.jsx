@@ -94,7 +94,7 @@ export default function AdditionalFields({ incidentId, changePath }) {
                         size="large"
                         variant="contained"
                         onClick={() =>
-                            changePathFunction(
+                            changePath(
                                 `/incident/${incidentId}/newTask`
                             )
                         }

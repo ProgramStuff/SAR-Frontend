@@ -16,6 +16,8 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 // import AppTheme from './theme/AppTheme';
 // import ColorModeSelect from './theme/ColorModeSelect';
+import axios from 'axios';
+
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -151,30 +153,15 @@ export default function Login() {
         setCookie('user', context.user, 10);
         navigate('/Dashboard');
 
-        const data = new FormData(e.currentTarget);
-
-        console.log({
-            name: data.get('name'),
-            lastName: data.get('lastName'),
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-
         const payload = {
             email: email,
             password: password,
         };
 
         try {
-            const response = await fetch(
-                `${import.meta.env.API_ENDPOINT}/login`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
-                }
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_ENDPOINT}/login`,
+                payload
             );
             const data = await response.json();
 
@@ -276,13 +263,13 @@ export default function Login() {
                         }}
                     >
                         <Typography sx={{ textAlign: 'center' }}>
-                            Already have an account?{' '}
+                            Don't have an account?{' '}
                             <Link
-                                href="/material-ui/getting-started/templates/sign-in/"
+                                href="/register"
                                 variant="body2"
                                 sx={{ alignSelf: 'center' }}
                             >
-                                Sign in
+                                Sign up
                             </Link>
                         </Typography>
                     </Box>
