@@ -236,10 +236,10 @@ export default function Dashboard(props) {
                         justifyContent="space-between"
                     >
                         {router.pathname == '/incident/activeIncident' && (
-                            <ActiveIncident changePath={setPathname} />
+                            <ActiveIncident appRouter={router} />
                         )}
                         {router.pathname == '/incident' && (
-                            <ActiveIncident changePath={setPathname} />
+                            <ActiveIncident appRouter={router} />
                         )}
 
                         {router.pathname == '/incident/newIncident' && (
