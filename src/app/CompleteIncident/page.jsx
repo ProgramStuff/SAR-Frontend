@@ -308,326 +308,283 @@ export default function CompleteIncident({ appRouter, changePathFunction }) {
 
     return (
         <>
-            <CssBaseline enableColorScheme />
-
             <Box maxWidth component="form" onSubmit={handleSubmit}>
-                <Card sx={{ width: '72vw', mb: '2vh' }}>
-                    <CardContent>
-                        <Typography variant="h6" sx={{ mb: '1vh' }}>
-                            Incident Information
-                        </Typography>
-                        <FormControl>
-                            <TextField
-                                name="incidentName"
-                                value={incidentName}
-                                label="Incident Name"
-                                disabled
-                                onChange={(event) =>
-                                    setIncidentName(event.target.value)
-                                }
-                                sx={{
-                                    width: {
-                                        md: '13vw',
-                                        lg: '13vw',
-                                        xl: '13vw',
-                                    },
-                                    margin: '1vh',
-                                    ml: 0,
-                                }}
-                            />
-                        </FormControl>
+                <Typography sx={{ ml: '1vh' }} variant="h6">
+                    Incident Information
+                </Typography>
+                <FormControl>
+                    <TextField
+                        name="incidentName"
+                        value={incidentName}
+                        label="Incident Name"
+                        disabled
+                        onChange={(event) =>
+                            setIncidentName(event.target.value)
+                        }
+                        sx={{
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
+                            margin: '1vh',
+                        }}
+                    />
+                </FormControl>
 
-                        <FormControl>
-                            <TextField
-                                name="commander"
-                                label="Incident Commander"
-                                disabled
-                                value={incidentCommander}
-                                onChange={(event) =>
-                                    setIncidentCommander(event.target.value)
-                                }
-                                sx={{
-                                    width: {
-                                        md: '13vw',
-                                        lg: '13vw',
-                                        xl: '13vw',
-                                    },
-                                    margin: '1vh',
-                                }}
-                            />
-                        </FormControl>
+                <FormControl>
+                    <TextField
+                        name="commander"
+                        label="Incident Commander"
+                        disabled
+                        value={incidentCommander}
+                        onChange={(event) =>
+                            setIncidentCommander(event.target.value)
+                        }
+                        sx={{
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
+                            margin: '1vh',
+                        }}
+                    />
+                </FormControl>
 
-                        <FormControl>
-                            <TextField
-                                select
-                                key={agency}
-                                name="agency"
-                                label="Agency"
-                                disabled
-                                value={agency}
-                                onChange={(event) =>
-                                    setAgency(event.target.value)
-                                }
-                                sx={{
-                                    width: {
-                                        md: '13vw',
-                                        lg: '13vw',
-                                        xl: '13vw',
-                                    },
-                                    margin: '1vh',
-                                }}
-                            >
-                                {agencies.map((option) => (
-                                    <MenuItem
-                                        key={option.value}
-                                        value={option.value}
-                                    >
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </FormControl>
+                <FormControl>
+                    <TextField
+                        select
+                        key={agency}
+                        name="agency"
+                        label="Agency"
+                        disabled
+                        value={agency}
+                        onChange={(event) => setAgency(event.target.value)}
+                        sx={{
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
+                            margin: '1vh',
+                        }}
+                    >
+                        {agencies.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </FormControl>
 
-                        <FormControl>
-                            <TextField
-                                key={incidentTypeChoice}
-                                name="incidentType"
-                                disabled
-                                select
-                                value={incidentTypeChoice}
-                                label="Incident Type"
-                                onChange={(event) =>
-                                    setIncidentTypeChoice(event.target.value)
-                                }
-                                sx={{
-                                    width: {
-                                        md: '13vw',
-                                        lg: '13vw',
-                                        xl: '13vw',
-                                    },
-                                    minWidth: '10vh',
-                                    margin: '1vh',
-                                }}
-                            >
-                                {incidentType.map((option) => (
-                                    <MenuItem
-                                        key={option.value}
-                                        value={option.value}
-                                    >
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </FormControl>
+                <FormControl>
+                    <TextField
+                        key={incidentTypeChoice}
+                        name="incidentType"
+                        disabled
+                        select
+                        value={incidentTypeChoice}
+                        label="Incident Type"
+                        onChange={(event) =>
+                            setIncidentTypeChoice(event.target.value)
+                        }
+                        sx={{
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
+                            minWidth: '10vh',
+                            margin: '1vh',
+                        }}
+                    >
+                        {incidentType.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </FormControl>
 
-                        <FormControl>
-                            <TextField
-                                name="op"
-                                label="Operational Period"
-                                type="number"
-                                disabled
-                                value={op}
-                                slotProps={{
-                                    inputLabel: {
-                                        shrink: true,
-                                    },
-                                }}
-                                sx={{
-                                    width: {
-                                        md: '13vw',
-                                        lg: '13vw',
-                                        xl: '13vw',
-                                    },
-                                    margin: '1vh',
-                                }}
-                                onChange={(event) => setOp(event.target.value)}
-                            />
-                        </FormControl>
+                <FormControl>
+                    <TextField
+                        name="op"
+                        label="Operational Period"
+                        type="number"
+                        disabled
+                        value={op}
+                        slotProps={{
+                            inputLabel: {
+                                shrink: true,
+                            },
+                        }}
+                        sx={{
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
+                            margin: '1vh',
+                        }}
+                        onChange={(event) => setOp(event.target.value)}
+                    />
+                </FormControl>
 
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <FormControl>
-                                <DatePicker
-                                    name="date"
-                                    disabled
-                                    sx={{
-                                        width: {
-                                            md: '13vw',
-                                            lg: '13vw',
-                                            xl: '13vw',
-                                        },
-                                        margin: '1vh',
-                                        ml: 0,
-                                    }}
-                                    label="Start Date"
-                                    value={startDate}
-                                    onChange={(newValue) =>
-                                        setStartDate(newValue)
-                                    }
-                                />
-                            </FormControl>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <FormControl>
+                        <DatePicker
+                            name="date"
+                            disabled
+                            sx={{
+                                width: {
+                                    md: '13vw',
+                                    lg: '13vw',
+                                    xl: '13vw',
+                                },
+                                margin: '1vh',
+                            }}
+                            label="Start Date"
+                            value={startDate}
+                            onChange={(newValue) => setStartDate(newValue)}
+                        />
+                    </FormControl>
 
-                            <FormControl>
-                                <TimePicker
-                                    name="startTime"
-                                    sx={{
-                                        width: {
-                                            md: '13vw',
-                                            lg: '13vw',
-                                            xl: '13vw',
-                                        },
-                                        margin: '1vh',
-                                    }}
-                                    label="Start Time"
-                                    disabled
-                                    value={startTime}
-                                    onChange={(newValue) =>
-                                        setStartTime(newValue)
-                                    }
-                                />
-                            </FormControl>
-                        </LocalizationProvider>
+                    <FormControl>
+                        <TimePicker
+                            name="startTime"
+                            sx={{
+                                width: {
+                                    md: '13vw',
+                                    lg: '13vw',
+                                    xl: '13vw',
+                                },
+                                margin: '1vh',
+                            }}
+                            label="Start Time"
+                            disabled
+                            value={startTime}
+                            onChange={(newValue) => setStartTime(newValue)}
+                        />
+                    </FormControl>
+                </LocalizationProvider>
 
-                        <FormControl>
-                            <TextField
-                                name="address"
-                                label="Address"
-                                disabled
-                                value={address}
-                                sx={{
-                                    width: {
-                                        md: '27vw',
-                                        lg: '27vw',
-                                        xl: '27vw',
-                                    },
-                                    margin: '1vh',
-                                }}
-                                onChange={(event) =>
-                                    setAddress(event.target.value)
-                                }
-                            />
-                        </FormControl>
+                <FormControl>
+                    <TextField
+                        name="address"
+                        label="Address"
+                        disabled
+                        value={address}
+                        sx={{
+                            width: {
+                                md: '27vw',
+                                lg: '27vw',
+                                xl: '27vw',
+                            },
+                            margin: '1vh',
+                        }}
+                        onChange={(event) => setAddress(event.target.value)}
+                    />
+                </FormControl>
 
-                        <FormControl>
-                            <TextField
-                                name="province"
-                                value={provinceChoice}
-                                select
-                                disabled
-                                label="Province"
-                                onChange={(event) =>
-                                    setProvinceChoice(event.target.value)
-                                }
-                                sx={{
-                                    width: {
-                                        md: '13vw',
-                                        lg: '13vw',
-                                        xl: '13vw',
-                                    },
-                                    minWidth: '10vh',
-                                    margin: '1vh',
-                                }}
-                            >
-                                {province.map((option) => (
-                                    <MenuItem
-                                        key={option.value}
-                                        value={option.value}
-                                    >
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </FormControl>
+                <FormControl>
+                    <TextField
+                        name="province"
+                        value={provinceChoice}
+                        select
+                        disabled
+                        label="Province"
+                        onChange={(event) =>
+                            setProvinceChoice(event.target.value)
+                        }
+                        sx={{
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
+                            minWidth: '10vh',
+                            margin: '1vh',
+                        }}
+                    >
+                        {province.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </FormControl>
 
-                        <FormControl>
-                            <TextField
-                                name="city"
-                                label="City"
-                                value={city}
-                                disabled
-                                sx={{
-                                    width: {
-                                        md: '27vw',
-                                        lg: '27vw',
-                                        xl: '27vw',
-                                    },
-                                    margin: '1vh',
-                                    ml: 0,
-                                }}
-                                onChange={(event) =>
-                                    setCity(event.target.value)
-                                }
-                            />
-                        </FormControl>
+                <FormControl>
+                    <TextField
+                        name="city"
+                        label="City"
+                        value={city}
+                        disabled
+                        sx={{
+                            width: {
+                                md: '27vw',
+                                lg: '27vw',
+                                xl: '27vw',
+                            },
+                            margin: '1vh',
+                        }}
+                        onChange={(event) => setCity(event.target.value)}
+                    />
+                </FormControl>
 
-                        <FormControl>
-                            <TextField
-                                name="postal"
-                                label="Postal Code"
-                                disabled
-                                value={postal}
-                                sx={{
-                                    width: {
-                                        md: '13vw',
-                                        lg: '13vw',
-                                        xl: '13vw',
-                                    },
-                                    minWidth: '10vh',
-                                    margin: '1vh',
-                                }}
-                                onChange={(event) =>
-                                    setPostal(event.target.value)
-                                }
-                            />
-                        </FormControl>
+                <FormControl>
+                    <TextField
+                        name="postal"
+                        label="Postal Code"
+                        disabled
+                        value={postal}
+                        sx={{
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
+                            minWidth: '10vh',
+                            margin: '1vh',
+                        }}
+                        onChange={(event) => setPostal(event.target.value)}
+                    />
+                </FormControl>
 
-                        <FormControl sx={{ width: '100%' }}>
-                            <TextField
-                                name="summary"
-                                disabled
-                                value={summary}
-                                sx={{
-                                    width: { md: '97%', lg: '97%', xl: '97%' },
-                                    margin: '1vh',
-                                    ml: 0,
-                                }}
-                                label="Summary"
-                                multiline
-                                onChange={(event) =>
-                                    setSummary(event.target.value)
-                                }
-                                maxRows={1000}
-                                minRows={8}
-                            />
-                        </FormControl>
+                <FormControl sx={{ width: '100%' }}>
+                    <TextField
+                        name="summary"
+                        disabled
+                        value={summary}
+                        sx={{
+                            width: { md: '97%', lg: '97%', xl: '97%' },
+                            margin: '1vh',
+                        }}
+                        label="Summary"
+                        multiline
+                        onChange={(event) => setSummary(event.target.value)}
+                        maxRows={1000}
+                        minRows={8}
+                    />
+                </FormControl>
 
-                        <FormControl sx={{ width: '100%' }}>
-                            <TextField
-                                disabled
-                                value={objectives}
-                                name="objectives"
-                                sx={{
-                                    width: { md: '97%', lg: '97%', xl: '97%' },
-                                    margin: '1vh',
-                                    ml: 0,
-                                }}
-                                label="Objectives"
-                                multiline
-                                maxRows={1000}
-                                minRows={8}
-                                onChange={(event) =>
-                                    setObjectives(event.target.value)
-                                }
-                            />
-                        </FormControl>
-                    </CardContent>
-                </Card>
-
-                <AdditionalFields
-                    changePath={changePathFunction}
-                    incidentId={appRouter.pathname.split('/')[3]}
-                />
-
-                <FileUpload/>
+                <FormControl sx={{ width: '100%' }}>
+                    <TextField
+                        disabled
+                        value={objectives}
+                        name="objectives"
+                        sx={{
+                            width: { md: '97%', lg: '97%', xl: '97%' },
+                            margin: '1vh',
+                        }}
+                        label="Objectives"
+                        multiline
+                        maxRows={1000}
+                        minRows={8}
+                        onChange={(event) => setObjectives(event.target.value)}
+                    />
+                </FormControl>
             </Box>
         </>
     );
