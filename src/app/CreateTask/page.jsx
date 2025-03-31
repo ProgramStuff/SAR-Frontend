@@ -38,100 +38,120 @@ export default function CreateTask({ taskID }) {
 
     return (
         <Box>
-            <Card sx={{ m: 'auto', mb: '2vh', width: '73vw'}}>
+            <Card sx={{ m: 'auto', mb: '2vh', width: '73vw' }}>
                 <CardContent>
-            <FormControl>
-                <TextField
-                    name="name"
-                    label="Task Name"
-                    value={taskName}
-                    onChange={(event) => setTaskName(event.target.value)}
-                    sx={{
-                        width: { md: '13vw', lg: '13vw', xl: '13vw' },
-                        margin: '1vh',
-                    }}
-                />
-            </FormControl>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <FormControl>
-                    <DatePicker
-                        name="startDate"
-                        sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
-                            margin: '1vh',
-                        }}
-                        label="Start Date"
-                        value={startDate}
-                        onChange={(newValue) => setStartDate(newValue)}
-                    />
-                </FormControl>
+                    <FormControl>
+                        <TextField
+                            name="name"
+                            label="Task Name"
+                            value={taskName}
+                            onChange={(event) =>
+                                setTaskName(event.target.value)
+                            }
+                            sx={{
+                                width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                                margin: '1vh',
+                            }}
+                        />
+                    </FormControl>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <FormControl>
+                            <DatePicker
+                                name="startDate"
+                                sx={{
+                                    width: {
+                                        md: '13vw',
+                                        lg: '13vw',
+                                        xl: '13vw',
+                                    },
+                                    margin: '1vh',
+                                }}
+                                label="Start Date"
+                                value={startDate}
+                                onChange={(newValue) => setStartDate(newValue)}
+                            />
+                        </FormControl>
 
-                <FormControl>
-                    <TimePicker
-                        name="startTime"
-                        sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
-                            margin: '1vh',
-                        }}
-                        label="Start Time"
-                        value={startTime}
-                        onChange={(newValue) => setStartTime(newValue)}
-                    />
-                </FormControl>
-                <FormControl>
-                    <DatePicker
-                        name="endDate"
-                        sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
-                            margin: '1vh',
-                        }}
-                        label="End Date"
-                        value={endDate}
-                        onChange={(newValue) => setEndDate(newValue)}
-                    />
-                </FormControl>
+                        <FormControl>
+                            <TimePicker
+                                name="startTime"
+                                sx={{
+                                    width: {
+                                        md: '13vw',
+                                        lg: '13vw',
+                                        xl: '13vw',
+                                    },
+                                    margin: '1vh',
+                                }}
+                                label="Start Time"
+                                value={startTime}
+                                onChange={(newValue) => setStartTime(newValue)}
+                            />
+                        </FormControl>
+                        <FormControl>
+                            <DatePicker
+                                name="endDate"
+                                sx={{
+                                    width: {
+                                        md: '13vw',
+                                        lg: '13vw',
+                                        xl: '13vw',
+                                    },
+                                    margin: '1vh',
+                                }}
+                                label="End Date"
+                                value={endDate}
+                                onChange={(newValue) => setEndDate(newValue)}
+                            />
+                        </FormControl>
 
-                <FormControl>
-                    <TimePicker
-                        name="endTime"
-                        sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
-                            margin: '1vh',
-                        }}
-                        label="End Time"
-                        value={endTime}
-                        onChange={(newValue) => setEndIime(newValue)}
-                    />
-                </FormControl>
-            </LocalizationProvider>
-            <FormControl>
-                <TextField
-                    name="op"
-                    label="Opperational Period"
-                    value={op}
-                    onChange={(event) => setOp(event.target.value)}
-                    sx={{
-                        width: { md: '13vw', lg: '13vw', xl: '13vw' },
-                        margin: '1vh',
-                    }}
-                />
-            </FormControl>
-            <FormControl sx={{ width: '100%' }}>
-                <TextField
-                    name="description"
-                    value={description}
-                    sx={{
-                        width: { md: '98%', lg: '98%', xl: '98%' },
-                        margin: '1vh',
-                    }}
-                    label="Description"
-                    multiline
-                    onChange={(event) => setDescription(event.target.value)}
-                    maxRows={1000}
-                    minRows={8}
-                />
-            </FormControl>
-            </CardContent>
+                        <FormControl>
+                            <TimePicker
+                                name="endTime"
+                                sx={{
+                                    width: {
+                                        md: '13vw',
+                                        lg: '13vw',
+                                        xl: '13vw',
+                                    },
+                                    margin: '1vh',
+                                }}
+                                label="End Time"
+                                value={endTime}
+                                onChange={(newValue) => setEndIime(newValue)}
+                            />
+                        </FormControl>
+                    </LocalizationProvider>
+                    <FormControl>
+                        <TextField
+                            name="op"
+                            label="Opperational Period"
+                            value={op}
+                            onChange={(event) => setOp(event.target.value)}
+                            sx={{
+                                width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                                margin: '1vh',
+                            }}
+                        />
+                    </FormControl>
+                    <FormControl sx={{ width: '100%' }}>
+                        <TextField
+                            name="description"
+                            value={description}
+                            sx={{
+                                width: { md: '98%', lg: '98%', xl: '98%' },
+                                margin: '1vh',
+                            }}
+                            label="Description"
+                            multiline
+                            onChange={(event) =>
+                                setDescription(event.target.value)
+                            }
+                            maxRows={1000}
+                            minRows={8}
+                        />
+                    </FormControl>
+                </CardContent>
             </Card>
 
             <ResponderTable />
