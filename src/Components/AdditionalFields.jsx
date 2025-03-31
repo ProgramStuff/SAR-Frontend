@@ -41,68 +41,67 @@ const tempTasks = [
     },
 ];
 
-export default function AdditionalFields({ incidentId, changePath }) {
+export default function AdditionalFields({
+    changePath,
+    appRouter,
+    incidentId,
+}) {
     const [selectedCard, setSelectedCard] = useState(0);
     return (
-        <Box>
-            <Card sx={{ ml: '1vh', width: '71vw' }}>
-                <CardContent>
-                    <Typography variant="h6">Tasks</Typography>
-                    <Grid container justifyContent={'center'} spacing={1}>
-                        {tempTasks.map((task) => (
-                            <Grid
-                                key={task.id}
-                                size={{ sm: 12, md: 12, lg: 4, xl: 4 }}
-                            >
-                                <Card variant="outline">
-                                    <CardActionArea
-                                        onClick={() =>
-                                            changePath(
-                                                `/incident/${incidentId}/task/${task.id}`
-                                            )
-                                        }
-                                        data-active={
-                                            selectedCard === task.id ? '' : ''
-                                        }
-                                        sx={{
-                                            height: 100,
-                                            '&[data-active]': {
+        <Box sx={{ ml: '1vh' }}>
+            <CssBaseline enableColorScheme />
+            <Typography variant="h6">Tasks</Typography>
+            <Grid container justifyContent={'center'} spacing={1}>
+                {appRouter.pathname != '/incident/newIncident' &&
+                    tempTasks.map((task) => (
+                        <Grid
+                            key={task.id}
+                            size={{ sm: 12, md: 12, lg: 4, xl: 4 }}
+                        >
+                            <Card variant="outlined">
+                                <CardActionArea
+                                    onClick={() =>
+                                        changePath(
+                                            `/incident/${incidentId}/task/${task.id}`
+                                        )
+                                    }
+                                    data-active={
+                                        selectedCard === task.id
+                                            ? ''
+                                            : undefined
+                                    }
+                                    sx={{
+                                        height: 100,
+                                        '&[data-active]': {
+                                            backgroundColor: 'action.selected',
+                                            '&:hover': {
                                                 backgroundColor:
-                                                    'action.selected',
-                                                '&:hover': {
-                                                    backgroundColor:
-                                                        'action.selectedHover',
-                                                },
+                                                    'action.selectedHover',
                                             },
-                                        }}
-                                    >
-                                        <CardContent sx={{ height: '100%' }}>
-                                            <Typography component="div">
-                                                {task.name}
-                                            </Typography>
-                                            <Typography color="text.secondary">
-                                                {task.startTime}
-                                            </Typography>
-                                        </CardContent>
-                                    </CardActionArea>
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
-                    <Button
-                        sx={{ width: '13vw', marginTop: '2vh', mb: '2vh' }}
-                        size="large"
-                        variant="contained"
-                        onClick={() =>
-                            changePath(
-                                `/incident/${incidentId}/newTask`
-                            )
-                        }
-                    >
-                        Create New Task
-                    </Button>
-                </CardContent>
-            </Card>
+                                        },
+                                    }}
+                                >
+                                    <CardContent sx={{ height: '100%' }}>
+                                        <Typography component="div">
+                                            {task.name}
+                                        </Typography>
+                                        <Typography color="text.secondary">
+                                            {task.startTime}
+                                        </Typography>
+                                    </CardContent>
+                                </CardActionArea>
+                            </Card>
+                        </Grid>
+                    ))}
+            </Grid>
+            <Button
+                sx={{ width: '13vw', marginTop: '2vh', mb: '2vh' }}
+                size="large"
+                variant="contained"
+                onClick={() => changePath(`/incident/${incidentId}/newTask`)}
+            >
+                Create New Task
+            </Button>
         </Box>
     );
 }

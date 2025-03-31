@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { styled } from '@mui/material/styles';
@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 import CreateIncident from '../CreateIncident/page';
 import { useActivePage } from '@toolpad/core/useActivePage';
+import axios from 'axios';
 
 const tempIncidents = [
     {
@@ -30,19 +31,88 @@ const tempIncidents = [
     },
 ];
 
-export default function ActiveIncident({ changePath }) {
-    console.log(useActivePage());
+async function getIncidents() {
+    try {
+        const response = await axios.get(
+            `${import.meta.env.VITE_API_ENDPOINT}/get-allIncidents`
+        );
+        if (response.status == 200) {
+            console.log(response.data);
+            return response.data;
+        }
+    } catch (error) {
+        console.log('Fetch failed: ', error.message);
+    }
+}
+
+export default function ActiveIncident({ appRouter }) {
     const [selectedCard, setSelectedCard] = useState(0);
+    const [allIncidents, setAllIncidents] = useState([]);
+    useEffect(() => {
+        async function fetchIncidents() {
+            const incidents = await getIncidents();
+            setAllIncidents(incidents);
+        }
+        fetchIncidents();
+    }, []);
+
+    console.log('ALL', allIncidents);
     return (
         <>
             <Grid container justifyContent={'center'} spacing={1}>
-                {tempIncidents.map((incident) => (
+                {allIncidents.map((incident) => (
                     <Grid size={{ sm: 12, md: 12, lg: 4, xl: 4 }}>
-                        <Card key={incident.id}>
+                        <Card key={incident.incidentId} variant="outlined">
                             <CardActionArea
                                 onClick={() =>
-                                    changePath(
-                                        `/incident/activeIncident/${incident.id}`
+                                    appRouter.navigate(
+                                        `/activeIncident/${incident.incidentId}`
+                                    )
+                                }
+                                data-active={
+                                    selectedCard === incident.incidentId
+                                        ? ''
+                                        : undefined
+                                }
+                                sx={{
+                                    height: 200,
+                                    '&[data-active]': {
+                                        backgroundColor: 'action.selected',
+                                        '&:hover': {
+                                            backgroundColor:
+                                                'action.selectedHover',
+                                        },
+                                    },
+                                }}
+                            >
+                                <CardContent sx={{ height: '100%' }}>
+                                    <Typography variant="h5" component="div">
+                                        {incident.incidentName}
+                                    </Typography>
+                                    <Typography
+                                        variant="h6"
+                                        color="text.secondary"
+                                    >
+                                        {incident.incidentType}
+                                    </Typography>
+                                    <Typography
+                                        variant="h6"
+                                        color="text.secondary"
+                                    >
+                                        Agency: {incident.agencyName}
+                                    </Typography>
+                                </CardContent>
+                            </CardActionArea>
+                        </Card>
+                    </Grid>
+                ))}
+                {tempIncidents.map((incident) => (
+                    <Grid size={{ sm: 12, md: 12, lg: 4, xl: 4 }}>
+                        <Card key={incident.id} variant="outlined">
+                            <CardActionArea
+                                onClick={() =>
+                                    appRouter.navigate(
+                                        `/activeIncident/${incident.id}`
                                     )
                                 }
                                 data-active={

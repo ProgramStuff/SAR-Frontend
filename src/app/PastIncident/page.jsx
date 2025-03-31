@@ -37,7 +37,7 @@ export default function PastIncident({ changePath }) {
             <Grid container justifyContent={'center'} spacing={1}>
                 {tempIncidents.map((incident) => (
                     <Grid size={{ sm: 12, md: 12, lg: 4, xl: 4 }}>
-                        <Card key={incident.id}>
+                        <Card key={incident.id} variant="outlined">
                             <CardActionArea
                                 onClick={() =>
                                     changePath(

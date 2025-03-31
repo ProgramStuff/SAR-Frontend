@@ -18,7 +18,6 @@ import { styled } from '@mui/material/styles';
 // import ColorModeSelect from './theme/ColorModeSelect';
 import axios from 'axios';
 
-
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',

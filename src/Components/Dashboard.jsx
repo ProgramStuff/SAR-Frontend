@@ -16,6 +16,7 @@ import Profile from '../app/Profile/page';
 import CompleteIncident from '../app/CompleteIncident/page';
 import { useNavigate } from 'react-router-dom';
 import MuiCard from '@mui/material/Card';
+import AdditionalFields from './AdditionalFields';
 
 import Stack from '@mui/material/Stack';
 import HomeIcon from '@mui/icons-material/Home';
@@ -34,6 +35,7 @@ import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import Register from '../app/Regsiter/page';
 import { Widgets } from '@mui/icons-material';
 import CreateTask from '../app/CreateTask/page';
+import FileUpload from './FileUpload';
 
 const lightDarkTheme = extendTheme({
     colorSchemes: { light: true, dark: true },
@@ -121,6 +123,7 @@ export default function Dashboard(props) {
                     segment: 'activeIncident',
                     title: 'Active Incidents',
                     icon: <NotificationsActiveIcon />,
+                    pattern: 'activeIncident{/:incidentId}*',
                 },
                 {
                     segment: 'newIncident',
@@ -205,12 +208,20 @@ export default function Dashboard(props) {
             router={router}
             theme={lightDarkTheme}
             branding={{
-                title: 'SAR FORGE',
-                logo: (
-                    <TroubleshootIcon
-                        sx={{ margin: '0.8vh', color: '#037AFF' }}
-                    />
+                title: (
+                    <>
+                        {' '}
+                        <img
+                            src="src\app\Branding\icon.png"
+                            style={{ width: '3vw' }}
+                        />{' '}
+                        <img
+                            src="src\app\Branding\profileThin.png"
+                            style={{ width: '10vw' }}
+                        />{' '}
+                    </>
                 ),
+                logo: '',
             }}
         >
             <DashboardLayout>
@@ -225,10 +236,10 @@ export default function Dashboard(props) {
                         justifyContent="space-between"
                     >
                         {router.pathname == '/incident/activeIncident' && (
-                            <ActiveIncident changePath={setPathname} />
+                            <ActiveIncident appRouter={router} />
                         )}
                         {router.pathname == '/incident' && (
-                            <ActiveIncident changePath={setPathname} />
+                            <ActiveIncident appRouter={router} />
                         )}
 
                         {router.pathname == '/incident/newIncident' && (
@@ -248,13 +259,19 @@ export default function Dashboard(props) {
                         {router.pathname == '/myCertifications' && <MyCerts />}
                         {router.pathname == '/settings/profile' && <Profile />}
                         {router.pathname == '/userProfile' && <Profile />}
-                        {/incident\/activeIncident\/./.test(
-                            router.pathname
-                        ) && (
-                            <CreateIncident
-                                appRouter={router}
-                                changePathFunction={setPathname}
-                            />
+                        {/activeIncident\/./.test(router.pathname) && (
+                            <>
+                                <CreateIncident
+                                    appRouter={router}
+                                    changePathFunction={setPathname}
+                                />
+                                <AdditionalFields
+                                    changePath={setPathname}
+                                    appRouter={router}
+                                    incidentId={router.pathname.split('/')[3]}
+                                />
+                                <FileUpload appRouter={router} />
+                            </>
                         )}
                         {/incident\/.\/newTask/.test(router.pathname) && (
                             <CreateTask
@@ -262,10 +279,18 @@ export default function Dashboard(props) {
                             />
                         )}
                         {/incident\/pastIncident\/./.test(router.pathname) && (
-                            <CompleteIncident
-                                appRouter={router}
-                                changePathFunction={setPathname}
-                            />
+                            <>
+                                <CompleteIncident
+                                    appRouter={router}
+                                    changePathFunction={setPathname}
+                                />
+                                <AdditionalFields
+                                    changePath={setPathname}
+                                    appRouter={router}
+                                    incidentId={router.pathname.split('/')[3]}
+                                />
+                                <FileUpload appRouter={router} />
+                            </>
                         )}
                     </ContentContainer>
                 </PageContainer>

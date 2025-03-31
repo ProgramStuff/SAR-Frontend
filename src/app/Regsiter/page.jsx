@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -123,20 +124,10 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
     },
 }));
 
-/*
- * name
- * province
- */
-
 const tempAgency = [
     {
-        id: 1,
-        name: 'King Search and Rescue',
-        province: 'Nova Scotia',
-    },
-    {
-        id: '2',
-        name: 'Greenwhich Fire',
+        id: '8afd6fa8-17ce-4591-8d57-59b29933dd61',
+        name: 'Kings County Search and Rescue',
         province: 'Nova Scotia',
     },
 ];
@@ -161,6 +152,7 @@ export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
     const validateInputs = () => {
         const email = document.getElementById('email');
@@ -225,38 +217,58 @@ export default function Register() {
     };
 
     async function handleSubmit(e) {
+        console.log(agency);
         e.preventDefault();
 
         const fromData = new FormData(e.currentTarget);
         const email = fromData.get('email');
         const password = fromData.get('password');
-        const name = fromData.get('name');
+        const fName = fromData.get('fName');
+        const lName = fromData.get('lName');
         const phone = fromData.get('phone');
 
         const payload = {
-            name: name,
+            role: userRole,
+            firstName: fName,
+            lastName: lName,
             brithdate: birthDate.toISOString(),
             phone: phone,
-            agency: agency,
             province: provinceChoice,
+            agencyId: agency,
+            checkedIn: false,
             email: email,
-            password: password,
-            role: userRole,
         };
         console.log(payload);
+
         try {
             const response = await axios.post(
-                `${import.meta.env.API_ENDPOINT}/register`,
+                `${import.meta.env.VITE_API_ENDPOINT}/register`,
                 { email, password }
             );
             if (response.status == 200) {
-                setMessage(`Registration successful: ${response.data.message}`);
-            } else {
-                if (response.errors.DuplicateUserName) {
-                    setMessage('Username already exists');
+                setMessage(
+                    `User registration successful: ${response.data.message}`
+                );
+                //* Call asign-role endpoint to create the responder
+                try {
+                    const response = await axios.post(
+                        `${import.meta.env.VITE_API_ENDPOINT}/assign-role`,
+                        payload
+                    );
+                    if (response.status == 200) {
+                        setMessage(
+                            `Responder registration successful: ${response.data.message}`
+                        );
+                    }
+                } catch (error) {
+                    setMessage(`Error: ${error.message}`);
+                    console.log(`Error: ${error.message}`);
                 }
             }
         } catch (error) {
+            if (error.DuplicateUserName) {
+                setMessage('Username already exists');
+            }
             setMessage(`Error: ${error.message}`);
             console.log(`Error: ${error.message}`);
         }
@@ -287,14 +299,28 @@ export default function Register() {
                         }}
                     >
                         <FormControl>
-                            <FormLabel htmlFor="name">Full name</FormLabel>
+                            <FormLabel htmlFor="fName">First Name</FormLabel>
                             <TextField
                                 autoComplete="name"
-                                name="name"
+                                name="fName"
                                 required
                                 fullWidth
                                 id="name"
-                                placeholder="Full Name"
+                                placeholder="First Name"
+                                error={nameError}
+                                helperText={nameErrorMessage}
+                                color={nameError ? 'error' : 'primary'}
+                            />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel htmlFor="lName">Last Name</FormLabel>
+                            <TextField
+                                autoComplete="name"
+                                name="lName"
+                                required
+                                fullWidth
+                                id="name"
+                                placeholder="Last Name"
                                 error={nameError}
                                 helperText={nameErrorMessage}
                                 color={nameError ? 'error' : 'primary'}
@@ -428,6 +454,29 @@ export default function Register() {
                         >
                             Sign up
                         </Button>
+                    </Box>
+                    <Divider>
+                        <Typography sx={{ color: 'text.secondary' }}>
+                            or
+                        </Typography>
+                    </Divider>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 2,
+                        }}
+                    >
+                        <Typography sx={{ textAlign: 'center' }}>
+                            Already have an account?{' '}
+                            <Link
+                                href="/login"
+                                variant="body2"
+                                sx={{ alignSelf: 'center' }}
+                            >
+                                Sign in
+                            </Link>
+                        </Typography>
                     </Box>
                 </Card>
             </SignUpContainer>

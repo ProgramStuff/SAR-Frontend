@@ -8,6 +8,7 @@ import FormControl from '@mui/material/FormControl';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import axios from 'axios';
+import { Typography } from '@mui/material';
 import FileUpload from '../../Components/FileUpload';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -24,29 +25,9 @@ const agencies = [
         label: '',
     },
     {
-        id: '1',
+        id: '8afd6fa8-17ce-4591-8d57-59b29933dd61',
         value: 'SAR',
         label: 'Search and Rescue',
-    },
-    {
-        id: '2',
-        value: 'Fire',
-        label: 'Fire',
-    },
-    {
-        id: '3',
-        value: 'Police',
-        label: 'Police',
-    },
-    {
-        id: '4',
-        value: 'EMO',
-        label: 'EMO',
-    },
-    {
-        id: '5',
-        value: 'Other',
-        label: 'Other',
     },
 ];
 
@@ -151,6 +132,7 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
     const [summary, setSummary] = useState('');
     const [objectives, setObjectives] = useState('');
     const [activeIncidentId, setActiveIncidentId] = useState('');
+    const [payload, setPayload] = useState(null);
 
     useEffect(() => {
         getCookie();
@@ -204,21 +186,32 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
             city: city,
             postal: postal,
             province: provinceChoice,
-            date: startDate.toISOString(),
+            startDate: dayjs(startDate),
             summary: summary,
             objectives: objectives,
         };
+        setPayload(payload);
+        console.log(payload);
 
-        // try {
-        //     const response = await axios.post('http://localhost:5185/newIncident', payload);
+        try {
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_ENDPOINT}/create-incident`,
+                payload
+            );
 
-        //     if (response.status == 200) {
-        //         setMessage(`Registration successful: ${response.data.message}`);
-        //     }
-        // } catch (error) {
-        //     setMessage(`Error: ${error.message}`);
-        //     console.log(`Error: ${error.message}`);
-        // }
+            if (response.status == 200) {
+                console.log(
+                    `Incident creation successful: ${response.data.message}`
+                );
+            }
+        } catch (error) {
+            setMessage(`Error: ${error.message}`);
+        }
+    }
+
+    async function handleUpdate(e) {
+        e.preventDefault();
+        console.log('UPDATE');
     }
 
     const tempIncident1 = {
@@ -288,23 +281,21 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
             setSummary(data.summary);
             setObjectives(data.objectives);
         }
-
-        // try {
-        //     const response = await axios.get(`http://localhost:5185/activeIncident/${variable}`, payload);
-
-        //     if (response.status == 200) {
-        //         setMessage(`Registration successful: ${response.data.message}`);
-        //     }
-        // } catch (error) {
-        //     setMessage(`Error: ${error.message}`);
-        //     console.log(`Error: ${error.message}`);
-        // }
     }
 
     return (
         <>
             <CssBaseline enableColorScheme />
-            <Box maxWidth component="form" onSubmit={handleSubmit}>
+            <Box
+                sx={{ margin: 'auto' }}
+                maxWidth
+                component="form"
+                onSubmit={activeIncidentId ? handleUpdate : handleSubmit}
+            >
+                <Typography sx={{ ml: '1vh' }} variant="h6">
+                    Incident Information
+                </Typography>
+
                 <FormControl>
                     <TextField
                         name="incidentName"
@@ -502,6 +493,7 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
                         multiline
                         onChange={(event) => setSummary(event.target.value)}
                         maxRows={1000}
+                        minRows={8}
                     />
                 </FormControl>
 
@@ -516,20 +508,16 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
                         label="Objectives"
                         multiline
                         maxRows={1000}
+                        minRows={8}
                         onChange={(event) => setObjectives(event.target.value)}
                     />
                 </FormControl>
 
-                {activeIncidentId && (
-                    <AdditionalFields
-                        changePath={changePathFunction}
-                        incidentId={appRouter.pathname.split('/')[3]}
-                    />
-                )}
-
-                {activeIncidentId && <FileUpload />}
-
-                <Stack spacing={3} direction="row" sx={{ marginTop: '3vh' }}>
+                <Stack
+                    spacing={3}
+                    direction="row"
+                    sx={{ mt: '3vh', mb: '3vh', ml: '1vh' }}
+                >
                     <Button
                         sx={{ width: '10vw' }}
                         size="large"
@@ -549,6 +537,16 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
                     </Button>
                 </Stack>
             </Box>
+            {payload && (
+                <>
+                    <AdditionalFields
+                        changePath={changePathFunction}
+                        appRouter={appRouter}
+                        incidentId={100}
+                    />
+                    <FileUpload appRouter={appRouter} />
+                </>
+            )}
         </>
     );
 }
