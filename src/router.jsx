@@ -12,7 +12,6 @@ export const router = createBrowserRouter([
         children: [
             { path: '/', element: <LandingPage /> },
             { path: '/Login', element: <Login /> },
-            { path: '/Register', element: <Register /> },
 
             {
                 element: <PrivateRoutes role="user" />,
