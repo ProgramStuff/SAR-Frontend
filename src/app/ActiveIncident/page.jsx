@@ -45,7 +45,7 @@ async function getIncidents() {
     }
 }
 
-export default function ActiveIncident({ appRouter }) {
+export default function ActiveIncident({ appRouter, setSelectedIncident }) {
     const [selectedCard, setSelectedCard] = useState(0);
     const [allIncidents, setAllIncidents] = useState([]);
     useEffect(() => {
@@ -56,18 +56,20 @@ export default function ActiveIncident({ appRouter }) {
         fetchIncidents();
     }, []);
 
-    console.log('ALL', allIncidents);
+    function handleSelection(incidentId, index) {
+        setSelectedIncident(allIncidents[index]);
+        appRouter.navigate(`/activeIncident/${incidentId}`);
+    }
+
     return (
         <>
-            <Grid container justifyContent={'center'} spacing={1}>
-                {allIncidents.map((incident) => (
+            <Grid container justifyContent={'start'} spacing={1}>
+                {allIncidents.map((incident, index) => (
                     <Grid size={{ sm: 12, md: 12, lg: 4, xl: 4 }}>
                         <Card key={incident.incidentId} variant="outlined">
                             <CardActionArea
                                 onClick={() =>
-                                    appRouter.navigate(
-                                        `/activeIncident/${incident.incidentId}`
-                                    )
+                                    handleSelection(incident.incidentId, index)
                                 }
                                 data-active={
                                     selectedCard === incident.incidentId
@@ -106,7 +108,7 @@ export default function ActiveIncident({ appRouter }) {
                         </Card>
                     </Grid>
                 ))}
-                {tempIncidents.map((incident) => (
+                {/* {tempIncidents.map((incident) => (
                     <Grid size={{ sm: 12, md: 12, lg: 4, xl: 4 }}>
                         <Card key={incident.id} variant="outlined">
                             <CardActionArea
@@ -151,7 +153,7 @@ export default function ActiveIncident({ appRouter }) {
                             </CardActionArea>
                         </Card>
                     </Grid>
-                ))}
+                ))} */}
             </Grid>
         </>
     );
