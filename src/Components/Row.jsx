@@ -12,10 +12,12 @@ import Typography from '@mui/material/Typography';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Checkbox from '@mui/material/Checkbox';
+import TextField from '@mui/material/TextField';
 
 export default function Row(props) {
-    const { row, setSelectedRow, selectedRows } = props;
+    const { row, setSelectedRow, selectedRows, setRoles, roles } = props;
     const [open, setOpen] = useState(false);
+    const [responderRole, setResponderRole] = useState([]);
     let isSelected = selectedRows.includes(row.id);
 
     const handleSelect = () => {
@@ -24,6 +26,27 @@ export default function Row(props) {
         } else {
             setSelectedRow([...selectedRows, row.id]);
         }
+    };
+
+    const handRoleUpdate = (resRole) => {
+        const newResponderRole = {
+            responderId: row.id,
+            role: resRole,
+        };
+
+        setResponderRole(newResponderRole);
+        setRoles((roles) => {
+            const existingIndex = roles.findIndex(
+                (role) => role.responderId === row.id
+            );
+            if (existingIndex !== -1) {
+                const updatedRoles = [...roles];
+                updatedRoles[existingIndex] = newResponderRole;
+                return updatedRoles;
+            } else {
+                return [...roles, newResponderRole];
+            }
+        });
     };
 
     useEffect(() => {}, [selectedRows]);
@@ -46,6 +69,13 @@ export default function Row(props) {
                 </TableCell>
                 <TableCell component="th" scope="row">
                     {row.name}
+                </TableCell>
+                <TableCell>
+                    <TextField
+                        id="role"
+                        variant="outlined"
+                        onChange={(event) => handRoleUpdate(event.target.value)}
+                    />
                 </TableCell>
                 <TableCell align="center">{row.phoneNumber}</TableCell>
                 <TableCell>
