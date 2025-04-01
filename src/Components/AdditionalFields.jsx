@@ -94,14 +94,18 @@ export default function AdditionalFields({
                         </Grid>
                     ))}
             </Grid>
-            <Button
-                sx={{ width: '13vw', marginTop: '2vh', mb: '2vh' }}
-                size="large"
-                variant="contained"
-                onClick={() => changePath(`/incident/${incidentId}/newTask`)}
-            >
-                Create New Task
-            </Button>
+            {!/incident\/pastIncident\/./.test(appRouter.pathname) && (
+                <Button
+                    sx={{ width: '13vw', marginTop: '2vh', mb: '2vh' }}
+                    size="large"
+                    variant="contained"
+                    onClick={() =>
+                        changePath(`/incident/${incidentId}/newTask`)
+                    }
+                >
+                    Create New Task
+                </Button>
+            )}
         </Box>
     );
 }

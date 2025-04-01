@@ -17,6 +17,7 @@ import CompleteIncident from '../app/CompleteIncident/page';
 import { useNavigate } from 'react-router-dom';
 import MuiCard from '@mui/material/Card';
 import AdditionalFields from './AdditionalFields';
+import axios from 'axios';
 
 import Stack from '@mui/material/Stack';
 import HomeIcon from '@mui/icons-material/Home';
@@ -74,9 +75,9 @@ const ContentContainer = styled(Stack)(({ theme }) => ({
     },
 }));
 
-export default function Dashboard(props) {
+export default function Dashboard({ user }) {
     const [pathname, setPathname] = useState('/incident');
-
+    const [selectedIncident, setSelectedIncident] = useState([]);
     const router = useMemo(() => {
         return {
             pathname,
@@ -201,7 +202,6 @@ export default function Dashboard(props) {
             icon: <AccountCircleIcon color="#037AFF" />,
         },
     ];
-    console.log(router.pathname);
     return (
         <AppProvider
             navigation={NAVIGATION}
@@ -217,7 +217,7 @@ export default function Dashboard(props) {
                         />{' '}
                         <img
                             src="src\app\Branding\profileThin.png"
-                            style={{ width: '10vw' }}
+                            style={{ width: '10vw', mt: '1vh' }}
                         />{' '}
                     </>
                 ),
@@ -236,16 +236,24 @@ export default function Dashboard(props) {
                         justifyContent="space-between"
                     >
                         {router.pathname == '/incident/activeIncident' && (
-                            <ActiveIncident appRouter={router} />
+                            <ActiveIncident
+                                appRouter={router}
+                                setSelectedIncident={setSelectedIncident}
+                            />
                         )}
                         {router.pathname == '/incident' && (
-                            <ActiveIncident appRouter={router} />
+                            <ActiveIncident
+                                appRouter={router}
+                                setSelectedIncident={setSelectedIncident}
+                            />
                         )}
 
                         {router.pathname == '/incident/newIncident' && (
                             <CreateIncident
                                 appRouter={router}
                                 changePathFunction={setPathname}
+                                user={user}
+                                selectedIncident={selectedIncident}
                             />
                         )}
                         {router.pathname == '/incident/pastIncident' && (
@@ -264,18 +272,24 @@ export default function Dashboard(props) {
                                 <CreateIncident
                                     appRouter={router}
                                     changePathFunction={setPathname}
+                                    user={user}
+                                    selectedIncident={selectedIncident}
                                 />
                                 <AdditionalFields
                                     changePath={setPathname}
                                     appRouter={router}
-                                    incidentId={router.pathname.split('/')[3]}
+                                    incidentId={router.pathname.split('/')[2]}
                                 />
                                 <FileUpload appRouter={router} />
                             </>
                         )}
-                        {/incident\/.\/newTask/.test(router.pathname) && (
+                        {/^\/incident\/([^/]+)\/newTask$/.test(
+                            router.pathname
+                        ) && (
                             <CreateTask
                                 taskID={router.pathname.split('/')[2]}
+                                appRouter={router}
+                                user={user}
                             />
                         )}
                         {/incident\/pastIncident\/./.test(router.pathname) && (

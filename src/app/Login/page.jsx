@@ -144,13 +144,13 @@ export default function Login() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        context.setUser({
-            fName: 'Jordan',
-            lName: 'Kelsey',
-            role: 'admin',
-        });
-        setCookie('user', context.user, 10);
-        navigate('/Dashboard');
+        // context.setUser({
+        //     fName: 'Jordan',
+        //     lName: 'Kelsey',
+        //     role: 'admin',
+        // });
+        // setCookie('user', context.user, 10);
+        // navigate('/Dashboard');
 
         const payload = {
             email: email,
@@ -162,18 +162,30 @@ export default function Login() {
                 `${import.meta.env.VITE_API_ENDPOINT}/login`,
                 payload
             );
-            const data = await response.json();
 
-            if (response.ok) {
+            if (response.status == 200) {
                 // If registration is successful
-                context.setUser({
-                    fName: 'Jordan',
-                    lName: 'Kelsey',
-                    role: 'admin',
-                });
-                setCookie('user', context.user, 10);
-                console.log('Login Successful');
-                navigate('/Dashboard');
+                try {
+                    const responderResponse = await axios.post(
+                        `${import.meta.env.VITE_API_ENDPOINT}/get-responderId`,
+                        { email: email }
+                    );
+                    if (responderResponse.status == 200) {
+                        context.setUser({
+                            fName: 'Jordan',
+                            lName: 'Kelsey',
+                            email: email,
+                            role: 'admin',
+                            responderId: responderResponse.data,
+                            accessToken: response.data.accessToken,
+                        });
+                        setCookie('user', context.user, 10);
+                        console.log('Login Successful');
+                        navigate('/Dashboard');
+                    }
+                } catch (error) {
+                    console.log('Error fetching UID: ', error.message);
+                }
             } else {
                 // If registration fails
                 setMessage('Email or password is incorrect.');
@@ -187,7 +199,7 @@ export default function Login() {
         <>
             <CssBaseline enableColorScheme />
             <SignUpContainer direction="column" justifyContent="space-between">
-                <Card variant="outlined">
+                <Card variant="outlined" sx={{ pb: '8vh' }}>
                     <Typography
                         component="h1"
                         variant="h4"
@@ -248,29 +260,6 @@ export default function Login() {
                         >
                             Sign In
                         </Button>
-                    </Box>
-                    <Divider>
-                        <Typography sx={{ color: 'text.secondary' }}>
-                            or
-                        </Typography>
-                    </Divider>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 2,
-                        }}
-                    >
-                        <Typography sx={{ textAlign: 'center' }}>
-                            Don't have an account?{' '}
-                            <Link
-                                href="/register"
-                                variant="body2"
-                                sx={{ alignSelf: 'center' }}
-                            >
-                                Sign up
-                            </Link>
-                        </Typography>
                     </Box>
                 </Card>
             </SignUpContainer>

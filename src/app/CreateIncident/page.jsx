@@ -26,7 +26,7 @@ const agencies = [
     },
     {
         id: '8afd6fa8-17ce-4591-8d57-59b29933dd61',
-        value: 'SAR',
+        value: 'Search and Rescue',
         label: 'Search and Rescue',
     },
 ];
@@ -117,7 +117,12 @@ const province = [
     },
 ];
 
-export default function CreateIncident({ appRouter, changePathFunction }) {
+export default function CreateIncident({
+    appRouter,
+    changePathFunction,
+    user,
+    selectedIncident,
+}) {
     const [currentUser, setCurrentUser] = useState({});
     const [incidentName, setIncidentName] = useState('');
     const [incidentCommander, setIncidentCommander] = useState('');
@@ -136,7 +141,7 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
 
     useEffect(() => {
         getCookie();
-        if (/incident\/activeIncident\/./.test(appRouter.pathname)) {
+        if (/activeIncident\/./.test(appRouter.pathname)) {
             loadIncident();
         }
     }, []);
@@ -178,7 +183,7 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
 
         const payload = {
             incidentName: incidentName,
-            incidentCommander: incidentCommander,
+            incidentCommander: user.responderId,
             agency: agency,
             incidentType: incidentTypeChoice,
             operationPeriod: op,
@@ -191,7 +196,6 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
             objectives: objectives,
         };
         setPayload(payload);
-        console.log(payload);
 
         try {
             const response = await axios.post(
@@ -200,12 +204,11 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
             );
 
             if (response.status == 200) {
-                console.log(
-                    `Incident creation successful: ${response.data.message}`
-                );
+                console.log('RESPONSE', response.data);
+                console.log(`Incident creation successful: ${response}`);
             }
         } catch (error) {
-            setMessage(`Error: ${error.message}`);
+            console.log(`Error: ${error.message}`);
         }
     }
 
@@ -264,16 +267,19 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
     };
 
     function loadIncident() {
-        console.log(`From: ${appRouter.pathname.split('/')[3]}`);
-        const incidentId = appRouter.pathname.split('/')[3];
+        const incidentId = appRouter.pathname.split('/')[2];
         setActiveIncidentId(incidentId);
+        setIncidentName(selectedIncident.incidentName);
+        setAgency(selectedIncident.agencyName);
+        setIncidentTypeChoice(selectedIncident.incidentType);
+        setStartDate(dayjs(selectedIncident.startDate));
         if (tempIncidents[incidentId]) {
             const data = tempIncidents[incidentId];
-            setIncidentName(data.incidentName);
+            setIncidentName(selectedIncident.incidentName);
             setIncidentCommander(data.incidentCommander);
             setAddress(data.address);
-            setAgency(data.agency);
-            setIncidentTypeChoice(data.incidentType);
+            setAgency(selectedIncident.agencyName);
+            setIncidentTypeChoice(selectedIncident.incidentType);
             setOp(data.operationPeriod);
             setCity(data.city);
             setPostal(data.postal);
@@ -283,6 +289,7 @@ export default function CreateIncident({ appRouter, changePathFunction }) {
         }
     }
 
+    console.log(selectedIncident);
     return (
         <>
             <CssBaseline enableColorScheme />

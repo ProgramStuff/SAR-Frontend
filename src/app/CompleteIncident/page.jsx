@@ -28,29 +28,9 @@ const agencies = [
         label: '',
     },
     {
-        id: '1',
+        id: '8afd6fa8-17ce-4591-8d57-59b29933dd61',
         value: 'SAR',
         label: 'Search and Rescue',
-    },
-    {
-        id: '2',
-        value: 'Fire',
-        label: 'Fire',
-    },
-    {
-        id: '3',
-        value: 'Police',
-        label: 'Police',
-    },
-    {
-        id: '4',
-        value: 'EMO',
-        label: 'EMO',
-    },
-    {
-        id: '5',
-        value: 'Other',
-        label: 'Other',
     },
 ];
 
@@ -243,7 +223,7 @@ export default function CompleteIncident({ appRouter, changePathFunction }) {
     const tempIncident2 = {
         incidentName: 'Incident 104-07-16-2023',
         incidentCommander: 'Jordan Kelsey',
-        agency: 'Search and Rescue',
+        agency: 'SAR',
         incidentType: 'Missing Person',
         operationPeriod: 1,
         address: '123 Main Street',
@@ -257,8 +237,8 @@ export default function CompleteIncident({ appRouter, changePathFunction }) {
     const tempIncident3 = {
         incidentName: 'Incident 108-01-17-2025',
         incidentCommander: 'Bob Straford',
-        agency: 'Search and Rescue',
-        incidentType: 'Missig Person',
+        agency: 'SAR',
+        incidentType: 'Missing Person',
         operationPeriod: 1,
         address: '123 Pleasant St',
         city: 'Wolfville',
@@ -276,7 +256,6 @@ export default function CompleteIncident({ appRouter, changePathFunction }) {
     };
 
     function loadIncident() {
-        console.log(`From: ${appRouter.pathname.split('/')[3]}`);
         const incidentId = appRouter.pathname.split('/')[3];
         setActiveIncidentId(incidentId);
         if (tempIncidents[incidentId]) {

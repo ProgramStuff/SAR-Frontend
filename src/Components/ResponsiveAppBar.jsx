@@ -18,11 +18,9 @@ import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import { extendTheme, ThemeProvider } from '@mui/material';
 import 'tailwindcss';
 import Dashboard from './Dashboard';
-import Register from '../app/Regsiter/page';
 import Login from '../app/Login/page';
-import LandingPage from '../app/LandingPage/page';
 
-const pages = ['About', 'Register', 'Login'];
+const pages = ['About', 'Login'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export default function ResponsiveAppBar() {
@@ -68,33 +66,31 @@ export default function ResponsiveAppBar() {
     return (
         <ThemeProvider theme={lightDarkTheme}>
             {user ? (
-                <Dashboard />
+                <Dashboard user={user} />
             ) : (
                 <AppBar color="white" sx={{ width: '100%' }} position="static">
-                    <Container maxWidth="xl">
-                        <Toolbar disableGutters>
-                            <TroubleshootIcon
-                                sx={{
-                                    display: { xs: 'none', md: 'flex' },
-                                    mr: 1,
-                                    color: '#037AFF',
-                                }}
-                            />
-                            <Typography
-                                variant="h6"
-                                noWrap
-                                component="a"
-                                href="/"
-                                sx={{
-                                    mr: 2,
-                                    display: { xs: 'none', md: 'flex' },
-                                    fontWeight: 700,
-                                    color: '#037AFF',
-                                    textDecoration: 'none',
-                                }}
-                            >
-                                SAR FORGE
-                            </Typography>
+                    <Container maxWidth="xl" sx={{ ml: 0, width: '100%' }}>
+                        <Toolbar sx={{ width: '100%' }} disableGutters>
+                            <Link href="/">
+                                <Box
+                                    component="img"
+                                    src="src\app\Branding\icon.png"
+                                    sx={{
+                                        width: '3vw',
+                                        display: { xs: 'none', md: 'flex' },
+                                    }}
+                                />
+                            </Link>
+                            <Link href="/">
+                                <Box
+                                    component="img"
+                                    src="src\app\Branding\profileThin.png"
+                                    sx={{
+                                        width: '10vw',
+                                        display: { xs: 'none', md: 'flex' },
+                                    }}
+                                />
+                            </Link>
 
                             <Box
                                 sx={{
@@ -136,43 +132,55 @@ export default function ResponsiveAppBar() {
                                             key={page}
                                             onClick={handleCloseNavMenu}
                                         >
-                                            <Typography
-                                                sx={{ textAlign: 'center' }}
+                                            <Button
+                                                href={`/${page}`}
+                                                sx={{
+                                                    textDecoration: 'none',
+                                                    color: '#037AFF',
+                                                    display: 'block',
+                                                }}
                                             >
-                                                {page}
-                                            </Typography>
+                                                <Typography
+                                                    sx={{ textAlign: 'center' }}
+                                                >
+                                                    {page}
+                                                </Typography>
+                                            </Button>
                                         </MenuItem>
                                     ))}
                                 </Menu>
                             </Box>
-                            <TroubleshootIcon
-                                sx={{
-                                    display: { xs: 'flex', md: 'none' },
-                                    mr: 1,
-                                    color: '#037AFF',
-                                }}
-                            />
-                            <Typography
-                                variant="h5"
-                                noWrap
-                                component="a"
-                                href="/"
-                                sx={{
-                                    mr: 2,
-                                    display: { xs: 'flex', md: 'none' },
-                                    flexGrow: 1,
-                                    fontWeight: 700,
-                                    color: '#037AFF',
-                                    textDecoration: 'none',
-                                }}
-                            >
-                                SAR FORGE
-                            </Typography>
+
+                            <Link href="/">
+                                <Box
+                                    component="img"
+                                    src="src\app\Branding\icon.png"
+                                    sx={{
+                                        width: '8vw',
+                                        display: { md: 'none' },
+                                    }}
+                                />
+                            </Link>
+                            <Link href="/">
+                                <Box
+                                    component="img"
+                                    src="src\app\Branding\profileThin.png"
+                                    sx={{
+                                        width: '32vw',
+                                        display: { md: 'none' },
+                                    }}
+                                />
+                            </Link>
                             <Box
                                 sx={{
                                     textDecoration: 'none',
                                     flexGrow: 1,
-                                    display: { xs: 'none', md: 'flex' },
+                                    display: {
+                                        xs: 'none',
+                                        md: 'flex',
+                                        lg: 'flex',
+                                    },
+                                    justifyContent: 'flex-end',
                                 }}
                             >
                                 {pages.map((page) => (

@@ -108,7 +108,7 @@ function EnhancedTableToolbar(props) {
     );
 }
 
-export default function ResponderTable() {
+export default function ResponderTable({ setRoles, roles }) {
     const [selected, setSelected] = useState([]);
     const [responderInfo, setResponderInfo] = useState([
         {
@@ -159,6 +159,7 @@ export default function ResponderTable() {
                             <TableCell>Checkin/out</TableCell>
                             <TableCell align="center">Checked In</TableCell>
                             <TableCell>Responder Name</TableCell>
+                            <TableCell>Responder Role</TableCell>
                             <TableCell align="center">Phone Number</TableCell>
                             <TableCell>Certificates</TableCell>
                         </TableRow>
@@ -170,6 +171,8 @@ export default function ResponderTable() {
                                 row={row}
                                 setSelectedRow={setSelected}
                                 selectedRows={selected}
+                                setRoles={setRoles}
+                                roles={roles}
                             />
                         ))}
                     </TableBody>
