@@ -188,11 +188,15 @@ export default function ResponsiveAppBar() {
                                         key={page}
                                         href={`/${page}`}
                                         onClick={handleCloseNavMenu}
+                                        variant={page == 'Login' && 'contained'}
                                         sx={{
                                             textDecoration: 'none',
                                             my: 2,
-                                            color: '#037AFF     ',
+                                            width: page == 'Login' && '8vw',
+                                            mr: page == 'Login' ? '4vw' : '2vw',
                                             display: 'block',
+                                            color: page == 'Login' && 'white',
+                                            textAlign: 'center',
                                         }}
                                     >
                                         {page}
