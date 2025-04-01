@@ -217,7 +217,6 @@ export default function Register() {
     };
 
     async function handleSubmit(e) {
-        console.log(agency);
         e.preventDefault();
 
         const fromData = new FormData(e.currentTarget);
@@ -256,13 +255,14 @@ export default function Register() {
                         payload
                     );
                     if (response.status == 200) {
-                        setMessage(
+                        console.log(
                             `Responder registration successful: ${response.data.message}`
                         );
                     }
                 } catch (error) {
                     setMessage(`Error: ${error.message}`);
                     console.log(`Error: ${error.message}`);
+                    console.log(response);
                 }
             }
         } catch (error) {
@@ -408,8 +408,8 @@ export default function Register() {
                                     setUserRole(event.target.value)
                                 }
                             >
-                                <MenuItem value={'ADMIN'}>Admin</MenuItem>
-                                <MenuItem value={'USER'}>User</MenuItem>
+                                <MenuItem value={'Admin'}>Admin</MenuItem>
+                                <MenuItem value={'User'}>User</MenuItem>
                             </TextField>
                         </FormControl>
 
