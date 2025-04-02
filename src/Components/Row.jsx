@@ -13,6 +13,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
+import dayjs from 'dayjs';
 
 export default function Row(props) {
     const { row, setSelectedRow, selectedRows, setRoles, roles } = props;
@@ -56,6 +57,7 @@ export default function Row(props) {
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
                 <TableCell align="center" padding="checkbox">
                     <Checkbox
+                        disabled={row.endDate != '' && true}
                         checked={isSelected}
                         onClick={handleSelect}
                         color="primary"
@@ -70,6 +72,17 @@ export default function Row(props) {
                 <TableCell component="th" scope="row">
                     {row.name}
                 </TableCell>
+                {/* Time in and out */}
+                <TableCell component="th" scope="row">
+                    {row.startDate
+                        ? dayjs(row.startDate).format('YYYY-MM-DD HH:mm:ss')
+                        : 'N/A'}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                    {row.endDate
+                        ? dayjs(row.endDate).format('YYYY-MM-DD HH:mm:ss')
+                        : 'N/A'}
+                </TableCell>
                 <TableCell>
                     <TextField
                         id="role"
@@ -78,6 +91,7 @@ export default function Row(props) {
                     />
                 </TableCell>
                 <TableCell align="center">{row.phoneNumber}</TableCell>
+                {/* Certification drop down section */}
                 <TableCell>
                     <IconButton
                         aria-label="expand row"
@@ -119,7 +133,7 @@ export default function Row(props) {
                                 <TableBody>
                                     {row.certificateInfo.map((cert) => (
                                         <TableRow
-                                            key={Date.toString(cert.date)}
+                                            key={Date.toString(cert.expiryDate)}
                                         >
                                             <TableCell
                                                 component="th"
