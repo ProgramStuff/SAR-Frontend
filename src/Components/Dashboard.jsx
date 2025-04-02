@@ -292,6 +292,16 @@ export default function Dashboard({ user }) {
                                 user={user}
                             />
                         )}
+                        {/incident\/[^/]+\/task\/[^/]+$/.test(
+                            router.pathname
+                        ) && (
+                            <CreateTask
+                                taskID={router.pathname.split('/')[4]}
+                                appRouter={router}
+                                user={user}
+                            />
+                        )}
+
                         {/incident\/pastIncident\/./.test(router.pathname) && (
                             <>
                                 <CompleteIncident

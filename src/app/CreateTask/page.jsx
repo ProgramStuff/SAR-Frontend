@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -29,6 +29,27 @@ import ResponderTable from '../../Components/Table';
  *
  */
 
+const tempCert1 = {
+    id: 1,
+    name: 'Chainsaw Operation',
+    expiryDate: dayjs('2026-07-20T23:54:26.305Z').format('YYYY-MM-DD HH:mm:ss'),
+    certificate: 'Cert',
+};
+
+const tempCert2 = {
+    id: 2,
+    name: 'Chainsaw Operation',
+    expiryDate: dayjs('2026-05-05T23:54:26.305Z').format('YYYY-MM-DD HH:mm:ss'),
+    certificate: 'Cert',
+};
+
+const tempCert3 = {
+    id: 3,
+    name: 'Drone Operation',
+    expiryDate: dayjs('2026-03-15T23:54:26.305Z').format('YYYY-MM-DD HH:mm:ss'),
+    certificate: 'Cert',
+};
+
 export default function CreateTask({ taskID, appRouter, user }) {
     const [taskName, setTaskName] = useState('');
     const [op, setOp] = useState('');
@@ -38,7 +59,146 @@ export default function CreateTask({ taskID, appRouter, user }) {
     const [endTime, setEndTime] = useState(null);
     const [description, setDescription] = useState('');
     const [roles, setRoles] = useState([]);
-    console.log(appRouter.pathname);
+    const [selected, setSelected] = useState([]);
+
+    const changeStatus = (selected) => {
+        setResponderInfo((prevState) =>
+            prevState.map((responder) => ({
+                ...responder,
+                checkedStatus: selected.some((item) => item == responder.id)
+                    ? !responder.checkedStatus
+                    : responder.checkedStatus,
+                startDate:
+                    selected.some((item) => item == responder.id) &
+                    !responder.checkedStatus
+                        ? dayjs()
+                        : responder.startDate,
+                endDate:
+                    selected.some((item) => item == responder.id) &
+                    responder.checkedStatus
+                        ? dayjs()
+                        : responder.endDate,
+            }))
+        );
+        setSelected([]);
+    };
+
+    const handleCheckIn = () => {
+        changeStatus(selected);
+    };
+
+    const [tempTask1, setTempTask1] = useState({
+        taskName: 'Search Area 1',
+        operationalPeriod: 1,
+        startDate: dayjs('2025-03-15T12:00:57.013Z'),
+        endDate: '',
+        description: 'Sweep the area',
+        team: [
+            {
+                responderId: '1',
+                name: 'Jordan Kelsey',
+                startDate: '2025-03-15T12:00:57.013Z',
+                endDate: '2025-03-15T16:00:57.013Z',
+                phone: '123-456-7890',
+                checkedStatus: false,
+                responderRole: 'Team lead',
+                cert: tempCert1,
+            },
+        ],
+    });
+
+    const [tempTask2, setTempTask2] = useState({
+        taskName: 'Search Area 2',
+        operationalPeriod: '1',
+        startDate: dayjs('2025-03-15T12:00:57.013Z'),
+        endDate: '',
+        description: 'Sweep area 2',
+        team: [
+            {
+                responderId: '2',
+                name: 'Blake Velimirovich',
+                phone: '098-765-4321',
+                checkedStatus: false,
+                startDate: '2025-03-15T12:00:57.013Z',
+                endDate: '',
+                responderRole: 'Team Lead',
+                cert: tempCert2,
+            },
+        ],
+    });
+
+    const [tempTask3, setTempTask3] = useState({
+        taskName: 'Search Area 3',
+        operationalPeriod: '1',
+        startDate: dayjs('2025-03-15T12:00:57.013Z'),
+        endDate: '',
+        description: 'Sweep area 3',
+        team: [
+            {
+                responderId: '3',
+                name: 'Alfred Parks',
+                phone: '555-123-4567',
+                checkedStatus: false,
+                startDate: '2025-03-15T12:00:57.013Z',
+                endDate: '',
+                responderRole: 'Team Lead',
+                cert: tempCert3,
+            },
+        ],
+    });
+
+    const tempTasks = {
+        1: tempTask1,
+        2: tempTask2,
+        3: tempTask3,
+    };
+
+    const [responderInfo, setResponderInfo] = useState([
+        {
+            id: 1,
+            name: 'Jordan Kelsey',
+            phone: '123-456-7890',
+            checkedStatus: false,
+            startDate: '',
+            endDate: '',
+            cert: tempCert1,
+        },
+        {
+            id: 2,
+            name: 'Blake Velimirovich',
+            phone: '098-765-4321',
+            checkedStatus: false,
+            startDate: '',
+            endDate: '',
+            cert: tempCert2,
+        },
+        {
+            id: 3,
+            name: 'Alfred Parks',
+            phone: '555-123-4567',
+            checkedStatus: false,
+            startDate: '',
+            endDate: '',
+            cert: tempCert3,
+        },
+    ]);
+
+    useEffect(() => {
+        if (/incident\/[^/]+\/task\/[^/]+$/.test(appRouter.pathname)) {
+            loadTask();
+        }
+    }, []);
+
+    function loadTask() {
+        const data = tempTasks[taskID];
+        console.log(data.startDate);
+        setTaskName(data.taskName);
+        setStartDate(data.startDate);
+        setStartTime(data.startDate);
+        setOp(data.operationalPeriod);
+        setDescription(data.description);
+    }
+
     async function handleSubmit() {
         const payload = {
             taskName: taskName,
@@ -66,7 +226,9 @@ export default function CreateTask({ taskID, appRouter, user }) {
     return (
         <Box>
             <Typography sx={{ ml: '1vh' }} variant="h6">
-                New Task
+                {/incident\/[^/]+\/task\/[^/]+$/.test(appRouter.pathname)
+                    ? 'Task'
+                    : 'New Task'}
             </Typography>
             <FormControl>
                 <TextField
@@ -153,6 +315,8 @@ export default function CreateTask({ taskID, appRouter, user }) {
                     name="op"
                     label="Opperational Period"
                     value={op}
+                    type="number"
+                    disabled
                     onChange={(event) => setOp(event.target.value)}
                     sx={{
                         width: { md: '13vw', lg: '13vw', xl: '13vw' },
@@ -176,7 +340,15 @@ export default function CreateTask({ taskID, appRouter, user }) {
                 />
             </FormControl>
 
-            <ResponderTable setRoles={setRoles} roles={roles} />
+            <ResponderTable
+                setRoles={setRoles}
+                roles={roles}
+                responderInfo={responderInfo}
+                setResponderInfo={setResponderInfo}
+                selected={selected}
+                setSelected={setSelected}
+                taskID={taskID}
+            />
 
             <Stack spacing={3} direction="row" sx={{ marginTop: '3vh' }}>
                 <Button
@@ -184,8 +356,9 @@ export default function CreateTask({ taskID, appRouter, user }) {
                     size="large"
                     variant="contained"
                     type="submit"
+                    onClick={handleCheckIn}
                 >
-                    Create
+                    Submit
                 </Button>
             </Stack>
         </Box>
