@@ -230,7 +230,7 @@ export default function Register() {
             role: userRole,
             firstName: fName,
             lastName: lName,
-            brithdate: birthDate.toISOString(),
+            brithdate: dayjs(birthDate),
             phone: phone,
             province: provinceChoice,
             agencyId: agency,

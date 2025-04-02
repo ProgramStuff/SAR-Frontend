@@ -27,17 +27,17 @@ const tempTasks = [
     {
         id: 1,
         name: 'Search Area 1',
-        startTime: '2025-03-15T23:54:26.305Z',
+        startTime: dayjs('2025-03-15T23:54:26.305Z').toString(),
     },
     {
         id: 2,
         name: 'Search Area 2',
-        startTime: '2025-03-15T23:54:26.305Z',
+        startTime: dayjs('2025-03-15T23:54:26.305Z').toString(),
     },
     {
         id: 3,
         name: 'Search Area 3',
-        startTime: '2025-03-15T23:54:26.305Z',
+        startTime: dayjs('2025-03-15T23:54:26.305Z').toString(),
     },
 ];
 
