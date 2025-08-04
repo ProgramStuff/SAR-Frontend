@@ -10,7 +10,6 @@ import Box from '@mui/material/Box';
 import axios from 'axios';
 import { Typography } from '@mui/material';
 import FileUpload from '../../Components/FileUpload';
-import { useIncidentStore } from '../../Store/incidentStore'
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -147,15 +146,10 @@ export default function CreateIncident({
     const [endTime, setEndTime] = useState(null);
     const [opInfo, setOpInfo] = useState(null);
 
-    const {setIncident} = useIncidentStore((state) => ({
-        setIncident: state.setIncident,
-    }));
-
     useEffect(() => {
         getCookie();
         if (/activeIncident\/./.test(appRouter.pathname)) {
             loadIncident();
-            setIncident(selectedIncident);
         }
     }, []);
 
