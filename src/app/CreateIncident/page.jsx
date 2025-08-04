@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import axios from 'axios';
 import { Typography } from '@mui/material';
 import FileUpload from '../../Components/FileUpload';
+import { useIncidentStore } from '../../Store/incidentStore'
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -17,6 +18,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import AdditionalFields from '../../Components/AdditionalFields';
+
 
 const agencies = [
     {
@@ -122,6 +124,7 @@ export default function CreateIncident({
     changePathFunction,
     user,
     selectedIncident,
+    addIncidentInfo,
 }) {
     const [currentUser, setCurrentUser] = useState({});
     const [incidentName, setIncidentName] = useState('');
@@ -138,16 +141,23 @@ export default function CreateIncident({
     const [objectives, setObjectives] = useState('');
     const [activeIncidentId, setActiveIncidentId] = useState('');
     const [payload, setPayload] = useState(null);
+    const [startDate, setStartDate] = useState(dayjs());
+    const [startTime, setStartTime] = useState(dayjs());
+    const [endDate, setEndDate] = useState(null);
+    const [endTime, setEndTime] = useState(null);
+    const [opInfo, setOpInfo] = useState(null);
+
+    const {setIncident} = useIncidentStore((state) => ({
+        setIncident: state.setIncident,
+    }));
 
     useEffect(() => {
         getCookie();
         if (/activeIncident\/./.test(appRouter.pathname)) {
             loadIncident();
+            setIncident(selectedIncident);
         }
     }, []);
-
-    const [startDate, setStartDate] = useState(dayjs());
-    const [startTime, setStartTime] = useState(dayjs());
 
     function getCookie() {
         let name = 'user=';
@@ -176,6 +186,18 @@ export default function CreateIncident({
         setProvinceChoice('');
         setSummary('');
         setObjectives('');
+    }
+
+    async function updateEndDate(){
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_API_ENDPOINT}/update-incidentEndDate`, {
+                incidentId: selectedIncident.incident.incidentId, endDate: endDate})
+                if(response.status == 200){
+                    console.log("End date updated");
+                }
+        }catch(error){
+            console.log("Error updating end date: ", error.message);
+        }
     }
 
     async function handleSubmit(e) {
@@ -217,79 +239,24 @@ export default function CreateIncident({
         console.log('UPDATE');
     }
 
-    const tempIncident1 = {
-        incidentName: 'Incident 101-03-15-2025',
-        incidentCommander: 'Alfred Parks',
-        agency: 'SAR',
-        incidentType: 'Missing Person',
-        operationPeriod: 1,
-        address: '123 Main Street',
-        city: 'Kentville',
-        postal: 'B4P1P2',
-        province: 'NS',
-        date: '2025-03-15T23:54:26.305Z',
-        summary: 'Elderly person escaped nursing home',
-        objectives: 'Determine search locations',
-    };
-    const tempIncident2 = {
-        incidentName: 'Incident 102-03-16-2025',
-        incidentCommander: 'Const. Marshal',
-        agency: 'Police',
-        incidentType: 'Other',
-        operationPeriod: 1,
-        address: '123 Main Street',
-        city: 'Kentville',
-        postal: 'B4P1P2',
-        province: 'NS',
-        date: '2025-03-15T23:54:26.305Z',
-        summary: 'Elderly person escaped nursing home',
-        objectives: 'Determine search locations',
-    };
-    const tempIncident3 = {
-        incidentName: 'Incident 103-03-17-2025',
-        incidentCommander: 'Bob Straford',
-        agency: 'EMO',
-        incidentType: 'Lost at Sea',
-        operationPeriod: 1,
-        address: '123 Pleasant St',
-        city: 'Wolfville',
-        postal: 'B4P2B9',
-        province: 'NS',
-        date: '2025-03-15T23:54:26.305Z',
-        summary: 'Two car head on colission',
-        objectives: 'Prepapre to begin CPR immidiately upon arrival',
-    };
-
-    const tempIncidents = {
-        1: tempIncident1,
-        2: tempIncident2,
-        3: tempIncident3,
-    };
-
+    console.log('ADD: ', addIncidentInfo);
     function loadIncident() {
         const incidentId = appRouter.pathname.split('/')[2];
-        setActiveIncidentId(incidentId);
-        setIncidentName(selectedIncident.incidentName);
-        setAgency(selectedIncident.agencyName);
-        setIncidentTypeChoice(selectedIncident.incidentType);
-        setStartDate(dayjs(selectedIncident.startDate));
-        if (tempIncidents[incidentId]) {
-            const data = tempIncidents[incidentId];
-            setIncidentName(selectedIncident.incidentName);
-            setIncidentCommander(data.incidentCommander);
-            setAddress(data.address);
-            setAgency(selectedIncident.agencyName);
-            setIncidentTypeChoice(selectedIncident.incidentType);
-            setOp(data.operationPeriod);
-            setCity(data.city);
-            setPostal(data.postal);
-            setProvinceChoice(data.province);
-            setSummary(data.summary);
-            setObjectives(data.objectives);
-        }
+        setActiveIncidentId(selectedIncident.incident.incidentId);
+        setIncidentName(selectedIncident.incident.incidentName);
+        setAddress(selectedIncident.incident.address);
+        setCity(selectedIncident.incident.city);
+        setAgency(addIncidentInfo.agencyName);
+        setIncidentTypeChoice(selectedIncident.incident.incidentType);
+        setObjectives(selectedIncident.incident.objectives);
+        setPostal(selectedIncident.incident.postal);
+        setProvinceChoice(selectedIncident.incident.province);
+        setSummary(selectedIncident.incident.summary);
+        setOp(selectedIncident.operationalPeriods[0].operationalPeriod);
+        setOpInfo(selectedIncident);
+        console.log("INFO", selectedIncident);
     }
 
-    console.log(selectedIncident);
     return (
         <>
             <CssBaseline enableColorScheme />
@@ -297,7 +264,7 @@ export default function CreateIncident({
                 sx={{ margin: 'auto' }}
                 maxWidth
                 component="form"
-                onSubmit={activeIncidentId ? handleUpdate : handleSubmit}
+                onSubmit={!endDate ? handleSubmit : updateEndDate}
             >
                 <Typography sx={{ ml: '1vh' }} variant="h6">
                     Incident Information
@@ -423,6 +390,32 @@ export default function CreateIncident({
                             onChange={(newValue) => setStartTime(newValue)}
                         />
                     </FormControl>
+
+                    <FormControl>
+                        <DatePicker
+                            name="endDate"
+                            sx={{
+                                width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                                margin: '1vh',
+                            }}
+                            label="End Date"
+                            value={endDate}
+                            onChange={(newValue) => setEndDate(newValue)}
+                        />
+                    </FormControl>
+
+                    <FormControl>
+                        <TimePicker
+                            name="endTime"
+                            sx={{
+                                width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                                margin: '1vh',
+                            }}
+                            label="End Time"
+                            value={endTime}
+                            onChange={(newValue) => setEndTime(newValue)}
+                        />
+                    </FormControl>
                 </LocalizationProvider>
 
                 <FormControl>
@@ -463,19 +456,6 @@ export default function CreateIncident({
 
                 <FormControl>
                     <TextField
-                        name="city"
-                        label="City"
-                        value={city}
-                        sx={{
-                            width: { md: '27vw', lg: '27vw', xl: '27vw' },
-                            margin: '1vh',
-                        }}
-                        onChange={(event) => setCity(event.target.value)}
-                    />
-                </FormControl>
-
-                <FormControl>
-                    <TextField
                         name="postal"
                         label="Postal Code"
                         value={postal}
@@ -485,6 +465,19 @@ export default function CreateIncident({
                             margin: '1vh',
                         }}
                         onChange={(event) => setPostal(event.target.value)}
+                    />
+                </FormControl>
+
+                <FormControl>
+                    <TextField
+                        name="city"
+                        label="City"
+                        value={city}
+                        sx={{
+                            width: { md: '27vw', lg: '27vw', xl: '27vw' },
+                            margin: '1vh',
+                        }}
+                        onChange={(event) => setCity(event.target.value)}
                     />
                 </FormControl>
 
@@ -550,6 +543,7 @@ export default function CreateIncident({
                         changePath={changePathFunction}
                         appRouter={appRouter}
                         incidentId={100}
+                        opInfo={opInfo}
                     />
                     <FileUpload appRouter={appRouter} />
                 </>
