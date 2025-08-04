@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -15,6 +15,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { alpha } from '@mui/material/styles';
 import { Button } from '@mui/material';
+import axios from 'axios';
 
 function createData(
     id,
@@ -81,6 +82,20 @@ function EnhancedTableToolbar(props) {
     );
 }
 
+const tempCert1 = {
+    id: 1,
+    name: 'Chainsaw Operation',
+    expiryDate: dayjs('2026-07-20T23:54:26.305Z').format('YYYY-MM-DD HH:mm:ss'),
+    certificate: 'Cert',
+};
+
+const tempCert2 = {
+    id: 2,
+    name: 'Chainsaw Operation',
+    expiryDate: dayjs('2026-05-05T23:54:26.305Z').format('YYYY-MM-DD HH:mm:ss'),
+    certificate: 'Cert',
+};
+
 export default function ResponderTable({
     setRoles,
     roles,
@@ -88,18 +103,67 @@ export default function ResponderTable({
     setResponderInfo,
     selected,
     setSelected,
+    taskID,
+    tempTasks,
 }) {
-    const rows = responderInfo.map((info) =>
-        createData(
-            info.id,
-            info.name,
-            info.phone,
-            info.checkedStatus,
-            info.startDate,
-            info.endDate,
-            info.cert
-        )
-    );
+    const tempCert3 = {
+        id: 3,
+        name: 'Drone Operation',
+        expiryDate: dayjs('2026-03-15T23:54:26.305Z').format(
+            'YYYY-MM-DD HH:mm:ss'
+        ),
+        certificate: 'Cert',
+    };
+
+    const rows = !taskID
+        ? responderInfo.map((responder) =>
+              createData(
+                  responder.responderId,
+                  responder.responderName,
+                  responder.phone,
+                  responder.checkedIn,
+                  responder.startDate,
+                  responder.endDate,
+                  {
+                      id: 3,
+                      name: 'Drone Operation',
+                      expiryDate: dayjs('2026-03-15T23:54:26.305Z').format(
+                          'YYYY-MM-DD HH:mm:ss'
+                      ),
+                      certificate: 'Cert',
+                  }
+              )
+          )
+        : tempTasks[taskID].team.map((info) =>
+              createData(
+                  info.responderId,
+                  info.name,
+                  info.phone,
+                  info.checkedStatus,
+                  info.startDate,
+                  info.endDate,
+                  info.cert
+              )
+          );
+
+    async function getAllResponders() {
+        try {
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_ENDPOINT}/get-allResponders`
+            );
+            if (response.status == 200) {
+                console.log('Responders retrieved: ', response.data);
+                setResponderInfo(response.data);
+            }
+        } catch (error) {
+            consoel.log('Error: ', error.message);
+        }
+    }
+
+    useEffect(() => {
+        if (responderInfo.length === 0) {
+            getAllResponders();
+        }    }, []);
 
     return (
         <Paper sx={{ width: '100%', mb: 2, ml: 0, mt: '1vh' }}>

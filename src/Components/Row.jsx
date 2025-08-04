@@ -20,7 +20,6 @@ export default function Row(props) {
     const [open, setOpen] = useState(false);
     const [responderRole, setResponderRole] = useState([]);
     let isSelected = selectedRows.includes(row.id);
-
     const handleSelect = () => {
         if (isSelected) {
             setSelectedRow(selectedRows.filter((item) => item != row.id));
@@ -51,13 +50,12 @@ export default function Row(props) {
     };
 
     useEffect(() => {}, [selectedRows]);
-
     return (
         <Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
                 <TableCell align="center" padding="checkbox">
                     <Checkbox
-                        disabled={row.endDate != '' && true}
+                        disabled={row.endDate != undefined && true}
                         checked={isSelected}
                         onClick={handleSelect}
                         color="primary"
