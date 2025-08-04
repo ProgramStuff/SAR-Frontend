@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -15,56 +15,30 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { alpha } from '@mui/material/styles';
 import { Button } from '@mui/material';
+import axios from 'axios';
 
-function createData(id, name, phoneNumber, checkedStatus, certInfo) {
+function createData(
+    id,
+    name,
+    phoneNumber,
+    checkedStatus,
+    startDate,
+    endDate,
+    certInfo
+) {
     return {
         id,
         name,
         phoneNumber,
         checkedStatus,
+        startDate,
+        endDate,
         certificateInfo: [certInfo],
     };
 }
 
-const tempCert1 = {
-    id: 1,
-    name: 'Chainsaw Operation',
-    expiryDate: dayjs().toString('2026-07-20T23:54:26.305Z'),
-    certificate: 'Cert',
-};
-
-const tempCert2 = {
-    id: 2,
-    name: 'Chainsaw Operation',
-    expiryDate: dayjs().toString('2026-05-5T23:54:26.305Z'),
-    certificate: 'Cert',
-};
-
-const tempCert3 = {
-    id: 3,
-    name: 'Drone Operation',
-    expiryDate: dayjs().toString('2026-03-15T23:54:26.305Z'),
-    certificate: 'Cert',
-};
-
 function EnhancedTableToolbar(props) {
     const { numSelected, selected, changeResponderInfo, setSelected } = props;
-
-    const changeStatus = (selected) => {
-        changeResponderInfo((prevState) =>
-            prevState.map((responder) => ({
-                ...responder,
-                checkedStatus: selected.some((item) => item == responder.id)
-                    ? !responder.checkedStatus
-                    : responder.checkedStatus,
-            }))
-        );
-        setSelected([]);
-    };
-
-    const handleCheckIn = () => {
-        changeStatus(selected);
-    };
 
     return (
         <Toolbar
@@ -101,48 +75,96 @@ function EnhancedTableToolbar(props) {
                     Responder Information
                 </Typography>
             )}
-            {numSelected > 0 && (
+            {/* {numSelected > 0 && (
                 <Button onClick={handleCheckIn}>Check In</Button>
-            )}
+            )} */}
         </Toolbar>
     );
 }
 
-export default function ResponderTable() {
-    const [selected, setSelected] = useState([]);
-    const [responderInfo, setResponderInfo] = useState([
-        {
-            id: 1,
-            name: 'Jordan Kelsey',
-            phone: '123-456-7890',
-            checkedStatus: false,
-            cert: tempCert1,
-        },
-        {
-            id: 2,
-            name: 'Blake Velimirovich',
-            phone: '098-765-4321',
-            checkedStatus: false,
-            cert: tempCert2,
-        },
-        {
-            id: 3,
-            name: 'Alfred Parks',
-            phone: '555-123-4567',
-            checkedStatus: false,
-            cert: tempCert3,
-        },
-    ]);
+const tempCert1 = {
+    id: 1,
+    name: 'Chainsaw Operation',
+    expiryDate: dayjs('2026-07-20T23:54:26.305Z').format('YYYY-MM-DD HH:mm:ss'),
+    certificate: 'Cert',
+};
 
-    const rows = responderInfo.map((info) =>
-        createData(
-            info.id,
-            info.name,
-            info.phone,
-            info.checkedStatus,
-            info.cert
-        )
-    );
+const tempCert2 = {
+    id: 2,
+    name: 'Chainsaw Operation',
+    expiryDate: dayjs('2026-05-05T23:54:26.305Z').format('YYYY-MM-DD HH:mm:ss'),
+    certificate: 'Cert',
+};
+
+export default function ResponderTable({
+    setRoles,
+    roles,
+    responderInfo,
+    setResponderInfo,
+    selected,
+    setSelected,
+    taskID,
+    tempTasks,
+}) {
+    const tempCert3 = {
+        id: 3,
+        name: 'Drone Operation',
+        expiryDate: dayjs('2026-03-15T23:54:26.305Z').format(
+            'YYYY-MM-DD HH:mm:ss'
+        ),
+        certificate: 'Cert',
+    };
+
+    const rows = !taskID
+        ? responderInfo.map((responder) =>
+              createData(
+                  responder.responderId,
+                  responder.responderName,
+                  responder.phone,
+                  responder.checkedIn,
+                  responder.startDate,
+                  responder.endDate,
+                  {
+                      id: 3,
+                      name: 'Drone Operation',
+                      expiryDate: dayjs('2026-03-15T23:54:26.305Z').format(
+                          'YYYY-MM-DD HH:mm:ss'
+                      ),
+                      certificate: 'Cert',
+                  }
+              )
+          )
+        : tempTasks[taskID].team.map((info) =>
+              createData(
+                  info.responderId,
+                  info.name,
+                  info.phone,
+                  info.checkedStatus,
+                  info.startDate,
+                  info.endDate,
+                  info.cert
+              )
+          );
+
+    async function getAllResponders() {
+        try {
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_ENDPOINT}/get-allResponders`
+            );
+            if (response.status == 200) {
+                console.log('Responders retrieved: ', response.data);
+                setResponderInfo(response.data);
+            }
+        } catch (error) {
+            consoel.log('Error: ', error.message);
+        }
+    }
+
+    useEffect(() => {
+        if (responderInfo.length === 0) {
+            getAllResponders();
+        }
+    }, []);
 
     return (
         <Paper sx={{ width: '100%', mb: 2, ml: 0, mt: '1vh' }}>
@@ -152,13 +174,16 @@ export default function ResponderTable() {
                 changeResponderInfo={setResponderInfo}
                 setSelected={setSelected}
             />
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} variant="outlined">
                 <Table aria-label="collapsible table">
                     <TableHead>
                         <TableRow>
                             <TableCell>Checkin/out</TableCell>
                             <TableCell align="center">Checked In</TableCell>
                             <TableCell>Responder Name</TableCell>
+                            <TableCell>Start Date time</TableCell>
+                            <TableCell>End Date time</TableCell>
+                            <TableCell>Responder Role</TableCell>
                             <TableCell align="center">Phone Number</TableCell>
                             <TableCell>Certificates</TableCell>
                         </TableRow>
@@ -170,6 +195,8 @@ export default function ResponderTable() {
                                 row={row}
                                 setSelectedRow={setSelected}
                                 selectedRows={selected}
+                                setRoles={setRoles}
+                                roles={roles}
                             />
                         ))}
                     </TableBody>

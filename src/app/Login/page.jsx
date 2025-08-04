@@ -16,6 +16,7 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 // import AppTheme from './theme/AppTheme';
 // import ColorModeSelect from './theme/ColorModeSelect';
+import axios from 'axios';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -143,22 +144,13 @@ export default function Login() {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        context.setUser({
-            fName: 'Jordan',
-            lName: 'Kelsey',
-            role: 'admin',
-        });
-        setCookie('user', context.user, 10);
-        navigate('/Dashboard');
-
-        const data = new FormData(e.currentTarget);
-
-        console.log({
-            name: data.get('name'),
-            lastName: data.get('lastName'),
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        // context.setUser({
+        //     fName: 'Jordan',
+        //     lName: 'Kelsey',
+        //     role: 'admin',
+        // });
+        // setCookie('user', context.user, 10);
+        // navigate('/Dashboard');
 
         const payload = {
             email: email,
@@ -166,28 +158,34 @@ export default function Login() {
         };
 
         try {
-            const response = await fetch(
-                `${import.meta.env.API_ENDPOINT}/login`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
-                }
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_ENDPOINT}/login`,
+                payload
             );
-            const data = await response.json();
 
-            if (response.ok) {
+            if (response.status == 200) {
                 // If registration is successful
-                context.setUser({
-                    fName: 'Jordan',
-                    lName: 'Kelsey',
-                    role: 'admin',
-                });
-                setCookie('user', context.user, 10);
-                console.log('Login Successful');
-                navigate('/Dashboard');
+                try {
+                    const responderResponse = await axios.post(
+                        `${import.meta.env.VITE_API_ENDPOINT}/get-responderId`,
+                        { email: email }
+                    );
+                    if (responderResponse.status == 200) {
+                        context.setUser({
+                            fName: 'Jordan',
+                            lName: 'Kelsey',
+                            email: email,
+                            role: 'admin',
+                            responderId: responderResponse.data,
+                            accessToken: response.data.accessToken,
+                        });
+                        setCookie('user', context.user, 10);
+                        console.log('Login Successful');
+                        navigate('/Dashboard');
+                    }
+                } catch (error) {
+                    console.log('Error fetching UID: ', error.message);
+                }
             } else {
                 // If registration fails
                 setMessage('Email or password is incorrect.');
@@ -201,7 +199,7 @@ export default function Login() {
         <>
             <CssBaseline enableColorScheme />
             <SignUpContainer direction="column" justifyContent="space-between">
-                <Card variant="outlined">
+                <Card variant="outlined" sx={{ pb: '8vh' }}>
                     <Typography
                         component="h1"
                         variant="h4"
@@ -262,29 +260,6 @@ export default function Login() {
                         >
                             Sign In
                         </Button>
-                    </Box>
-                    <Divider>
-                        <Typography sx={{ color: 'text.secondary' }}>
-                            or
-                        </Typography>
-                    </Divider>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 2,
-                        }}
-                    >
-                        <Typography sx={{ textAlign: 'center' }}>
-                            Already have an account?{' '}
-                            <Link
-                                href="/material-ui/getting-started/templates/sign-in/"
-                                variant="body2"
-                                sx={{ alignSelf: 'center' }}
-                            >
-                                Sign in
-                            </Link>
-                        </Typography>
                     </Box>
                 </Card>
             </SignUpContainer>

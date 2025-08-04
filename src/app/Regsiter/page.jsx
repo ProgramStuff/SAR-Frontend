@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -123,20 +124,10 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
     },
 }));
 
-/*
- * name
- * province
- */
-
 const tempAgency = [
     {
-        id: 1,
-        name: 'King Search and Rescue',
-        province: 'Nova Scotia',
-    },
-    {
-        id: '2',
-        name: 'Greenwhich Fire',
+        id: '8afd6fa8-17ce-4591-8d57-59b29933dd61',
+        name: 'Kings County Search and Rescue',
         province: 'Nova Scotia',
     },
 ];
@@ -161,6 +152,7 @@ export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
     const validateInputs = () => {
         const email = document.getElementById('email');
@@ -230,33 +222,53 @@ export default function Register() {
         const fromData = new FormData(e.currentTarget);
         const email = fromData.get('email');
         const password = fromData.get('password');
-        const name = fromData.get('name');
+        const fName = fromData.get('fName');
+        const lName = fromData.get('lName');
         const phone = fromData.get('phone');
 
         const payload = {
-            name: name,
-            brithdate: birthDate.toISOString(),
-            phone: phone,
-            agency: agency,
-            province: provinceChoice,
-            email: email,
-            password: password,
             role: userRole,
+            firstName: fName,
+            lastName: lName,
+            brithdate: dayjs(birthDate),
+            phone: phone,
+            province: provinceChoice,
+            agencyId: agency,
+            checkedIn: false,
+            email: email,
         };
         console.log(payload);
+
         try {
             const response = await axios.post(
-                `${import.meta.env.API_ENDPOINT}/register`,
+                `${import.meta.env.VITE_API_ENDPOINT}/register`,
                 { email, password }
             );
             if (response.status == 200) {
-                setMessage(`Registration successful: ${response.data.message}`);
-            } else {
-                if (response.errors.DuplicateUserName) {
-                    setMessage('Username already exists');
+                setMessage(
+                    `User registration successful: ${response.data.message}`
+                );
+                //* Call asign-role endpoint to create the responder
+                try {
+                    const response = await axios.post(
+                        `${import.meta.env.VITE_API_ENDPOINT}/assign-role`,
+                        payload
+                    );
+                    if (response.status == 200) {
+                        console.log(
+                            `Responder registration successful: ${response.data.message}`
+                        );
+                    }
+                } catch (error) {
+                    setMessage(`Error: ${error.message}`);
+                    console.log(`Error: ${error.message}`);
+                    console.log(response);
                 }
             }
         } catch (error) {
+            if (error.DuplicateUserName) {
+                setMessage('Username already exists');
+            }
             setMessage(`Error: ${error.message}`);
             console.log(`Error: ${error.message}`);
         }
@@ -275,7 +287,7 @@ export default function Register() {
                             fontSize: 'clamp(2rem, 10vw, 2.15rem)',
                         }}
                     >
-                        Sign up
+                        Regsiter Personnel
                     </Typography>
                     <Box
                         component="form"
@@ -287,14 +299,28 @@ export default function Register() {
                         }}
                     >
                         <FormControl>
-                            <FormLabel htmlFor="name">Full name</FormLabel>
+                            <FormLabel htmlFor="fName">First Name</FormLabel>
                             <TextField
                                 autoComplete="name"
-                                name="name"
+                                name="fName"
                                 required
                                 fullWidth
                                 id="name"
-                                placeholder="Full Name"
+                                placeholder="First Name"
+                                error={nameError}
+                                helperText={nameErrorMessage}
+                                color={nameError ? 'error' : 'primary'}
+                            />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel htmlFor="lName">Last Name</FormLabel>
+                            <TextField
+                                autoComplete="name"
+                                name="lName"
+                                required
+                                fullWidth
+                                id="name"
+                                placeholder="Last Name"
                                 error={nameError}
                                 helperText={nameErrorMessage}
                                 color={nameError ? 'error' : 'primary'}
@@ -382,8 +408,8 @@ export default function Register() {
                                     setUserRole(event.target.value)
                                 }
                             >
-                                <MenuItem value={'ADMIN'}>Admin</MenuItem>
-                                <MenuItem value={'USER'}>User</MenuItem>
+                                <MenuItem value={'Admin'}>Admin</MenuItem>
+                                <MenuItem value={'User'}>User</MenuItem>
                             </TextField>
                         </FormControl>
 

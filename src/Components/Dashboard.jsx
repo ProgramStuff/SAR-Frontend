@@ -13,8 +13,10 @@ import PersonnelInfo from '../app/PersonnelInfo/page';
 import PastIncident from '../app/PastIncident/page';
 import MyCerts from '../app/MyCerts/page';
 import Profile from '../app/Profile/page';
+import CompleteIncident from '../app/CompleteIncident/page';
 import { useNavigate } from 'react-router-dom';
 import MuiCard from '@mui/material/Card';
+import AdditionalFields from './AdditionalFields';
 
 import Stack from '@mui/material/Stack';
 import HomeIcon from '@mui/icons-material/Home';
@@ -33,6 +35,7 @@ import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import Register from '../app/Regsiter/page';
 import { Widgets } from '@mui/icons-material';
 import CreateTask from '../app/CreateTask/page';
+import FileUpload from './FileUpload';
 
 const lightDarkTheme = extendTheme({
     colorSchemes: { light: true, dark: true },
@@ -71,9 +74,10 @@ const ContentContainer = styled(Stack)(({ theme }) => ({
     },
 }));
 
-export default function Dashboard(props) {
+export default function Dashboard({ user }) {
     const [pathname, setPathname] = useState('/incident');
-
+    const [selectedIncident, setSelectedIncident] = useState([]);
+    const [addIncidentInfo, setAddIncidentInfo] = useState([]);
     const router = useMemo(() => {
         return {
             pathname,
@@ -120,6 +124,7 @@ export default function Dashboard(props) {
                     segment: 'activeIncident',
                     title: 'Active Incidents',
                     icon: <NotificationsActiveIcon />,
+                    pattern: 'activeIncident{/:incidentId}*',
                 },
                 {
                     segment: 'newIncident',
@@ -197,19 +202,26 @@ export default function Dashboard(props) {
             icon: <AccountCircleIcon color="#037AFF" />,
         },
     ];
-
     return (
         <AppProvider
             navigation={NAVIGATION}
             router={router}
             theme={lightDarkTheme}
             branding={{
-                title: 'SAR FORGE',
-                logo: (
-                    <TroubleshootIcon
-                        sx={{ margin: '0.8vh', color: '#037AFF' }}
-                    />
+                title: (
+                    <>
+                        {' '}
+                        <img
+                            src="src\app\Branding\icon.png"
+                            style={{ width: '3vw' }}
+                        />{' '}
+                        <img
+                            src="src\app\Branding\profileThin.png"
+                            style={{ width: '10vw', mt: '1vh' }}
+                        />{' '}
+                    </>
                 ),
+                logo: '',
             }}
         >
             <DashboardLayout>
@@ -224,20 +236,31 @@ export default function Dashboard(props) {
                         justifyContent="space-between"
                     >
                         {router.pathname == '/incident/activeIncident' && (
-                            <ActiveIncident changePath={setPathname} />
+                            <ActiveIncident
+                                appRouter={router}
+                                setSelectedIncident={setSelectedIncident}
+                                setAddIncidentInfo={setAddIncidentInfo}
+                            />
                         )}
                         {router.pathname == '/incident' && (
-                            <ActiveIncident changePath={setPathname} />
+                            <ActiveIncident
+                                appRouter={router}
+                                setSelectedIncident={setSelectedIncident}
+                                setAddIncidentInfo={setAddIncidentInfo}
+                            />
                         )}
 
                         {router.pathname == '/incident/newIncident' && (
                             <CreateIncident
                                 appRouter={router}
                                 changePathFunction={setPathname}
+                                user={user}
+                                selectedIncident={selectedIncident}
+                                addIncidentInfo={addIncidentInfo}
                             />
                         )}
                         {router.pathname == '/incident/pastIncident' && (
-                            <PastIncident />
+                            <PastIncident changePath={setPathname} />
                         )}
                         {router.pathname == '/personnelInfo' && (
                             <PersonnelInfo />
@@ -247,18 +270,56 @@ export default function Dashboard(props) {
                         {router.pathname == '/myCertifications' && <MyCerts />}
                         {router.pathname == '/settings/profile' && <Profile />}
                         {router.pathname == '/userProfile' && <Profile />}
-                        {/incident\/activeIncident\/./.test(
+                        {/activeIncident\/./.test(router.pathname) && (
+                            <>
+                                <CreateIncident
+                                    appRouter={router}
+                                    changePathFunction={setPathname}
+                                    user={user}
+                                    selectedIncident={selectedIncident}
+                                    addIncidentInfo={addIncidentInfo}
+                                />
+                                <AdditionalFields
+                                    changePath={setPathname}
+                                    appRouter={router}
+                                    incidentId={router.pathname.split('/')[2]}
+                                />
+                                <FileUpload appRouter={router} />
+                            </>
+                        )}
+                        {/^\/incident\/([^/]+)\/newTask$/.test(
                             router.pathname
                         ) && (
-                            <CreateIncident
+                            <CreateTask
                                 appRouter={router}
-                                changePathFunction={setPathname}
+                                user={user}
+                                selectedIncident={selectedIncident}
                             />
                         )}
-                        {/incident\/.\/newTask/.test(router.pathname) && (
+                        {/incident\/[^/]+\/task\/[^/]+$/.test(
+                            router.pathname
+                        ) && (
                             <CreateTask
-                                taskID={router.pathname.split('/')[2]}
+                                taskID={router.pathname.split('/')[4]}
+                                appRouter={router}
+                                user={user}
+                                selectedIncident={selectedIncident}
                             />
+                        )}
+
+                        {/incident\/pastIncident\/./.test(router.pathname) && (
+                            <>
+                                <CompleteIncident
+                                    appRouter={router}
+                                    changePathFunction={setPathname}
+                                />
+                                <AdditionalFields
+                                    changePath={setPathname}
+                                    appRouter={router}
+                                    incidentId={router.pathname.split('/')[3]}
+                                />
+                                <FileUpload appRouter={router} />
+                            </>
                         )}
                     </ContentContainer>
                 </PageContainer>

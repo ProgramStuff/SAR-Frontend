@@ -8,8 +8,10 @@ import FormControl from '@mui/material/FormControl';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import axios from 'axios';
+import { useActivePage } from '@toolpad/core/useActivePage';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import { Typography } from '@mui/material';
-import FileUpload from '../../Components/FileUpload';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -17,6 +19,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import AdditionalFields from '../../Components/AdditionalFields';
+import FileUpload from '../../Components/FileUpload';
 
 const agencies = [
     {
@@ -26,7 +29,7 @@ const agencies = [
     },
     {
         id: '8afd6fa8-17ce-4591-8d57-59b29933dd61',
-        value: 'Search and Rescue',
+        value: 'SAR',
         label: 'Search and Rescue',
     },
 ];
@@ -117,13 +120,7 @@ const province = [
     },
 ];
 
-export default function CreateIncident({
-    appRouter,
-    changePathFunction,
-    user,
-    selectedIncident,
-    addIncidentInfo,
-}) {
+export default function CompleteIncident({ appRouter, changePathFunction }) {
     const [currentUser, setCurrentUser] = useState({});
     const [incidentName, setIncidentName] = useState('');
     const [incidentCommander, setIncidentCommander] = useState('');
@@ -138,19 +135,9 @@ export default function CreateIncident({
     const [summary, setSummary] = useState('');
     const [objectives, setObjectives] = useState('');
     const [activeIncidentId, setActiveIncidentId] = useState('');
-    const [payload, setPayload] = useState(null);
+
     const [startDate, setStartDate] = useState(dayjs());
     const [startTime, setStartTime] = useState(dayjs());
-    const [endDate, setEndDate] = useState(null);
-    const [endTime, setEndTime] = useState(null);
-    const [opInfo, setOpInfo] = useState(null);
-
-    useEffect(() => {
-        getCookie();
-        if (/activeIncident\/./.test(appRouter.pathname)) {
-            loadIncident();
-        }
-    }, []);
 
     function getCookie() {
         let name = 'user=';
@@ -181,29 +168,12 @@ export default function CreateIncident({
         setObjectives('');
     }
 
-    async function updateEndDate() {
-        try {
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_ENDPOINT}/update-incidentEndDate`,
-                {
-                    incidentId: selectedIncident.incident.incidentId,
-                    endDate: endDate,
-                }
-            );
-            if (response.status == 200) {
-                console.log('End date updated');
-            }
-        } catch (error) {
-            console.log('Error updating end date: ', error.message);
-        }
-    }
-
     async function handleSubmit(e) {
         e.preventDefault();
 
         const payload = {
             incidentName: incidentName,
-            incidentCommander: user.responderId,
+            incidentCommander: incidentCommander,
             agency: agency,
             incidentType: incidentTypeChoice,
             operationPeriod: op,
@@ -211,73 +181,120 @@ export default function CreateIncident({
             city: city,
             postal: postal,
             province: provinceChoice,
-            startDate: dayjs(startDate),
+            date: startDate.toISOString(),
             summary: summary,
             objectives: objectives,
         };
-        setPayload(payload);
 
-        try {
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_ENDPOINT}/create-incident`,
-                payload
-            );
+        // try {
+        //     const response = await axios.post('http://localhost:5185/newIncident', payload);
 
-            if (response.status == 200) {
-                console.log('RESPONSE', response.data);
-                console.log(`Incident creation successful: ${response}`);
-            }
-        } catch (error) {
-            console.log(`Error: ${error.message}`);
+        //     if (response.status == 200) {
+        //         setMessage(`Registration successful: ${response.data.message}`);
+        //     }
+        // } catch (error) {
+        //     setMessage(`Error: ${error.message}`);
+        //     console.log(`Error: ${error.message}`);
+        // }
+    }
+
+    const tempIncident1 = {
+        incidentName: 'Incident 107-05-21-2024',
+        incidentCommander: 'Alfred Parks',
+        agency: 'SAR',
+        incidentType: 'Lost at Sea',
+        operationPeriod: 1,
+        address: '123 Main Street',
+        city: 'Kentville',
+        postal: 'B4P1P2',
+        province: 'NS',
+        date: '2024-05-21T23:54:26.305Z',
+        summary: "Fishing vessel hasn't been seen for 2 days",
+        objectives: 'Determine search locations',
+    };
+    const tempIncident2 = {
+        incidentName: 'Incident 104-07-16-2023',
+        incidentCommander: 'Jordan Kelsey',
+        agency: 'SAR',
+        incidentType: 'Missing Person',
+        operationPeriod: 1,
+        address: '123 Main Street',
+        city: 'Kentville',
+        postal: 'B4P1P2',
+        province: 'NS',
+        date: '2023-07-16T23:54:26.305Z',
+        summary: 'Elderly person escaped nursing home',
+        objectives: 'Determine search locations',
+    };
+    const tempIncident3 = {
+        incidentName: 'Incident 108-01-17-2025',
+        incidentCommander: 'Bob Straford',
+        agency: 'SAR',
+        incidentType: 'Missing Person',
+        operationPeriod: 1,
+        address: '123 Pleasant St',
+        city: 'Wolfville',
+        postal: 'B4P2B9',
+        province: 'NS',
+        date: '2025-01-17T23:54:26.305Z',
+        summary: "Hiker hasn't been seen in 24 hours",
+        objectives: 'Dertime search area',
+    };
+
+    const tempIncidents = {
+        1: tempIncident1,
+        2: tempIncident2,
+        3: tempIncident3,
+    };
+
+    function loadIncident() {
+        const incidentId = appRouter.pathname.split('/')[3];
+        setActiveIncidentId(incidentId);
+        if (tempIncidents[incidentId]) {
+            const data = tempIncidents[incidentId];
+            setIncidentName(data.incidentName);
+            setIncidentCommander(data.incidentCommander);
+            setAddress(data.address);
+            setAgency(data.agency);
+            setIncidentTypeChoice(data.incidentType);
+            setOp(data.operationPeriod);
+            setCity(data.city);
+            setPostal(data.postal);
+            setProvinceChoice(data.province);
+            setSummary(data.summary);
+            setObjectives(data.objectives);
         }
     }
 
-    async function handleUpdate(e) {
-        e.preventDefault();
-        console.log('UPDATE');
-    }
-
-    console.log('ADD: ', addIncidentInfo);
-    function loadIncident() {
-        const incidentId = appRouter.pathname.split('/')[2];
-        setActiveIncidentId(selectedIncident.incident.incidentId);
-        setIncidentName(selectedIncident.incident.incidentName);
-        setAddress(selectedIncident.incident.address);
-        setCity(selectedIncident.incident.city);
-        setAgency(addIncidentInfo.agencyName);
-        setIncidentTypeChoice(selectedIncident.incident.incidentType);
-        setObjectives(selectedIncident.incident.objectives);
-        setPostal(selectedIncident.incident.postal);
-        setProvinceChoice(selectedIncident.incident.province);
-        setSummary(selectedIncident.incident.summary);
-        setOp(selectedIncident.operationalPeriods[0].operationalPeriod);
-        setOpInfo(selectedIncident);
-        console.log('INFO', selectedIncident);
-    }
+    useEffect(() => {
+        getCookie();
+        if (/incident\/pastIncident\/./.test(appRouter.pathname)) {
+            console.log(appRouter.pathname);
+            loadIncident();
+        }
+    }, []);
 
     return (
         <>
-            <CssBaseline enableColorScheme />
-            <Box
-                sx={{ margin: 'auto' }}
-                maxWidth
-                component="form"
-                onSubmit={!endDate ? handleSubmit : updateEndDate}
-            >
+            <Box maxWidth component="form" onSubmit={handleSubmit}>
                 <Typography sx={{ ml: '1vh' }} variant="h6">
                     Incident Information
                 </Typography>
-
                 <FormControl>
                     <TextField
                         name="incidentName"
                         value={incidentName}
                         label="Incident Name"
+                        disabled
                         onChange={(event) =>
                             setIncidentName(event.target.value)
                         }
                         sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
                             margin: '1vh',
                         }}
                     />
@@ -287,12 +304,17 @@ export default function CreateIncident({
                     <TextField
                         name="commander"
                         label="Incident Commander"
+                        disabled
                         value={incidentCommander}
                         onChange={(event) =>
                             setIncidentCommander(event.target.value)
                         }
                         sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
                             margin: '1vh',
                         }}
                     />
@@ -304,10 +326,15 @@ export default function CreateIncident({
                         key={agency}
                         name="agency"
                         label="Agency"
+                        disabled
                         value={agency}
                         onChange={(event) => setAgency(event.target.value)}
                         sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
                             margin: '1vh',
                         }}
                     >
@@ -323,6 +350,7 @@ export default function CreateIncident({
                     <TextField
                         key={incidentTypeChoice}
                         name="incidentType"
+                        disabled
                         select
                         value={incidentTypeChoice}
                         label="Incident Type"
@@ -330,7 +358,11 @@ export default function CreateIncident({
                             setIncidentTypeChoice(event.target.value)
                         }
                         sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
                             minWidth: '10vh',
                             margin: '1vh',
                         }}
@@ -348,6 +380,7 @@ export default function CreateIncident({
                         name="op"
                         label="Operational Period"
                         type="number"
+                        disabled
                         value={op}
                         slotProps={{
                             inputLabel: {
@@ -355,7 +388,11 @@ export default function CreateIncident({
                             },
                         }}
                         sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
                             margin: '1vh',
                         }}
                         onChange={(event) => setOp(event.target.value)}
@@ -366,8 +403,13 @@ export default function CreateIncident({
                     <FormControl>
                         <DatePicker
                             name="date"
+                            disabled
                             sx={{
-                                width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                                width: {
+                                    md: '13vw',
+                                    lg: '13vw',
+                                    xl: '13vw',
+                                },
                                 margin: '1vh',
                             }}
                             label="Start Date"
@@ -380,38 +422,17 @@ export default function CreateIncident({
                         <TimePicker
                             name="startTime"
                             sx={{
-                                width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                                width: {
+                                    md: '13vw',
+                                    lg: '13vw',
+                                    xl: '13vw',
+                                },
                                 margin: '1vh',
                             }}
                             label="Start Time"
+                            disabled
                             value={startTime}
                             onChange={(newValue) => setStartTime(newValue)}
-                        />
-                    </FormControl>
-
-                    <FormControl>
-                        <DatePicker
-                            name="endDate"
-                            sx={{
-                                width: { md: '13vw', lg: '13vw', xl: '13vw' },
-                                margin: '1vh',
-                            }}
-                            label="End Date"
-                            value={endDate}
-                            onChange={(newValue) => setEndDate(newValue)}
-                        />
-                    </FormControl>
-
-                    <FormControl>
-                        <TimePicker
-                            name="endTime"
-                            sx={{
-                                width: { md: '13vw', lg: '13vw', xl: '13vw' },
-                                margin: '1vh',
-                            }}
-                            label="End Time"
-                            value={endTime}
-                            onChange={(newValue) => setEndTime(newValue)}
                         />
                     </FormControl>
                 </LocalizationProvider>
@@ -420,9 +441,14 @@ export default function CreateIncident({
                     <TextField
                         name="address"
                         label="Address"
+                        disabled
                         value={address}
                         sx={{
-                            width: { md: '27vw', lg: '27vw', xl: '27vw' },
+                            width: {
+                                md: '27vw',
+                                lg: '27vw',
+                                xl: '27vw',
+                            },
                             margin: '1vh',
                         }}
                         onChange={(event) => setAddress(event.target.value)}
@@ -434,12 +460,17 @@ export default function CreateIncident({
                         name="province"
                         value={provinceChoice}
                         select
+                        disabled
                         label="Province"
                         onChange={(event) =>
                             setProvinceChoice(event.target.value)
                         }
                         sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
                             minWidth: '10vh',
                             margin: '1vh',
                         }}
@@ -454,11 +485,34 @@ export default function CreateIncident({
 
                 <FormControl>
                     <TextField
+                        name="city"
+                        label="City"
+                        value={city}
+                        disabled
+                        sx={{
+                            width: {
+                                md: '27vw',
+                                lg: '27vw',
+                                xl: '27vw',
+                            },
+                            margin: '1vh',
+                        }}
+                        onChange={(event) => setCity(event.target.value)}
+                    />
+                </FormControl>
+
+                <FormControl>
+                    <TextField
                         name="postal"
                         label="Postal Code"
+                        disabled
                         value={postal}
                         sx={{
-                            width: { md: '13vw', lg: '13vw', xl: '13vw' },
+                            width: {
+                                md: '13vw',
+                                lg: '13vw',
+                                xl: '13vw',
+                            },
                             minWidth: '10vh',
                             margin: '1vh',
                         }}
@@ -466,25 +520,13 @@ export default function CreateIncident({
                     />
                 </FormControl>
 
-                <FormControl>
-                    <TextField
-                        name="city"
-                        label="City"
-                        value={city}
-                        sx={{
-                            width: { md: '27vw', lg: '27vw', xl: '27vw' },
-                            margin: '1vh',
-                        }}
-                        onChange={(event) => setCity(event.target.value)}
-                    />
-                </FormControl>
-
                 <FormControl sx={{ width: '100%' }}>
                     <TextField
                         name="summary"
+                        disabled
                         value={summary}
                         sx={{
-                            width: { md: '100%', lg: '100%', xl: '100%' },
+                            width: { md: '97%', lg: '97%', xl: '97%' },
                             margin: '1vh',
                         }}
                         label="Summary"
@@ -497,10 +539,11 @@ export default function CreateIncident({
 
                 <FormControl sx={{ width: '100%' }}>
                     <TextField
+                        disabled
                         value={objectives}
                         name="objectives"
                         sx={{
-                            width: { md: '100%', lg: '100%', xl: '100%' },
+                            width: { md: '97%', lg: '97%', xl: '97%' },
                             margin: '1vh',
                         }}
                         label="Objectives"
@@ -510,42 +553,7 @@ export default function CreateIncident({
                         onChange={(event) => setObjectives(event.target.value)}
                     />
                 </FormControl>
-
-                <Stack
-                    spacing={3}
-                    direction="row"
-                    sx={{ mt: '3vh', mb: '3vh', ml: '1vh' }}
-                >
-                    <Button
-                        sx={{ width: '10vw' }}
-                        size="large"
-                        variant="contained"
-                        type="submit"
-                    >
-                        Submit
-                    </Button>
-                    <Button
-                        sx={{ width: '10vw' }}
-                        size="large"
-                        color="error"
-                        variant="contained"
-                        onClick={handleCancel}
-                    >
-                        Cancel
-                    </Button>
-                </Stack>
             </Box>
-            {payload && (
-                <>
-                    <AdditionalFields
-                        changePath={changePathFunction}
-                        appRouter={appRouter}
-                        incidentId={100}
-                        opInfo={opInfo}
-                    />
-                    <FileUpload appRouter={appRouter} />
-                </>
-            )}
         </>
     );
 }

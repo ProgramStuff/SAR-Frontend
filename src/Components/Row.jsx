@@ -12,12 +12,14 @@ import Typography from '@mui/material/Typography';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Checkbox from '@mui/material/Checkbox';
+import TextField from '@mui/material/TextField';
+import dayjs from 'dayjs';
 
 export default function Row(props) {
-    const { row, setSelectedRow, selectedRows } = props;
+    const { row, setSelectedRow, selectedRows, setRoles, roles } = props;
     const [open, setOpen] = useState(false);
+    const [responderRole, setResponderRole] = useState([]);
     let isSelected = selectedRows.includes(row.id);
-
     const handleSelect = () => {
         if (isSelected) {
             setSelectedRow(selectedRows.filter((item) => item != row.id));
@@ -26,13 +28,34 @@ export default function Row(props) {
         }
     };
 
-    useEffect(() => {}, [selectedRows]);
+    const handRoleUpdate = (resRole) => {
+        const newResponderRole = {
+            responderId: row.id,
+            role: resRole,
+        };
 
+        setResponderRole(newResponderRole);
+        setRoles((roles) => {
+            const existingIndex = roles.findIndex(
+                (role) => role.responderId === row.id
+            );
+            if (existingIndex !== -1) {
+                const updatedRoles = [...roles];
+                updatedRoles[existingIndex] = newResponderRole;
+                return updatedRoles;
+            } else {
+                return [...roles, newResponderRole];
+            }
+        });
+    };
+
+    useEffect(() => {}, [selectedRows]);
     return (
         <Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
                 <TableCell align="center" padding="checkbox">
                     <Checkbox
+                        disabled={row.endDate != undefined && true}
                         checked={isSelected}
                         onClick={handleSelect}
                         color="primary"
@@ -47,7 +70,26 @@ export default function Row(props) {
                 <TableCell component="th" scope="row">
                     {row.name}
                 </TableCell>
+                {/* Time in and out */}
+                <TableCell component="th" scope="row">
+                    {row.startDate
+                        ? dayjs(row.startDate).format('YYYY-MM-DD HH:mm:ss')
+                        : 'N/A'}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                    {row.endDate
+                        ? dayjs(row.endDate).format('YYYY-MM-DD HH:mm:ss')
+                        : 'N/A'}
+                </TableCell>
+                <TableCell>
+                    <TextField
+                        id="role"
+                        variant="outlined"
+                        onChange={(event) => handRoleUpdate(event.target.value)}
+                    />
+                </TableCell>
                 <TableCell align="center">{row.phoneNumber}</TableCell>
+                {/* Certification drop down section */}
                 <TableCell>
                     <IconButton
                         aria-label="expand row"
@@ -89,7 +131,7 @@ export default function Row(props) {
                                 <TableBody>
                                     {row.certificateInfo.map((cert) => (
                                         <TableRow
-                                            key={Date.toString(cert.date)}
+                                            key={Date.toString(cert.expiryDate)}
                                         >
                                             <TableCell
                                                 component="th"

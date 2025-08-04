@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { styled } from '@mui/material/styles';
@@ -8,45 +8,68 @@ import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 import CreateIncident from '../CreateIncident/page';
 import { useActivePage } from '@toolpad/core/useActivePage';
+import axios from 'axios';
 
-const tempIncidents = [
-    {
-        id: 1,
-        incidentName: 'Incident 101-03-15-2025',
-        agency: 'Search and Rerscue',
-        incidentType: 'Missing person',
-    },
-    {
-        id: 2,
-        incidentName: 'Incident 102-03-16-2025',
-        agency: 'Police',
-        incidentType: 'Assist SAR with Missing Person Incident',
-    },
-    {
-        id: 3,
-        incidentName: 'Incident 103-03-17-2025',
-        agency: 'EMO',
-        incidentType: 'Lost at Sea',
-    },
-];
+async function getIncidents() {
+    try {
+        const response = await axios.get(
+            `${import.meta.env.VITE_API_ENDPOINT}/get-allIncidents`
+        );
+        if (response.status == 200) {
+            console.log(response.data);
+            return response.data;
+        }
+    } catch (error) {
+        console.log('Fetch failed: ', error.message);
+    }
+}
 
-export default function ActiveIncident({ changePath }) {
-    console.log(useActivePage());
+export default function ActiveIncident({
+    appRouter,
+    setSelectedIncident,
+    setAddIncidentInfo,
+}) {
     const [selectedCard, setSelectedCard] = useState(0);
+    const [allIncidents, setAllIncidents] = useState([]);
+    const [incidentInfo, setIncidentInfo] = useState([]);
+    useEffect(() => {
+        async function fetchIncidents() {
+            const incidents = await getIncidents();
+            setAllIncidents(incidents);
+        }
+        fetchIncidents();
+    }, []);
+
+    async function getIncident(incidentId, index) {
+        try {
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_ENDPOINT}/get-viewIncident/${incidentId}`
+            );
+            if (response.status == 200) {
+                console.log('Incident retrieved: ', response.data);
+                // State passed down from Dashboard
+                setAddIncidentInfo(allIncidents[index]);
+                setSelectedIncident(response.data);
+                appRouter.navigate(`/activeIncident/${incidentId}`);
+            }
+        } catch (error) {
+            console.log('Error retrieving incident: ', error.message);
+            console.log(response);
+        }
+    }
+
     return (
         <>
-            <Grid container justifyContent={'center'} spacing={1}>
-                {tempIncidents.map((incident) => (
+            <Grid container justifyContent={'start'} spacing={1}>
+                {allIncidents.map((incident, index) => (
                     <Grid size={{ sm: 12, md: 12, lg: 4, xl: 4 }}>
-                        <Card key={incident.id}>
+                        <Card key={incident.incidentId} variant="outlined">
                             <CardActionArea
                                 onClick={() =>
-                                    changePath(
-                                        `/incident/activeIncident/${incident.id}`
-                                    )
+                                    getIncident(incident.incidentId, index)
                                 }
                                 data-active={
-                                    selectedCard === incident.id
+                                    selectedCard === incident.incidentId
                                         ? ''
                                         : undefined
                                 }
@@ -75,7 +98,7 @@ export default function ActiveIncident({ changePath }) {
                                         variant="h6"
                                         color="text.secondary"
                                     >
-                                        Agency: {incident.agency}
+                                        Agency: {incident.agencyName}
                                     </Typography>
                                 </CardContent>
                             </CardActionArea>
