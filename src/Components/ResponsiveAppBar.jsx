@@ -20,7 +20,7 @@ import 'tailwindcss';
 import Dashboard from './Dashboard';
 import Login from '../app/Login/page';
 
-const pages = ['About', 'Login'];
+const pages = ['Login'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export default function ResponsiveAppBar() {
