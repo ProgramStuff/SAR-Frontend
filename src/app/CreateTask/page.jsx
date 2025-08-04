@@ -50,7 +50,7 @@ const tempCert3 = {
     certificate: 'Cert',
 };
 
-export default function CreateTask({ taskID, appRouter, user }) {
+export default function CreateTask({ taskID, appRouter, user, selectedIncident}) {
     const [taskName, setTaskName] = useState('');
     const [op, setOp] = useState('');
     const [startDate, setStartDate] = useState(dayjs());
@@ -65,17 +65,17 @@ export default function CreateTask({ taskID, appRouter, user }) {
         setResponderInfo((prevState) =>
             prevState.map((responder) => ({
                 ...responder,
-                checkedStatus: selected.some((item) => item == responder.id)
-                    ? !responder.checkedStatus
-                    : responder.checkedStatus,
+                checkedIn: selected.some((item) => item == responder.responderId)
+                    ? !responder.checkedIn
+                    : responder.checkedIn,
                 startDate:
-                    selected.some((item) => item == responder.id) &
-                    !responder.checkedStatus
+                    selected.some((item) => item == responder.responderId) &&
+                    !responder.checkedIn
                         ? dayjs()
                         : responder.startDate,
                 endDate:
-                    selected.some((item) => item == responder.id) &
-                    responder.checkedStatus
+                    selected.some((item) => item == responder.responderId) &&
+                    responder.checkedIn
                         ? dayjs()
                         : responder.endDate,
             }))
@@ -116,7 +116,7 @@ export default function CreateTask({ taskID, appRouter, user }) {
         team: [
             {
                 responderId: '2',
-                name: 'Blake Velimirovich',
+                name: 'Blake Velemirovich',
                 phone: '098-765-4321',
                 checkedStatus: false,
                 startDate: '2025-03-15T12:00:57.013Z',
@@ -154,44 +154,10 @@ export default function CreateTask({ taskID, appRouter, user }) {
     };
 
     const [responderInfo, setResponderInfo] = useState([
-        {
-            id: 1,
-            name: 'Jordan Kelsey',
-            phone: '123-456-7890',
-            checkedStatus: false,
-            startDate: '',
-            endDate: '',
-            cert: tempCert1,
-        },
-        {
-            id: 2,
-            name: 'Blake Velimirovich',
-            phone: '098-765-4321',
-            checkedStatus: false,
-            startDate: '',
-            endDate: '',
-            cert: tempCert2,
-        },
-        {
-            id: 3,
-            name: 'Alfred Parks',
-            phone: '555-123-4567',
-            checkedStatus: false,
-            startDate: '',
-            endDate: '',
-            cert: tempCert3,
-        },
     ]);
-
-    useEffect(() => {
-        if (/incident\/[^/]+\/task\/[^/]+$/.test(appRouter.pathname)) {
-            loadTask();
-        }
-    }, []);
 
     function loadTask() {
         const data = tempTasks[taskID];
-        console.log(data.startDate);
         setTaskName(data.taskName);
         setStartDate(data.startDate);
         setStartTime(data.startDate);
@@ -199,25 +165,48 @@ export default function CreateTask({ taskID, appRouter, user }) {
         setDescription(data.description);
     }
 
+    useEffect(() => {
+        if (/incident\/[^/]+\/task\/[^/]+$/.test(appRouter.pathname)) {
+            loadTask();
+        }
+        if (/^\/incident\/([^/]+)\/newTask$/.test(appRouter.pathname)){
+            setOp(selectedIncident.operationalPeriods[0].operationalPeriod);
+        }
+
+    }, []);
+
     async function handleSubmit() {
+        handleCheckIn();
+        // {
+        //     "taskName": "string",
+        //     "startDate": "2025-04-03T12:24:30.303Z",
+        //     "endDate": "2025-04-03T12:24:30.303Z",
+        //     "opId": 0,
+        //     "description": "string",
+        //     "role": "string",
+        //     "responderIds": [
+        //       "string"
+        //     ]
+        //   }
+
         const payload = {
             taskName: taskName,
-            startDate: startDate,
-            operationalPeriod: 1,
+            startDate: dayjs(startDate),
+            endDate: dayjs(endDate),
+            opId: selectedIncident.operationalPeriods[0].operationalPeriodId,
             description: description,
-            team: [
-                {
-                    responderId: 'team member ID',
-                    startDate: dayjs(startDate),
-                    responderRole: 'string',
-                },
-            ],
-            responderId: user.responderId,
+            role: 'Ground Search',
+            responderIds: selected
         };
+        console.log(payload);
         try {
             const response = await axios.post(
-                `${import.meta.env.VITE_API_ENDPOINT}/create-task`
+                `${import.meta.env.VITE_API_ENDPOINT}/create-task`, payload
             );
+            console.log(response);
+            if (response.status == 200) {
+                console.log('Task created ');
+            }
         } catch (error) {
             console.log('Error creating task: ', error.message);
         }
@@ -348,6 +337,7 @@ export default function CreateTask({ taskID, appRouter, user }) {
                 selected={selected}
                 setSelected={setSelected}
                 taskID={taskID}
+                tempTasks={tempTasks}
             />
 
             <Stack spacing={3} direction="row" sx={{ marginTop: '3vh' }}>
@@ -356,7 +346,7 @@ export default function CreateTask({ taskID, appRouter, user }) {
                     size="large"
                     variant="contained"
                     type="submit"
-                    onClick={handleCheckIn}
+                    onClick={handleSubmit}
                 >
                     Submit
                 </Button>
