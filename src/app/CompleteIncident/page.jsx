@@ -136,14 +136,6 @@ export default function CompleteIncident({ appRouter, changePathFunction }) {
     const [objectives, setObjectives] = useState('');
     const [activeIncidentId, setActiveIncidentId] = useState('');
 
-    useEffect(() => {
-        getCookie();
-        if (/incident\/pastIncident\/./.test(appRouter.pathname)) {
-            console.log(appRouter.pathname);
-            loadIncident();
-        }
-    }, []);
-
     const [startDate, setStartDate] = useState(dayjs());
     const [startTime, setStartTime] = useState(dayjs());
 
@@ -273,17 +265,16 @@ export default function CompleteIncident({ appRouter, changePathFunction }) {
             setObjectives(data.objectives);
         }
 
-        // try {
-        //     const response = await axios.get(`http://localhost:5185/activeIncident/${variable}`, payload);
 
-        //     if (response.status == 200) {
-        //         setMessage(`Registration successful: ${response.data.message}`);
-        //     }
-        // } catch (error) {
-        //     setMessage(`Error: ${error.message}`);
-        //     console.log(`Error: ${error.message}`);
-        // }
     }
+
+    useEffect(() => {
+        getCookie();
+        if (/incident\/pastIncident\/./.test(appRouter.pathname)) {
+            console.log(appRouter.pathname);
+            loadIncident();
+        }
+    }, []);
 
     return (
         <>
