@@ -287,7 +287,7 @@ export default function Register() {
                             fontSize: 'clamp(2rem, 10vw, 2.15rem)',
                         }}
                     >
-                        Sign up
+                        Regsiter Personnel
                     </Typography>
                     <Box
                         component="form"
@@ -454,29 +454,6 @@ export default function Register() {
                         >
                             Sign up
                         </Button>
-                    </Box>
-                    <Divider>
-                        <Typography sx={{ color: 'text.secondary' }}>
-                            or
-                        </Typography>
-                    </Divider>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 2,
-                        }}
-                    >
-                        <Typography sx={{ textAlign: 'center' }}>
-                            Already have an account?{' '}
-                            <Link
-                                href="/login"
-                                variant="body2"
-                                sx={{ alignSelf: 'center' }}
-                            >
-                                Sign in
-                            </Link>
-                        </Typography>
                     </Box>
                 </Card>
             </SignUpContainer>
