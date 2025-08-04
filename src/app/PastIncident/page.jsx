@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { styled } from '@mui/material/styles';
@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 import CreateIncident from '../CreateIncident/page';
 import { useActivePage } from '@toolpad/core/useActivePage';
+import axios from 'axios';
 
 const tempIncidents = [
     {
@@ -30,11 +31,77 @@ const tempIncidents = [
     },
 ];
 
+
+
 export default function PastIncident({ changePath }) {
     const [selectedCard, setSelectedCard] = useState(0);
+    const [pastIncidents, setPastIncidents] = useState([]);
+
+    async function getAllPastIncidents(){
+        try{
+            const response = await axios.get(`${import.meta.env.VITE_API_ENDPOINT}/get-allPastIncidents`);
+            console.log(response.data);
+            if (response.status == 200){
+                setPastIncidents(response.data);
+                console.log("Retrieved all past incidents");
+            }
+        }catch(error){
+            console.log("Error getting incidents: ", error.message);
+        }
+    }
+
+    useEffect(() => {
+        getAllPastIncidents();
+    }, []);
     return (
         <>
-            <Grid container justifyContent={'center'} spacing={1}>
+            <Grid container justifyContent={'left'} spacing={1}>
+                {pastIncidents.map((incident) =>(
+                     <Grid size={{ sm: 12, md: 12, lg: 4, xl: 4 }}>
+                     <Card key={incident.id} variant="outlined">
+                         <CardActionArea
+                             onClick={() =>
+                                 changePath(
+                                     `/incident/pastIncident/${incident.incidentId}`
+                                 )
+                             }
+                             data-active={
+                                 selectedCard === incident.incidentId
+                                     ? ''
+                                     : undefined
+                             }
+                             sx={{
+                                 height: 200,
+                                 '&[data-active]': {
+                                     backgroundColor: 'action.selected',
+                                     '&:hover': {
+                                         backgroundColor:
+                                             'action.selectedHover',
+                                     },
+                                 },
+                             }}
+                         >
+                             <CardContent sx={{ height: '100%' }}>
+                                 <Typography variant="h5" component="div">
+                                     {incident.incidentName}
+                                 </Typography>
+                                 <Typography
+                                     variant="h6"
+                                     color="text.secondary"
+                                 >
+                                     {incident.incidentType}
+                                 </Typography>
+                                 <Typography
+                                     variant="h6"
+                                     color="text.secondary"
+                                 >
+                                     Agency: {incident.agency}
+                                 </Typography>
+                             </CardContent>
+                         </CardActionArea>
+                     </Card>
+                 </Grid>
+                ))}
                 {tempIncidents.map((incident) => (
                     <Grid size={{ sm: 12, md: 12, lg: 4, xl: 4 }}>
                         <Card key={incident.id} variant="outlined">
