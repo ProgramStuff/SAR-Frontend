@@ -10,27 +10,6 @@ import CreateIncident from '../CreateIncident/page';
 import { useActivePage } from '@toolpad/core/useActivePage';
 import axios from 'axios';
 
-const tempIncidents = [
-    {
-        id: 1,
-        incidentName: 'Incident 101-03-15-2025',
-        agency: 'Search and Rerscue',
-        incidentType: 'Missing person',
-    },
-    {
-        id: 2,
-        incidentName: 'Incident 102-03-16-2025',
-        agency: 'Police',
-        incidentType: 'Assist SAR with Missing Person Incident',
-    },
-    {
-        id: 3,
-        incidentName: 'Incident 103-03-17-2025',
-        agency: 'EMO',
-        incidentType: 'Lost at Sea',
-    },
-];
-
 async function getIncidents() {
     try {
         const response = await axios.get(
@@ -45,9 +24,14 @@ async function getIncidents() {
     }
 }
 
-export default function ActiveIncident({ appRouter, setSelectedIncident }) {
+export default function ActiveIncident({
+    appRouter,
+    setSelectedIncident,
+    setAddIncidentInfo,
+}) {
     const [selectedCard, setSelectedCard] = useState(0);
     const [allIncidents, setAllIncidents] = useState([]);
+    const [incidentInfo, setIncidentInfo] = useState([]);
     useEffect(() => {
         async function fetchIncidents() {
             const incidents = await getIncidents();
@@ -56,9 +40,22 @@ export default function ActiveIncident({ appRouter, setSelectedIncident }) {
         fetchIncidents();
     }, []);
 
-    function handleSelection(incidentId, index) {
-        setSelectedIncident(allIncidents[index]);
-        appRouter.navigate(`/activeIncident/${incidentId}`);
+    async function getIncident(incidentId, index) {
+        try {
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_ENDPOINT}/get-viewIncident/${incidentId}`
+            );
+            if (response.status == 200) {
+                console.log('Incident retrieved: ', response.data);
+                // State passed down from Dashboard
+                setAddIncidentInfo(allIncidents[index]);
+                setSelectedIncident(response.data);
+                appRouter.navigate(`/activeIncident/${incidentId}`);
+            }
+        } catch (error) {
+            console.log('Error retrieving incident: ', error.message);
+            console.log(response);
+        }
     }
 
     return (
@@ -69,7 +66,7 @@ export default function ActiveIncident({ appRouter, setSelectedIncident }) {
                         <Card key={incident.incidentId} variant="outlined">
                             <CardActionArea
                                 onClick={() =>
-                                    handleSelection(incident.incidentId, index)
+                                    getIncident(incident.incidentId, index)
                                 }
                                 data-active={
                                     selectedCard === incident.incidentId
@@ -108,52 +105,6 @@ export default function ActiveIncident({ appRouter, setSelectedIncident }) {
                         </Card>
                     </Grid>
                 ))}
-                {/* {tempIncidents.map((incident) => (
-                    <Grid size={{ sm: 12, md: 12, lg: 4, xl: 4 }}>
-                        <Card key={incident.id} variant="outlined">
-                            <CardActionArea
-                                onClick={() =>
-                                    appRouter.navigate(
-                                        `/activeIncident/${incident.id}`
-                                    )
-                                }
-                                data-active={
-                                    selectedCard === incident.id
-                                        ? ''
-                                        : undefined
-                                }
-                                sx={{
-                                    height: 200,
-                                    '&[data-active]': {
-                                        backgroundColor: 'action.selected',
-                                        '&:hover': {
-                                            backgroundColor:
-                                                'action.selectedHover',
-                                        },
-                                    },
-                                }}
-                            >
-                                <CardContent sx={{ height: '100%' }}>
-                                    <Typography variant="h5" component="div">
-                                        {incident.incidentName}
-                                    </Typography>
-                                    <Typography
-                                        variant="h6"
-                                        color="text.secondary"
-                                    >
-                                        {incident.incidentType}
-                                    </Typography>
-                                    <Typography
-                                        variant="h6"
-                                        color="text.secondary"
-                                    >
-                                        Agency: {incident.agency}
-                                    </Typography>
-                                </CardContent>
-                            </CardActionArea>
-                        </Card>
-                    </Grid>
-                ))} */}
             </Grid>
         </>
     );
