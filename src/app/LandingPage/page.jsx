@@ -29,13 +29,13 @@ export default function LandingPage() {
                     Built for First Responders, by First Responders - A Smarter
                     Way to Manage Incidents.
                 </Typography>
-                {/* <Button variant='contained' sx={{
+                <Button variant='contained' sx={{
                     width: '14vw', 
                     height: '6vh',
                     mt: '5vh'
                     }}>
                     Contact Us
-                </Button> */}
+                </Button>
             </Grid>
             <Grid item xs={6} sx={{ mt: '5vh' }}>
                 <Card
