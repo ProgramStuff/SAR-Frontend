@@ -17,7 +17,6 @@ import CompleteIncident from '../app/CompleteIncident/page';
 import { useNavigate } from 'react-router-dom';
 import MuiCard from '@mui/material/Card';
 import AdditionalFields from './AdditionalFields';
-import axios from 'axios';
 
 import Stack from '@mui/material/Stack';
 import HomeIcon from '@mui/icons-material/Home';
@@ -78,6 +77,7 @@ const ContentContainer = styled(Stack)(({ theme }) => ({
 export default function Dashboard({ user }) {
     const [pathname, setPathname] = useState('/incident');
     const [selectedIncident, setSelectedIncident] = useState([]);
+    const [addIncidentInfo, setAddIncidentInfo] = useState([]);
     const router = useMemo(() => {
         return {
             pathname,
@@ -239,12 +239,14 @@ export default function Dashboard({ user }) {
                             <ActiveIncident
                                 appRouter={router}
                                 setSelectedIncident={setSelectedIncident}
+                                setAddIncidentInfo={setAddIncidentInfo}
                             />
                         )}
                         {router.pathname == '/incident' && (
                             <ActiveIncident
                                 appRouter={router}
                                 setSelectedIncident={setSelectedIncident}
+                                setAddIncidentInfo={setAddIncidentInfo}
                             />
                         )}
 
@@ -254,6 +256,7 @@ export default function Dashboard({ user }) {
                                 changePathFunction={setPathname}
                                 user={user}
                                 selectedIncident={selectedIncident}
+                                addIncidentInfo={addIncidentInfo}
                             />
                         )}
                         {router.pathname == '/incident/pastIncident' && (
@@ -274,6 +277,7 @@ export default function Dashboard({ user }) {
                                     changePathFunction={setPathname}
                                     user={user}
                                     selectedIncident={selectedIncident}
+                                    addIncidentInfo={addIncidentInfo}
                                 />
                                 <AdditionalFields
                                     changePath={setPathname}
@@ -285,13 +289,11 @@ export default function Dashboard({ user }) {
                         )}
                         {/^\/incident\/([^/]+)\/newTask$/.test(
                             router.pathname
-                        ) && (
-                            <CreateTask
-                                taskID={router.pathname.split('/')[2]}
-                                appRouter={router}
-                                user={user}
-                            />
-                        )}
+                        ) && <CreateTask 
+                        appRouter={router} 
+                        user={user} 
+                        selectedIncident={selectedIncident}
+                        />}
                         {/incident\/[^/]+\/task\/[^/]+$/.test(
                             router.pathname
                         ) && (
@@ -299,6 +301,7 @@ export default function Dashboard({ user }) {
                                 taskID={router.pathname.split('/')[4]}
                                 appRouter={router}
                                 user={user}
+                                selectedIncident={selectedIncident}
                             />
                         )}
 
