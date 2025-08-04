@@ -18,7 +18,6 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import AdditionalFields from '../../Components/AdditionalFields';
 
-
 const agencies = [
     {
         id: '',
@@ -182,15 +181,20 @@ export default function CreateIncident({
         setObjectives('');
     }
 
-    async function updateEndDate(){
+    async function updateEndDate() {
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_ENDPOINT}/update-incidentEndDate`, {
-                incidentId: selectedIncident.incident.incidentId, endDate: endDate})
-                if(response.status == 200){
-                    console.log("End date updated");
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_ENDPOINT}/update-incidentEndDate`,
+                {
+                    incidentId: selectedIncident.incident.incidentId,
+                    endDate: endDate,
                 }
-        }catch(error){
-            console.log("Error updating end date: ", error.message);
+            );
+            if (response.status == 200) {
+                console.log('End date updated');
+            }
+        } catch (error) {
+            console.log('Error updating end date: ', error.message);
         }
     }
 
@@ -248,7 +252,7 @@ export default function CreateIncident({
         setSummary(selectedIncident.incident.summary);
         setOp(selectedIncident.operationalPeriods[0].operationalPeriod);
         setOpInfo(selectedIncident);
-        console.log("INFO", selectedIncident);
+        console.log('INFO', selectedIncident);
     }
 
     return (

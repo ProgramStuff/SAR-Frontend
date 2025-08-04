@@ -163,7 +163,8 @@ export default function ResponderTable({
     useEffect(() => {
         if (responderInfo.length === 0) {
             getAllResponders();
-        }    }, []);
+        }
+    }, []);
 
     return (
         <Paper sx={{ width: '100%', mb: 2, ml: 0, mt: '1vh' }}>

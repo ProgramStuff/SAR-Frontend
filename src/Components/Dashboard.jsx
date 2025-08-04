@@ -289,11 +289,13 @@ export default function Dashboard({ user }) {
                         )}
                         {/^\/incident\/([^/]+)\/newTask$/.test(
                             router.pathname
-                        ) && <CreateTask 
-                        appRouter={router} 
-                        user={user} 
-                        selectedIncident={selectedIncident}
-                        />}
+                        ) && (
+                            <CreateTask
+                                appRouter={router}
+                                user={user}
+                                selectedIncident={selectedIncident}
+                            />
+                        )}
                         {/incident\/[^/]+\/task\/[^/]+$/.test(
                             router.pathname
                         ) && (

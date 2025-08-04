@@ -45,6 +45,7 @@ export default function AdditionalFields({
     changePath,
     appRouter,
     incidentId,
+    opInfo,
 }) {
     const [selectedCard, setSelectedCard] = useState(0);
     return (

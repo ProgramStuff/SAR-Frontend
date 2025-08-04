@@ -264,8 +264,6 @@ export default function CompleteIncident({ appRouter, changePathFunction }) {
             setSummary(data.summary);
             setObjectives(data.objectives);
         }
-
-
     }
 
     useEffect(() => {
