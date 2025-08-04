@@ -50,7 +50,12 @@ const tempCert3 = {
     certificate: 'Cert',
 };
 
-export default function CreateTask({ taskID, appRouter, user, selectedIncident}) {
+export default function CreateTask({
+    taskID,
+    appRouter,
+    user,
+    selectedIncident,
+}) {
     const [taskName, setTaskName] = useState('');
     const [op, setOp] = useState('');
     const [startDate, setStartDate] = useState(dayjs());
@@ -65,7 +70,9 @@ export default function CreateTask({ taskID, appRouter, user, selectedIncident})
         setResponderInfo((prevState) =>
             prevState.map((responder) => ({
                 ...responder,
-                checkedIn: selected.some((item) => item == responder.responderId)
+                checkedIn: selected.some(
+                    (item) => item == responder.responderId
+                )
                     ? !responder.checkedIn
                     : responder.checkedIn,
                 startDate:
@@ -153,8 +160,7 @@ export default function CreateTask({ taskID, appRouter, user, selectedIncident})
         3: tempTask3,
     };
 
-    const [responderInfo, setResponderInfo] = useState([
-    ]);
+    const [responderInfo, setResponderInfo] = useState([]);
 
     function loadTask() {
         const data = tempTasks[taskID];
@@ -169,10 +175,9 @@ export default function CreateTask({ taskID, appRouter, user, selectedIncident})
         if (/incident\/[^/]+\/task\/[^/]+$/.test(appRouter.pathname)) {
             loadTask();
         }
-        if (/^\/incident\/([^/]+)\/newTask$/.test(appRouter.pathname)){
+        if (/^\/incident\/([^/]+)\/newTask$/.test(appRouter.pathname)) {
             setOp(selectedIncident.operationalPeriods[0].operationalPeriod);
         }
-
     }, []);
 
     async function handleSubmit() {
@@ -196,12 +201,13 @@ export default function CreateTask({ taskID, appRouter, user, selectedIncident})
             opId: selectedIncident.operationalPeriods[0].operationalPeriodId,
             description: description,
             role: 'Ground Search',
-            responderIds: selected
+            responderIds: selected,
         };
         console.log(payload);
         try {
             const response = await axios.post(
-                `${import.meta.env.VITE_API_ENDPOINT}/create-task`, payload
+                `${import.meta.env.VITE_API_ENDPOINT}/create-task`,
+                payload
             );
             console.log(response);
             if (response.status == 200) {
